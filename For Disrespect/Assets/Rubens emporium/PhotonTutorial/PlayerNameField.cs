@@ -12,11 +12,9 @@ public class PlayerNameField : MonoBehaviour
     private string defaultName;
     public InputField playerNameInput;
 
-    #region PlayerName
-
-    void Start()
+    public void Start()
     {
-        if(playerNameInput != null)
+        if (playerNameInput != null)
         {
             if (PlayerPrefs.HasKey(crPlayerName))
             {
@@ -26,18 +24,17 @@ public class PlayerNameField : MonoBehaviour
         }
         PhotonNetwork.NickName = defaultName;
     }
-    public void SetPlayerName(string stringValue)
+
+    public void SetPlayerName(string valueString)
     {
-        if (string.IsNullOrEmpty(stringValue))
+        if (string.IsNullOrEmpty(valueString))
         {
-            print(stringValue);
+            Debug.LogError("Player Name is null or empty");
+            return;
         }
-        PhotonNetwork.NickName = stringValue;
+        PhotonNetwork.NickName = valueString;
 
-        PlayerPrefs.SetString(crPlayerName, stringValue);
+
+        PlayerPrefs.SetString(crPlayerName, valueString);
     }
-
-    #endregion
-
-
 }
