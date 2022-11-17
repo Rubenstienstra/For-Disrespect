@@ -5,36 +5,35 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-[RequireComponent(typeof(InputField))]
+//[RequireComponent(typeof(InputField))]
 public class PlayerNameField : MonoBehaviour
 {
-    const string crPlayerName = "PlayerName";
-    private string defaultName;
+    public string crPlayerName;
+    public string defaultSavedName;
     public InputField playerNameInput;
 
+    //Zorgt er voor dat de default name gedisplayed word
     public void Start()
     {
         if (playerNameInput != null)
         {
             if (PlayerPrefs.HasKey(crPlayerName))
             {
-                defaultName = PlayerPrefs.GetString(crPlayerName);
-                playerNameInput.text = defaultName;
+                defaultSavedName = PlayerPrefs.GetString(crPlayerName);
+                playerNameInput.text = defaultSavedName;
             }
         }
-        PhotonNetwork.NickName = defaultName;
+        PhotonNetwork.NickName = defaultSavedName;
     }
 
-    public void SetPlayerName(string valueString)
+    public void SetPlayerName(string value)
     {
-        if (string.IsNullOrEmpty(valueString))
+        if (string.IsNullOrEmpty(value))
         {
-            Debug.LogError("Player Name is null or empty");
+            print("Player Name is null or empty");
             return;
         }
-        PhotonNetwork.NickName = valueString;
-
-
-        PlayerPrefs.SetString(crPlayerName, valueString);
+        PhotonNetwork.NickName = value;
+        PlayerPrefs.SetString(crPlayerName, value);
     }
 }

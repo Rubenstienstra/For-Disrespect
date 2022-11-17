@@ -8,16 +8,16 @@ public class GameLauncher : MonoBehaviourPunCallbacks
 {
     public string gameVersion = "1";
     public byte maxPlayersInRoom = 4;
+    public bool isConnected;
+
+    public GameObject loadingText;
+    public GameObject controlWindow;
 
     #region MonoBehaviour CallBacks
 
     private void Awake()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
-    }
-    public void Start()
-    {
-        
     }
 
     #endregion
@@ -26,15 +26,18 @@ public class GameLauncher : MonoBehaviourPunCallbacks
 
     public void Connect()
     {
+        loadingText.SetActive(true);
+        controlWindow.SetActive(false);
+        if (!PhotonNetwork.IsConnected)
+        {
+            isConnected = PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.GameVersion = gameVersion;
+        }
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.JoinRandomRoom();
         }
-        else
-        {
-            PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = gameVersion;
-        }
+        
     }
 
     #endregion
@@ -44,17 +47,30 @@ public class GameLauncher : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         print("OnConnectedToMaster was activated");
+        loadingText.SetActive(false);
+        controlWindow.SetActive(true);
         base.OnConnectedToMaster();
+
+        if (isConnected)
+        {
+            PhotonNetwork.JoinRandomRoom();
+            isConnected = false;
+        }
     }
     public override void OnJoinedRoom()
     {
         print("OnJoinedRoom was activated: ");
+        loadingText.SetActive(false);
+        controlWindow.SetActive(true);
         base.OnJoinedRoom();
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         print("OnDisconnected was activated: " + cause);
+        isConnected = false;
+        loadingText.SetActive(false);
+        controlWindow.SetActive(true);
         base.OnDisconnected(cause);
     }
 
@@ -63,7 +79,7 @@ public class GameLauncher : MonoBehaviourPunCallbacks
         print("OnJoinRandomFailed was activated: " + returnCode + message);
 
         //creates new room after he couldn't join one.
-        PhotonNetwork.CreateRoom("New Room", new RoomOptions { MaxPlayers = maxPlayersInRoom });
+        PhotonNetwork.CreateRoom("GameRoom", new RoomOptions { MaxPlayers = maxPlayersInRoom });
         base.OnJoinRandomFailed(returnCode, message);
     }
 
