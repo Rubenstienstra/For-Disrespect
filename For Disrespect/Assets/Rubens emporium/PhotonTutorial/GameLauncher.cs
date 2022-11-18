@@ -6,6 +6,8 @@ using Photon.Realtime;
 
 public class GameLauncher : MonoBehaviourPunCallbacks
 {
+    //GameLauncher is voor wanneer je in de game wil.
+
     public string gameVersion = "1";
     public byte maxPlayersInRoom = 4;
     public bool isConnected;
@@ -62,6 +64,13 @@ public class GameLauncher : MonoBehaviourPunCallbacks
         print("OnJoinedRoom was activated: ");
         loadingText.SetActive(false);
         controlWindow.SetActive(true);
+
+        print("Loading Room For " + PhotonNetwork.CurrentRoom.PlayerCount);
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount <= maxPlayersInRoom)
+        {
+            PhotonNetwork.LoadLevel("Room For " + PhotonNetwork.CurrentRoom.PlayerCount);
+        }
         base.OnJoinedRoom();
     }
 
