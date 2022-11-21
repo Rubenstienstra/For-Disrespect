@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1960451429685669108}
   - component: {fileID: 1960451429685669109}
   - component: {fileID: 1960451429685669106}
+  - component: {fileID: 7194733285747788574}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -84,7 +85,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1960451429685669110}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!114 &1960451429685669106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +211,23 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
+--- !u!114 &7194733285747788574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960451429685669110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd08475b23aa548b7b9d28397d430b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distance: 7
+  height: 3
+  centerOffset: {x: 0, y: 0, z: 0}
+  followOnStart: 0
+  smoothSpeed: 0.125
 --- !u!1 &1960451430545438968
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,6 +241,7 @@ GameObject:
   - component: {fileID: 1960451430545438949}
   - component: {fileID: 1960451430545438951}
   - component: {fileID: 1960451430545438946}
+  - component: {fileID: 3018205111750608989}
   - component: {fileID: 1960451430545438945}
   - component: {fileID: 1960451430545438944}
   - component: {fileID: 2037711746090742456}
@@ -330,10 +349,27 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 3018205111750608989}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &3018205111750608989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960451430545438968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!114 &1960451430545438945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,7 +417,7 @@ MonoBehaviour:
   holdingShift: 0
   rayCastDistanceAttack: 0
   isAttacking: 0
-  hp: 100
+  hp: 10
   movementShiftBuff: 2
   movementSpeedBuff: 2
   rayCastPos: {x: 0, y: 0, z: 0}

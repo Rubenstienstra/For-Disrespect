@@ -8,10 +8,13 @@ using Photon.Realtime;
 
 public class GameLobbyManager : MonoBehaviourPunCallbacks
 {
+    public static GameLobbyManager gameLobbyInfo;
+
     public Text playerNameText;
     // Game lobby manager is Wanneer je in de game zit
     public void Start()
     {
+        gameLobbyInfo = this;
         playerNameText.text = PhotonNetwork.NickName;
     }
 

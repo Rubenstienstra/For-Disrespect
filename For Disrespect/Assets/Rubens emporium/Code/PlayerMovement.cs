@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Chat;
 using Photon.Realtime;
 using UnityEngine.InputSystem;
 
@@ -14,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     public RaycastHit rayCastAttackHit;
     public float rayCastDistanceAttack;
     public bool isAttacking;
-    public int hp;
+    public int hp = 10;
 
     public float movementShiftBuff;
     private float crShiftBuff = 1;
@@ -85,11 +84,14 @@ public class PlayerMovement : MonoBehaviour
             crShiftBuff = 1;
         }
     }
-    
 
+    public void Start()
+    {
+        
+    }
     void FixedUpdate()
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine && !PhotonNetwork.IsConnected)
         {
             Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
             distanceBetweenGround = hitSlope.distance;
@@ -101,10 +103,14 @@ public class PlayerMovement : MonoBehaviour
             {
                 characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
             }
+            if (hp <= 0)
+            {
+                GameLobbyManager.gameLobbyInfo.LeaveRoom();
+            }
         }
         else
         {
-            print(photonID);
+            
         }
     }
     //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
@@ -124,11 +130,15 @@ public class PlayerMovement : MonoBehaviour
 
     public void Attack()
     {
-        Physics.Raycast(transform.position, Vector3.down, out rayCastAttackHit, distanceBetweenGround);
-        if(rayCastAttackHit.transform.gameObject.tag == "Player")
+        if (photonID.IsMine)
         {
-            rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
+            Physics.Raycast(transform.position, Vector3.down, out rayCastAttackHit, distanceBetweenGround);
+            if (rayCastAttackHit.transform.gameObject.tag == "Player")
+            {
+                rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
+            }
+            isAttacking = false;
         }
-        isAttacking = false;
+        print(photonID.ViewID);
     }
 }
