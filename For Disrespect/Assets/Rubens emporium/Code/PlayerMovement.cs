@@ -44,12 +44,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             if (value.Get<float>() == 1)
             {
                 movementWASD[0] = 1;
-                playerAnimations.SetFloat("Speed", 1);
             }
             else
             {
                 movementWASD[0] = 0;
-                playerAnimations.SetFloat("Speed", 0);
             }
         }
     }
@@ -120,21 +118,47 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (photonID.IsMine)// && !PhotonNetwork.IsConnected
         {
-            Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
-            distanceBetweenGround = hitSlope.distance;
-            if (hitSlope.distance >= 0.001f)
-            {
-                characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            }
-            else
-            {
-                characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            }
+            
             if (hp <= 0)
             {
                 GameLobbyManager.gameLobbyInfo.LeaveRoom();
             }
+
+            //ROBOT MOVEMENT
+            if(movementWASD[2] > 0 || movementWASD[0] > 0 || playerAnimations.GetFloat("Speed") > 0.001f)
+            {
+                playerAnimations.SetFloat("Speed", -movementWASD[2] + movementWASD[0], 0.25f, Time.deltaTime);
+            }
+            else if(playerAnimations.GetFloat("Speed") < 0.002f && movementWASD[2] == 0 && movementWASD[0] == 0)
+            {
+                playerAnimations.SetFloat("Speed", 0);
+            }
             
+            if (movementWASD[1] > 0 || movementWASD[3] > 0 || playerAnimations.GetFloat("Direction") > 0.001)
+            {
+                playerAnimations.SetFloat("Direction", -movementWASD[1] + movementWASD[3], 0.25f, Time.deltaTime);
+            }
+            else if (playerAnimations.GetFloat("Direction") < 0.002f && movementWASD[1] == 0 && movementWASD[3] == 0)
+            {
+                playerAnimations.SetFloat("Direction", 0);
+            }
+
+            //NOMRAL MOVEMENT
+            Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
+            distanceBetweenGround = hitSlope.distance;
+            if(hitSlope.distance < 0)
+            {
+                characterControl.Move(new Vector3(0,-1,0) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+            }
+            //if (hitSlope.distance >= 0.001f)
+            //{
+            //    characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+            //}
+            //else
+            //{
+            //    characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+            //}
+
             //for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
             //{
             //    if(movementWASD[i] > 0)
@@ -173,10 +197,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         if (photonID.IsMine)
         {
             Physics.Raycast(transform.position, Vector3.down, out rayCastAttackHit, distanceBetweenGround);
-            if (rayCastAttackHit.transform.gameObject.tag == "Player")
-            {
-                rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
-            }
+            //if (rayCastAttackHit.collider.gameObject.tag == "Player") WERKT NIET???
+            //{
+            //    rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
+            //}
             isAttacking = false;
         }
     }

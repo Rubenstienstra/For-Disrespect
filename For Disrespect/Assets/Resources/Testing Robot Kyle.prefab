@@ -1949,6 +1949,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementWASD: 00000000000000000000000000000000
+  isTotalWalkingWASD: 0
   holdingShift: 0
   rayCastDistanceAttack: 1
   isAttacking: 0
