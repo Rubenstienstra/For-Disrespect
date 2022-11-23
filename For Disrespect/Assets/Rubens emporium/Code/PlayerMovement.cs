@@ -5,9 +5,10 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 {
     public int[] movementWASD;
+    public int isTotalWalkingWASD;
     public bool holdingShift;
 
     public RaycastHit rayCastAttackHit;
@@ -24,74 +25,100 @@ public class PlayerMovement : MonoBehaviour
     public RaycastHit hitSlope;
     public float distanceBetweenGround;
 
+    public Animator playerAnimations;
+
     public PhotonView photonID;
     public CharacterController characterControl;
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            //stream.SendNext();
+        }
+    }
     public void OnForward(InputValue value)
     {
-        if(value.Get<float>() == 1)
+        if (photonID.IsMine)
         {
-            movementWASD[0] = 1;
-        }
-        else
-        {
-            movementWASD[0] = 0;
+            if (value.Get<float>() == 1)
+            {
+                movementWASD[0] = 1;
+                playerAnimations.SetFloat("Speed", 1);
+            }
+            else
+            {
+                movementWASD[0] = 0;
+                playerAnimations.SetFloat("Speed", 0);
+            }
         }
     }
     public void OnLeft(InputValue value)
     {
-        if (value.Get<float>() == 1)
+        if (photonID.IsMine)
         {
-            movementWASD[1] = 1;
-        }
-        else
-        {
-            movementWASD[1] = 0;
+            if (value.Get<float>() == 1)
+            {
+                movementWASD[1] = 1;
+            }
+            else
+            {
+                movementWASD[1] = 0;
+            }
         }
     }
     public void OnDown(InputValue value)
     {
-        if (value.Get<float>() == 1)
+        if(photonID.IsMine)
         {
-            movementWASD[2] = 1;
-        }
-        else
-        {
-            movementWASD[2] = 0;
+            if (value.Get<float>() == 1)
+            {
+                movementWASD[2] = 1;
+            }
+            else
+            {
+                movementWASD[2] = 0;
+            }
         }
     }
     public void OnRight(InputValue value)
     {
-        if (value.Get<float>() == 1)
+        if (photonID.IsMine)
         {
-            movementWASD[3] = 1;
-        }
-        else
-        {
-            movementWASD[3] = 0;
+            if (value.Get<float>() == 1)
+            {
+                movementWASD[3] = 1;
+            }
+            else
+            {
+                movementWASD[3] = 0;
+            }
         }
     }
     public void OnShift(InputValue value)
     {
-        if (value.Get<float>() == 1)
+        if (photonID.IsMine)
         {
-            holdingShift = true;
-            crShiftBuff = movementShiftBuff;
-        }
-        else
-        {
-            holdingShift = false;
-            crShiftBuff = 1;
+            if (value.Get<float>() == 1)
+            {
+                holdingShift = true;
+                crShiftBuff = movementShiftBuff;
+            }
+            else
+            {
+                holdingShift = false;
+                crShiftBuff = 1;
+            }
         }
     }
 
     public void Start()
     {
-        
+        print("ViewID: "+ photonID.ViewID);
     }
     void FixedUpdate()
     {
-        if (photonID.IsMine && !PhotonNetwork.IsConnected)
+        if (photonID.IsMine)// && !PhotonNetwork.IsConnected
         {
             Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
             distanceBetweenGround = hitSlope.distance;
@@ -107,10 +134,23 @@ public class PlayerMovement : MonoBehaviour
             {
                 GameLobbyManager.gameLobbyInfo.LeaveRoom();
             }
-        }
-        else
-        {
             
+            //for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
+            //{
+            //    if(movementWASD[i] > 0)
+            //    {
+            //        isTotalWalkingWASD++;
+            //    }
+            //}
+            //if(isTotalWalkingWASD > 0)
+            //{
+            //    playerAnimations.SetFloat("Speed", 1);
+            //}
+            //else
+            //{
+            //    playerAnimations.SetFloat("Speed", 0);
+            //}
+            //isTotalWalkingWASD = 0; //resets the number
         }
     }
     //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
@@ -120,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (value.Get<float>() == 1)
         {
-            if (!isAttacking)
+            if (!isAttacking && photonID.IsMine)
             {
                 isAttacking = true;
                 Attack();
@@ -139,6 +179,5 @@ public class PlayerMovement : MonoBehaviour
             }
             isAttacking = false;
         }
-        print(photonID.ViewID);
     }
 }

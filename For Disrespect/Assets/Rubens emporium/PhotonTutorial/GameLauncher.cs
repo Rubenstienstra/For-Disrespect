@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.SceneManagement;
 
 public class GameLauncher : MonoBehaviourPunCallbacks
 {
@@ -35,7 +36,7 @@ public class GameLauncher : MonoBehaviourPunCallbacks
             isConnected = PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = gameVersion;
         }
-        if (PhotonNetwork.IsConnected)
+        if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.JoinRandomRoom();
         }
@@ -78,8 +79,11 @@ public class GameLauncher : MonoBehaviourPunCallbacks
     {
         print("OnDisconnected was activated: " + cause);
         isConnected = false;
-        loadingText.SetActive(false);
-        controlWindow.SetActive(true);
+        if("Launcher" == SceneManager.GetActiveScene().name)
+        {
+            loadingText.SetActive(false);
+            controlWindow.SetActive(true);
+        }
         base.OnDisconnected(cause);
     }
 
