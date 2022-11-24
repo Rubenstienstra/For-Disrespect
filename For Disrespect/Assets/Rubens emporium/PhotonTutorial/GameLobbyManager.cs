@@ -11,11 +11,16 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public static GameLobbyManager gameLobbyInfo;
 
     public Text playerNameText;
+    public GameObject playerSpawnPrefab;
+    public Vector3 spawnLocation;
+
     // Game lobby manager is Wanneer je in de game zit
     public void Start()
     {
         gameLobbyInfo = this;
         playerNameText.text = PhotonNetwork.NickName;
+
+        PhotonNetwork.Instantiate(this.playerSpawnPrefab.name, spawnLocation, Quaternion.identity, 0);
     }
 
     #region Automatic voids

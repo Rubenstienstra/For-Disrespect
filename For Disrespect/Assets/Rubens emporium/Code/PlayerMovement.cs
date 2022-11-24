@@ -14,7 +14,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public RaycastHit rayCastAttackHit;
     public float rayCastDistanceAttack;
     public bool isAttacking;
-    public int hp = 10;
+    public float inputAttack;
+    public float hp = 10;
 
     public float movementShiftBuff;
     private float crShiftBuff = 1;
@@ -28,13 +29,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public Animator playerAnimations;
 
     public PhotonView photonID;
+    public NewCameraWork newCameraWork;
     public CharacterController characterControl;
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)// ?
     {
         if (stream.IsWriting)
         {
-            //stream.SendNext();
+            stream.SendNext(isAttacking);
+            stream.SendNext(hp);
+            print("sended: ");
+        }
+        else
+        {
+           this.isAttacking = (bool)stream.ReceiveNext();
+            this.hp = (float)stream.ReceiveNext();
+            print("recieved: ");
         }
     }
     public void OnForward(InputValue value)
@@ -113,6 +123,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public void Start()
     {
         print("ViewID: "+ photonID.ViewID);
+
+        if (photonID.IsMine)
+        {
+            newCameraWork.OnStartFollowing();
+        }
+        
     }
     void FixedUpdate()
     {
@@ -182,7 +198,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     public void OnAttack(InputValue value)
     {
-        if (value.Get<float>() == 1)
+        inputAttack = value.Get<float>();
+        if (value.Get<float>() > 0)
         {
             if (!isAttacking && photonID.IsMine)
             {
