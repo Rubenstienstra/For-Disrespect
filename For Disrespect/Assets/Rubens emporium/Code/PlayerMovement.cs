@@ -136,18 +136,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             thisPlayerPrefab = gameObject;
         }
         DontDestroyOnLoad(gameObject);
+        
+        crUIPrefab = Instantiate(UIPrefab);
+        crUIPrefab.GetComponent<UIPlayer>().playerMovement = this;
+        crUIPrefab.GetComponent<UIPlayer>().playerGameObject = gameObject;
     }
     public void Start()
     {
         playerMovement = this;
         print("ViewID: "+ photonID.ViewID);
 
+
         if (photonID.IsMine)
         {
             newCameraWork.OnStartFollowing();
         }
-        crUIPrefab = Instantiate(UIPrefab);
-        crUIPrefab.GetComponentInChildren<UIPlayer>().playerMovement = this;
+        
     }
     void FixedUpdate()
     {
