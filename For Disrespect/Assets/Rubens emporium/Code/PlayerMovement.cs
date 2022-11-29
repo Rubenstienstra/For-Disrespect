@@ -34,6 +34,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     public Text playerName;
     public static GameObject thisPlayerPrefab;
+    public GameObject UIPrefab;
+    public GameObject crUIPrefab;
 
     public PhotonView photonID;
     public NewCameraWork newCameraWork;
@@ -144,8 +146,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             newCameraWork.OnStartFollowing();
         }
-        
-        playerName.text = PhotonNetwork.NickName;
+        crUIPrefab = Instantiate(UIPrefab);
+        crUIPrefab.GetComponentInChildren<UIPlayer>().playerMovement = this;
     }
     void FixedUpdate()
     {
@@ -231,11 +233,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         if (photonID.IsMine)
         {
             Physics.Raycast(transform.position, Vector3.down, out rayCastAttackHit, distanceBetweenGround);
-            //if (rayCastAttackHit.collider.gameObject.tag == "Player") WERKT NIET???
-            //{
-            //    rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
-            //    rayCastAttackHit.transform.gameObject.GetComponent<UIPlayer>().OnHealthChange();
-            //}
+            if(rayCastAttackHit.transform != null)
+            {
+                print("It has Found: " + rayCastAttackHit);
+                if (rayCastAttackHit.transform.tag == "Player")// WERKT NIET
+                {
+                    rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
+                    rayCastAttackHit.transform.gameObject.GetComponent<UIPlayer>().OnHealthChange(hp);
+                }
+            } 
             isAttacking = false;
         }
     }

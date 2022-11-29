@@ -9,15 +9,19 @@ public class UIPlayer : MonoBehaviour
     public Slider playerHPBar;
     public PlayerMovement playerMovement;
 
+    public Transform parentComponent;
+
     public void Start()
     {
-        if(playerName != null)
+        parentComponent.SetParent(GameObject.Find("MainCanvas").GetComponent<Transform>());
+        if(playerName != null && playerMovement != null)
         {
-            playerName.text = playerMovement.photonID.Owner.NickName;
+            playerName.text = playerMovement.photonID.Owner.NickName.ToString();
         }
     }
-    public void OnHealthChange()
+    public void OnHealthChange(float hp)
     {
-
+        playerHPBar.value = hp;
+        print("Player Total HP: " + hp);
     }
 }
