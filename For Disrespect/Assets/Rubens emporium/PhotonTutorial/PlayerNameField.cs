@@ -11,6 +11,7 @@ public class PlayerNameField : MonoBehaviour
     public string crPlayerName;
     public string defaultSavedName;
     public InputField playerNameInput;
+    public GameLobbyManager gameLobbyManager;
 
     //Zorgt er voor dat de default name gedisplayed word
     public void Start()

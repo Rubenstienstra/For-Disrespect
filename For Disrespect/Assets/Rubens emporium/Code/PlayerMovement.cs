@@ -4,9 +4,13 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 {
+    public static PlayerMovement playerMovement;
+
     public int[] movementWASD;
     public int isTotalWalkingWASD;
     public bool holdingShift;
@@ -28,6 +32,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     public Animator playerAnimations;
 
+    public Text playerName;
+    public static GameObject thisPlayerPrefab;
+
     public PhotonView photonID;
     public NewCameraWork newCameraWork;
     public CharacterController characterControl;
@@ -42,7 +49,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         }
         else
         {
-           this.isAttacking = (bool)stream.ReceiveNext();
+            this.isAttacking = (bool)stream.ReceiveNext();
             this.hp = (float)stream.ReceiveNext();
             print("recieved: ");
         }
@@ -120,8 +127,17 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         }
     }
 
+    public void Awake()
+    {
+        if (photonID.IsMine)
+        {
+            thisPlayerPrefab = gameObject;
+        }
+        DontDestroyOnLoad(gameObject);
+    }
     public void Start()
     {
+        playerMovement = this;
         print("ViewID: "+ photonID.ViewID);
 
         if (photonID.IsMine)
@@ -129,6 +145,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             newCameraWork.OnStartFollowing();
         }
         
+        playerName.text = PhotonNetwork.NickName;
     }
     void FixedUpdate()
     {
@@ -217,8 +234,23 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             //if (rayCastAttackHit.collider.gameObject.tag == "Player") WERKT NIET???
             //{
             //    rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
+            //    rayCastAttackHit.transform.gameObject.GetComponent<UIPlayer>().OnHealthChange();
             //}
             isAttacking = false;
         }
+    }
+
+    public void LeaveRoom()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.LeaveRoom();
+            return;
+        }    
+        SceneManager.LoadScene("Launcher");
+    }
+    void OnLevelWasLoaded(int level)
+    {
+        print(level);
     }
 }

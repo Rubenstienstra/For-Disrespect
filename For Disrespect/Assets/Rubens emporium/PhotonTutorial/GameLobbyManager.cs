@@ -10,7 +10,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 {
     public static GameLobbyManager gameLobbyInfo;
 
-    public Text playerNameText;
+    public Button playerLeaveButton;
     public GameObject playerSpawnPrefab;
     public Vector3 spawnLocation;
 
@@ -18,10 +18,19 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void Start()
     {
         gameLobbyInfo = this;
-        playerNameText.text = PhotonNetwork.NickName;
 
-        PhotonNetwork.Instantiate(this.playerSpawnPrefab.name, spawnLocation, Quaternion.identity, 0);
+        if (PhotonNetwork.IsConnected)
+        {
+            if (PlayerMovement.thisPlayerPrefab == null)
+            {
+                print("Spawned in a player " + Application.loadedLevelName);
+
+                PhotonNetwork.Instantiate(this.playerSpawnPrefab.name, spawnLocation, Quaternion.identity, 0);
+            }
+            
+        }
     }
+    
 
     #region Automatic voids
     public override void OnLeftRoom()
@@ -60,7 +69,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.LeaveRoom();
+            return;
         }
+        SceneManager.LoadScene("Launcher");
     }
 
     public void LoadArena()

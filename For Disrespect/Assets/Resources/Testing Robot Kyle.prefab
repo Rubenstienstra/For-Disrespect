@@ -1787,6 +1787,7 @@ MonoBehaviour:
   rayCastDistance: 0
   distanceBetweenGround: 10
   playerAnimations: {fileID: 7408969647452453439}
+  playerName: {fileID: 7018478244535962259}
   photonID: {fileID: 6927655672160931526}
   newCameraWork: {fileID: 1580410099102469292}
   characterControl: {fileID: 5792150144880387622}
@@ -1919,7 +1920,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7737488873794032623}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.212105, y: 1.565, z: -14.278889}
+  m_LocalPosition: {x: -0.34, y: 1.565, z: -1.74}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2126,11 +2127,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7408969647461701087}
     m_Modifications:
-    - target: {fileID: 5551837147319616825, guid: d9cb26fcd8306f14193161bfea73ebec,
+    - target: {fileID: 4932836833492503697, guid: d9cb26fcd8306f14193161bfea73ebec,
         type: 3}
-      propertyPath: playerspawnPrefab
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7285150876590227974, guid: d9cb26fcd8306f14193161bfea73ebec,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 7408969647461796351}
+      objectReference: {fileID: 4299301916494988953}
     - target: {fileID: 7713107856509234754, guid: d9cb26fcd8306f14193161bfea73ebec,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2174,21 +2180,6 @@ PrefabInstance:
     - target: {fileID: 7713107856509234754, guid: d9cb26fcd8306f14193161bfea73ebec,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7713107856509234754, guid: d9cb26fcd8306f14193161bfea73ebec,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7713107856509234754, guid: d9cb26fcd8306f14193161bfea73ebec,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7713107856509234754, guid: d9cb26fcd8306f14193161bfea73ebec,
-        type: 3}
-      propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7713107856509234754, guid: d9cb26fcd8306f14193161bfea73ebec,
@@ -2256,6 +2247,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RoomLobbyManagerButton
       objectReference: {fileID: 0}
+    - target: {fileID: 8001941285430022803, guid: d9cb26fcd8306f14193161bfea73ebec,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9cb26fcd8306f14193161bfea73ebec, type: 3}
 --- !u!224 &5081948225276962966 stripped
@@ -2264,3 +2260,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3282211836548515540}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7018478244535962259 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5542354998459960391, guid: d9cb26fcd8306f14193161bfea73ebec,
+    type: 3}
+  m_PrefabInstance: {fileID: 3282211836548515540}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
