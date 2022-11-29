@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5538586670981474164}
   - component: {fileID: 5538586670981474165}
   m_Layer: 5
-  m_Name: AttackSelect
+  m_Name: SelectPlayerView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
