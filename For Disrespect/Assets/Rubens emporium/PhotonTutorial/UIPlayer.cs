@@ -27,12 +27,31 @@ public class UIPlayer : MonoBehaviour
     public void Start()
     {
         parentComponent.SetParent(GameObject.Find("MainCanvas").GetComponent<Transform>());
+        if (playerMovement != null)
+        {
+            transformPlayer = playerMovement.GetComponent<Transform>();
+            rendererPlayer = playerMovement.GetComponent<Renderer>();
+            characterControlPlayer = playerMovement.GetComponent<CharacterController>();
+        }
+    }
+    public void Update()
+    {
+        if(playerHPBar == null && playerMovement != null)
+        {
+            playerHPBar.value = playerMovement.hp;
+        }
+    }
+    public void SetTarget(PlayerMovement target)
+    {
+        if(target == null)
+        {
+            print("There is no PlayerMovement");
+            return;
+        }
 
-        transformPlayer = playerMovement.GetComponent<Transform>();
-        rendererPlayer = playerMovement.GetComponent<Renderer>();
-        characterControlPlayer = playerMovement.GetComponent<CharacterController>();
+        playerMovement = target;
 
-        if(playerName != null && playerMovement != null)
+        if (playerName != null && playerMovement != null)
         {
             playerName.text = playerMovement.photonID.Owner.NickName.ToString();
         }

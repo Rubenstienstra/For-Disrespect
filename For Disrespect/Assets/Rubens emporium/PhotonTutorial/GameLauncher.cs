@@ -4,8 +4,9 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class GameLauncher : MonoBehaviourPunCallbacks
+public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
 {
     //GameLauncher is voor wanneer je in de game wil.
 
@@ -13,8 +14,32 @@ public class GameLauncher : MonoBehaviourPunCallbacks
     public byte maxPlayersInRoom = 4;
     public bool isConnected;
 
+    public string crSelectedRoomName;
+
+    public string createRoomName;
+    public InputField roomName;
+
+    public byte createMaxTotalPlayers;
+    public InputField maxTotalPlayers;
+
+    public bool createPrivacySettings;
+    public Toggle privacySettings;
+
+    public RoomOptions createRoomSettings;
+    public TypedLobby createTypedLobby;
+
+    public List<string> stringOfAllRooms;
+    public RoomInfo listOfRoomInfo;
+
+    public GameObject buttonPrefab;
+
+
     public GameObject loadingText;
     public GameObject controlWindow;
+    public GameObject choosingLobbyOrCreate;
+    public GameObject creatingLobby;
+
+
 
     #region MonoBehaviour CallBacks
 
@@ -27,10 +52,12 @@ public class GameLauncher : MonoBehaviourPunCallbacks
 
     #region Public Methods
 
+    
     public void Connect()
     {
         loadingText.SetActive(true);
         controlWindow.SetActive(false);
+
         if (!PhotonNetwork.IsConnected)
         {
             isConnected = PhotonNetwork.ConnectUsingSettings();
@@ -38,9 +65,30 @@ public class GameLauncher : MonoBehaviourPunCallbacks
         }
         if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.JoinRandomRoom();
+            //PhotonNetwork.JoinRandomRoom();
         }
-        
+    }
+    public void JoinRoomButton()
+    {
+        if(crSelectedRoomName != "")
+        {
+            PhotonNetwork.JoinRoom(crSelectedRoomName);
+        }
+    }
+    public void CreateRoomButton()
+    {
+        PhotonNetwork.CreateRoom(createRoomName,new RoomOptions {IsVisible = createPrivacySettings, MaxPlayers = createMaxTotalPlayers}, createTypedLobby);
+    }
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        foreach (RoomInfo info in roomList)
+        {
+            //listOfRoomInfo = info;
+            stringOfAllRooms.Add(info.Name);
+            print("Sended Info");
+        }
+
+        base.OnRoomListUpdate(roomList);
     }
 
     #endregion
@@ -51,14 +99,15 @@ public class GameLauncher : MonoBehaviourPunCallbacks
     {
         print("OnConnectedToMaster was activated");
         loadingText.SetActive(false);
-        controlWindow.SetActive(true);
-        base.OnConnectedToMaster();
+        //controlWindow.SetActive(true);
+        choosingLobbyOrCreate.SetActive(true);
 
         if (isConnected)
         {
-            PhotonNetwork.JoinRandomRoom();
             isConnected = false;
         }
+
+        base.OnConnectedToMaster();
     }
     public override void OnJoinedRoom()
     {
