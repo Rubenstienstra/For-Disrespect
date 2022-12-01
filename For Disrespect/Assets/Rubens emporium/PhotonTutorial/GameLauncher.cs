@@ -15,9 +15,9 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public bool isConnected;
 
     public string crSelectedRoomName;
-
     public string createRoomName;
     public InputField roomName;
+    public InputField displayingRoomNameInput;
 
     public byte createMaxTotalPlayers;
     public InputField maxTotalPlayers;
@@ -38,6 +38,9 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public GameObject controlWindow;
     public GameObject choosingLobbyOrCreate;
     public GameObject creatingLobby;
+
+    public Transform contentToParent;
+    public RoomListing _roomListing;
 
 
 
@@ -83,11 +86,19 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         foreach (RoomInfo info in roomList)
         {
-            //listOfRoomInfo = info;
-            stringOfAllRooms.Add(info.Name);
-            print("Sended Info");
-        }
+            
+            RoomListing roomLister = Instantiate(_roomListing, contentToParent);
 
+            if(roomLister != null) 
+            {
+                print("Sended Info");
+            }
+            else if(roomLister == null)
+            {
+                print("The're no rooms!");
+            }
+            
+        }
         base.OnRoomListUpdate(roomList);
     }
 
@@ -101,6 +112,8 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
         loadingText.SetActive(false);
         //controlWindow.SetActive(true);
         choosingLobbyOrCreate.SetActive(true);
+
+        PhotonNetwork.JoinLobby();
 
         if (isConnected)
         {

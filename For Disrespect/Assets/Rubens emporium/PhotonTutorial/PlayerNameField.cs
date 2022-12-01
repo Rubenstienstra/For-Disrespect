@@ -64,6 +64,10 @@ public class PlayerNameField : MonoBehaviour
             print(gameLauncher.privacySettings.isOn);
         }
     }
+    public void SearchServerName()
+    {
+        gameLauncher.crSelectedRoomName = gameLauncher.displayingRoomNameInput.text;
+    }
     public void CreatingRoomUI()
     {
        if(gameLauncher != null)
