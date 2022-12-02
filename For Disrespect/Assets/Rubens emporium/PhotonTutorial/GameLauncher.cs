@@ -26,7 +26,6 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public Toggle privacySettings;
 
     public RoomOptions createRoomSettings;
-    public TypedLobby createTypedLobby;
 
     public List<string> stringOfAllRooms;
     public RoomInfo listOfRoomInfo;
@@ -35,12 +34,12 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
 
     public GameObject loadingText;
-    public GameObject controlWindow;
+    public GameObject mainMenuWindow;
     public GameObject choosingLobbyOrCreate;
     public GameObject creatingLobby;
 
     public Transform contentToParent;
-
+    public RoomListing roomListing;
 
 
     #region MonoBehaviour CallBacks
@@ -49,16 +48,23 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         PhotonNetwork.AutomaticallySyncScene = true;
     }
+    private void Start()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            mainMenuWindow.SetActive(false);
+        }
+    }
 
     #endregion
 
     #region Public Methods
 
-    
+
     public void Connect()
     {
         loadingText.SetActive(true);
-        controlWindow.SetActive(false);
+        mainMenuWindow.SetActive(false);
 
         if (!PhotonNetwork.IsConnected)
         {
@@ -79,27 +85,34 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
     public void CreateRoomButton()
     {
-        PhotonNetwork.CreateRoom(createRoomName,new RoomOptions {IsVisible = createPrivacySettings, MaxPlayers = createMaxTotalPlayers}, createTypedLobby);
+        PhotonNetwork.CreateRoom(createRoomName,new RoomOptions {IsVisible = createPrivacySettings, MaxPlayers = createMaxTotalPlayers}, TypedLobby.Default);
     }
-    public override void OnRoomListUpdate(List<RoomInfo> roomList)
-    {
-        foreach (RoomInfo info in roomList)
-        {
-            crButtonPrefab = Instantiate(buttonPrefab, contentToParent);
-            crButtonPrefab.GetComponent<RoomNameButton>().SetRoomInfo(info);
+    //public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    //{
+    //    print("OnRoomListUpdate Is Being Checked!");
+    //    foreach (RoomInfo info in roomList)
+    //    {
+    //        RoomListing listing = Instantiate(roomListing, contentToParent);
+    //        if (listing != null)
+    //            listing.SetRoomInfo(info);
 
-            if (crButtonPrefab != null)
-            {
-                print("Sended Info");
-            }
-            else if(crButtonPrefab == null)
-            {
-                print("The're no rooms!");
-            }
-            
-        }
-        base.OnRoomListUpdate(roomList);
-    }
+
+
+    //        crButtonPrefab = Instantiate(buttonPrefab, contentToParent);
+    //        crButtonPrefab.GetComponent<RoomNameButton>().SetRoomInfo(info);
+
+    //        if (crButtonPrefab != null)
+    //        {
+    //            print("Sended Info");
+    //        }
+    //        else if (crButtonPrefab == null)
+    //        {
+    //            print("The're no rooms!");
+    //        }
+
+    //    }
+    //    base.OnRoomListUpdate(roomList);
+    //}
 
     #endregion
 
@@ -109,7 +122,6 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         print("OnConnectedToMaster was activated");
         loadingText.SetActive(false);
-        //controlWindow.SetActive(true);
         choosingLobbyOrCreate.SetActive(true);
 
         PhotonNetwork.JoinLobby();
@@ -125,13 +137,13 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         print("OnJoinedRoom was activated: ");
         loadingText.SetActive(false);
-        controlWindow.SetActive(true);
+        mainMenuWindow.SetActive(true);
 
-        print("Loading Room For " + PhotonNetwork.CurrentRoom.PlayerCount);
-
+        print("Loading GameRoom");
+     
         if (PhotonNetwork.CurrentRoom.PlayerCount <= maxPlayersInRoom)
         {
-            PhotonNetwork.LoadLevel("Room For " + PhotonNetwork.CurrentRoom.PlayerCount);
+            PhotonNetwork.LoadLevel("GameRoom");
         }
         base.OnJoinedRoom();
     }
@@ -142,10 +154,25 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
         isConnected = false;
         if("Launcher" == SceneManager.GetActiveScene().name)
         {
-            loadingText.SetActive(false);
-            controlWindow.SetActive(true);
+            if(loadingText != null && mainMenuWindow != null)
+            {
+                loadingText.SetActive(false);
+                mainMenuWindow.SetActive(true);
+            }
         }
         base.OnDisconnected(cause);
+    }
+    public override void OnCreatedRoom()
+    {
+        print("Created: " + createRoomName);
+
+        base.OnCreatedRoom();
+    }
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        print(returnCode + message);
+
+        base.OnCreateRoomFailed(returnCode, message);
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)

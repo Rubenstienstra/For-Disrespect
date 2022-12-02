@@ -10,7 +10,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 {
     public static GameLobbyManager gameLobbyInfo;
 
-    public Button playerLeaveButton;
     public GameObject playerSpawnPrefab;
     public Vector3 spawnLocation;
 
@@ -43,22 +42,11 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(newPlayer.NickName + " has joined");
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            print("OnPlayerEnteredRoom IsMasterClient:" + PhotonNetwork.IsMasterClient);
-            LoadArena();
-        }
-
         base.OnPlayerEnteredRoom(newPlayer);
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         print(otherPlayer.NickName + " has leaved");
-        if (PhotonNetwork.IsMasterClient)
-        {
-            print("OnPlayerEnteredRoom IsMasterClient:" + PhotonNetwork.IsMasterClient);
-            LoadArena();
-        }
 
         base.OnPlayerLeftRoom(otherPlayer);
     }
@@ -81,7 +69,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             print("Player is not MasterClient");
             return;
         }
-        print("Loading Level: " + PhotonNetwork.CurrentRoom.PlayerCount);
-        PhotonNetwork.LoadLevel("Room for " + PhotonNetwork.CurrentRoom.PlayerCount);
+        print("Loading World, PlayerName: " + PhotonNetwork.NickName);
+        PhotonNetwork.LoadLevel("GameRoom");
     }
 }

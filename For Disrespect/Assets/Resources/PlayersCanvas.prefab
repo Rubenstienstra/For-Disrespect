@@ -435,6 +435,5 @@ MonoBehaviour:
   playerMovement: {fileID: 0}
   playerName: {fileID: 8448080709082828273}
   playerHPBar: {fileID: 0}
+  playerGameObject: {fileID: 0}
   parentComponent: {fileID: 3009565862618851787}
-  offsetUI: {x: 0, y: 0, z: 0}
-  crCharacterHeight: 0

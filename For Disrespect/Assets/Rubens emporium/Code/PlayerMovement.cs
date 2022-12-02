@@ -35,7 +35,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public Text playerName;
     public static GameObject thisPlayerPrefab;
     public GameObject UIPrefab;
-    public GameObject crUIPrefab;
 
     public PhotonView photonID;
     public NewCameraWork newCameraWork;
@@ -141,21 +140,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public void Start()
     {
         playerMovement = this;
-        print("ViewID: "+ photonID.ViewID);
-
-        if (photonID.IsMine)
-        {
-            newCameraWork.OnStartFollowing();
-        }
-        if(UIPrefab != null)
-        {
-            crUIPrefab = Instantiate(UIPrefab);
-
-            crUIPrefab.GetComponent<UIPlayer>().playerMovement = this;
-            crUIPrefab.GetComponent<UIPlayer>().playerGameObject = gameObject;
-        }
-        
-
+        print("ViewID: "+ photonID.ViewID); 
     }
     void FixedUpdate()
     {
