@@ -1788,7 +1788,7 @@ MonoBehaviour:
   distanceBetweenGround: 10
   playerAnimations: {fileID: 7408969647452453439}
   playerName: {fileID: 0}
-  UIPrefab: {fileID: 8637672771511546035, guid: fa3760b004b1ecb4d8b8bfd3c72101fc,
+  UIPrefab: {fileID: 8376606879912765633, guid: 14f65d1d2f5a2234a99ff401f483615f,
     type: 3}
   crUIPrefab: {fileID: 0}
   photonID: {fileID: 6927655672160931526}

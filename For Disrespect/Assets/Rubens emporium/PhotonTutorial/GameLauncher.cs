@@ -30,8 +30,8 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public List<string> stringOfAllRooms;
     public RoomInfo listOfRoomInfo;
-
     public GameObject buttonPrefab;
+    public GameObject crButtonPrefab;
 
 
     public GameObject loadingText;
@@ -40,7 +40,6 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public GameObject creatingLobby;
 
     public Transform contentToParent;
-    public RoomListing _roomListing;
 
 
 
@@ -86,14 +85,14 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         foreach (RoomInfo info in roomList)
         {
-            
-            RoomListing roomLister = Instantiate(_roomListing, contentToParent);
+            crButtonPrefab = Instantiate(buttonPrefab, contentToParent);
+            crButtonPrefab.GetComponent<RoomNameButton>().SetRoomInfo(info);
 
-            if(roomLister != null) 
+            if (crButtonPrefab != null)
             {
                 print("Sended Info");
             }
-            else if(roomLister == null)
+            else if(crButtonPrefab == null)
             {
                 print("The're no rooms!");
             }

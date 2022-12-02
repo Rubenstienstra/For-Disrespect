@@ -137,9 +137,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         }
         DontDestroyOnLoad(gameObject);
        
-
-        crUIPrefab.GetComponent<UIPlayer>().playerMovement = this;
-        crUIPrefab.GetComponent<UIPlayer>().playerGameObject = gameObject;
     }
     public void Start()
     {
@@ -153,6 +150,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         if(UIPrefab != null)
         {
             crUIPrefab = Instantiate(UIPrefab);
+
+            crUIPrefab.GetComponent<UIPlayer>().playerMovement = this;
+            crUIPrefab.GetComponent<UIPlayer>().playerGameObject = gameObject;
         }
         
 
@@ -244,7 +244,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             if(rayCastAttackHit.transform != null)
             {
                 print("It has Found: " + rayCastAttackHit);
-                if (rayCastAttackHit.transform.tag == "Player")// WERKT NIET
+                if (rayCastAttackHit.transform.tag == "Player")
                 {
                     rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
                     rayCastAttackHit.transform.gameObject.GetComponent<UIPlayer>().OnHealthChange(hp);

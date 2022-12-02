@@ -36,10 +36,10 @@ public class UIPlayer : MonoBehaviour
     }
     public void Update()
     {
-        if(playerHPBar == null && playerMovement != null)
-        {
-            playerHPBar.value = playerMovement.hp;
-        }
+        //if(playerHPBar == null && playerMovement != null)
+        //{
+        //    playerHPBar.value = playerMovement.hp;
+        //}
     }
     public void SetTarget(PlayerMovement target)
     {
