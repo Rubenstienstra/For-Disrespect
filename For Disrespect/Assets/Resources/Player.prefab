@@ -1,5 +1,38 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &827547506345425076
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6069649220769893707}
+  m_Layer: 0
+  m_Name: DestroyableMultiplayerGameObjects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6069649220769893707
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827547506345425076}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1960451429685669107}
+  - {fileID: 144011776485002497}
+  m_Father: {fileID: 1960451430545438947}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1960451429685669110
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,7 +66,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1960451430545438947}
+  m_Father: {fileID: 6069649220769893707}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
 --- !u!20 &1960451429685669108
@@ -299,8 +332,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1960451429685669107}
-  - {fileID: 144011776485002497}
+  - {fileID: 6069649220769893707}
   - {fileID: 2254800012314676182}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -453,6 +485,7 @@ MonoBehaviour:
   movementWASD: 00000000000000000000000000000000
   isTotalWalkingWASD: 0
   holdingShift: 0
+  playerPos: {x: 0, y: 0, z: 0}
   rayCastDistanceAttack: 1
   isAttacking: 0
   inputAttack: 0
@@ -467,6 +500,7 @@ MonoBehaviour:
   playerName: {fileID: 4041232802991530371, guid: 44b21033be6d1cf498ea730973c0c140,
     type: 3}
   UIPrefab: {fileID: 3574377282495681092}
+  multiplayerDeletable: {fileID: 827547506345425076}
   photonID: {fileID: 1960451430545438946}
   newCameraWork: {fileID: 0}
   characterControl: {fileID: 2037711746090742456}
@@ -607,13 +641,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7515037298378492850}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10.89}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7676461494764432791}
-  m_Father: {fileID: 1960451430545438947}
+  m_Father: {fileID: 6069649220769893707}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2494147705629164837
@@ -696,7 +730,7 @@ PrefabInstance:
     - target: {fileID: 5392192456925280979, guid: 75d2a8d6a68239444826319d16ae2e80,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5392192456925280979, guid: 75d2a8d6a68239444826319d16ae2e80,
         type: 3}

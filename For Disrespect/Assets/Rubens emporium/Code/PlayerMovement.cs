@@ -37,6 +37,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public static GameObject thisPlayerPrefab;
     public GameObject UIPrefab;
 
+    public GameObject multiplayerDeletable;
+    public Vector3 playerOldPos;
+    public Vector3 playerToGoPos;
+
     public PhotonView photonID;
     public NewCameraWork newCameraWork;
     public CharacterController characterControl;
@@ -45,12 +49,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (stream.IsWriting)
         {
+            stream.SendNext(transform.position); //playerToGoPos = Vector3.Lerp(transform.position, playerOldPos, 0.1f);
             stream.SendNext(isAttacking);
             stream.SendNext(hp);
             print("sended: ");
         }
-        else
+        else if(stream.IsReading)
         {
+            this.playerToGoPos = (Vector3)stream.ReceiveNext();
             this.isAttacking = (bool)stream.ReceiveNext();
             this.hp = (float)stream.ReceiveNext();
             print("recieved: ");
@@ -134,6 +140,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         if (photonID.IsMine)
         {
             thisPlayerPrefab = gameObject;
+        }
+        else
+        {
+            for (int i = 0; i < multiplayerDeletable.transform.childCount; i++)
+            {
+                print(multiplayerDeletable.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+               Destroy(multiplayerDeletable.transform.GetChild(i).gameObject);
+            }
         }
         DontDestroyOnLoad(gameObject);
        
