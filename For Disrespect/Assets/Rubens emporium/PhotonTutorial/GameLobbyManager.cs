@@ -24,7 +24,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             {
                 print("Spawned in a player " + Application.loadedLevelName);
 
-                PhotonNetwork.Instantiate(this.playerSpawnPrefab.name, spawnLocation, Quaternion.identity, 0);
+                PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocation, Quaternion.identity, 0);
             }
             
         }

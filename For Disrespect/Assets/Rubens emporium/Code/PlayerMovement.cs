@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public float distanceBetweenGround;
 
     public Animator playerAnimations;
+    public bool isRobot;
 
     public Text playerName;
     public static GameObject thisPlayerPrefab;
@@ -144,7 +145,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     void FixedUpdate()
     {
-        if (photonID.IsMine)// && !PhotonNetwork.IsConnected
+        if ( 1 == 1 )// && !PhotonNetwork.IsConnected
         {
             
             if (hp <= 0)
@@ -152,23 +153,28 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 GameLobbyManager.gameLobbyInfo.LeaveRoom();
             }
 
-            //ROBOT MOVEMENT
-            if(movementWASD[2] > 0 || movementWASD[0] > 0 || playerAnimations.GetFloat("Speed") > 0.001f)
+            if (isRobot)
             {
-                playerAnimations.SetFloat("Speed", -movementWASD[2] + movementWASD[0], 0.25f, Time.deltaTime);
-            }
-            else if(playerAnimations.GetFloat("Speed") < 0.002f && movementWASD[2] == 0 && movementWASD[0] == 0)
-            {
-                playerAnimations.SetFloat("Speed", 0);
-            }
-            
-            if (movementWASD[1] > 0 || movementWASD[3] > 0 || playerAnimations.GetFloat("Direction") > 0.001)
-            {
-                playerAnimations.SetFloat("Direction", -movementWASD[1] + movementWASD[3], 0.25f, Time.deltaTime);
-            }
-            else if (playerAnimations.GetFloat("Direction") < 0.002f && movementWASD[1] == 0 && movementWASD[3] == 0)
-            {
-                playerAnimations.SetFloat("Direction", 0);
+                //ROBOT MOVEMENT
+                if (movementWASD[2] > 0 || movementWASD[0] > 0 || playerAnimations.GetFloat("Speed") > 0.001f)
+                {
+                    playerAnimations.SetFloat("Speed", -movementWASD[2] + movementWASD[0], 0.25f, Time.deltaTime);
+                }
+                else if (playerAnimations.GetFloat("Speed") < 0.002f && movementWASD[2] == 0 && movementWASD[0] == 0)
+                {
+                    playerAnimations.SetFloat("Speed", 0);
+                }
+
+                if (movementWASD[1] > 0 || movementWASD[3] > 0 || playerAnimations.GetFloat("Direction") > 0.001)
+                {
+                    playerAnimations.SetFloat("Direction", -movementWASD[1] + movementWASD[3], 0.25f, Time.deltaTime);
+                }
+                else if (playerAnimations.GetFloat("Direction") < 0.002f && movementWASD[1] == 0 && movementWASD[3] == 0)
+                {
+                    playerAnimations.SetFloat("Direction", 0);
+                }
+
+                return;
             }
 
             //NOMRAL MOVEMENT
@@ -178,23 +184,23 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 characterControl.Move(new Vector3(0,-1,0) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
             }
-            //if (hitSlope.distance >= 0.001f)
-            //{
-            //    characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            //}
-            //else
-            //{
-            //    characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            //}
+            if (hitSlope.distance >= 0.001f)
+            {
+                characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+            }
+            else
+            {
+                characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+            }
 
-            //for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
-            //{
-            //    if(movementWASD[i] > 0)
-            //    {
-            //        isTotalWalkingWASD++;
-            //    }
-            //}
-            //if(isTotalWalkingWASD > 0)
+            for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
+            {
+                if (movementWASD[i] > 0)
+                {
+                    isTotalWalkingWASD++;
+                }
+            }
+            //if (isTotalWalkingWASD > 0)
             //{
             //    playerAnimations.SetFloat("Speed", 1);
             //}
@@ -202,7 +208,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             //{
             //    playerAnimations.SetFloat("Speed", 0);
             //}
-            //isTotalWalkingWASD = 0; //resets the number
+            isTotalWalkingWASD = 0; //resets the number
         }
     }
     //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt

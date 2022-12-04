@@ -24,6 +24,8 @@ public class RoomListing : MonoBehaviourPunCallbacks
         print("OnRoomListUpdate Is Being Checked!");
         foreach (RoomInfo info in roomList)
         {
+            print("OnRoomListUpdate Found A roomlist");
+
             RoomListing listing = Instantiate(gameLauncher.roomListing, gameLauncher.contentToParent);
             if (listing != null)
                 listing.SetRoomInfo(info);

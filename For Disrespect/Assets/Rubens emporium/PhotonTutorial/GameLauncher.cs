@@ -12,7 +12,8 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public string gameVersion = "1";
     public byte maxPlayersInRoom = 4;
-    public bool isConnected;
+    public bool isConnectedToMaster;
+    public bool isConnectedToLobby;
 
     public string crSelectedRoomName;
     public string createRoomName;
@@ -41,6 +42,10 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public Transform contentToParent;
     public RoomListing roomListing;
 
+    public string crServerAdress;
+    public int crPort;
+    public string crAppID;
+
 
     #region MonoBehaviour CallBacks
 
@@ -63,17 +68,21 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public void Connect()
     {
-        loadingText.SetActive(true);
-        mainMenuWindow.SetActive(false);
+        PhotonNetwork.GameVersion = gameVersion;
+
+        crServerAdress = PhotonNetwork.ServerAddress;
+        crPort = PhotonNetwork.ServerPortOverrides.MasterServerPort;
+        crAppID = PhotonNetwork.AppVersion;
 
         if (!PhotonNetwork.IsConnected)
         {
-            isConnected = PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = gameVersion;
+            loadingText.SetActive(true);
+            mainMenuWindow.SetActive(false);
+            PhotonNetwork.ConnectUsingSettings();
         }
-        if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
+        if (!PhotonNetwork.IsMasterClient)
         {
-            //PhotonNetwork.JoinRandomRoom();
+            PhotonNetwork.ConnectToMaster(crServerAdress, crPort, crAppID);
         }
     }
     public void JoinRoomButton()
@@ -87,32 +96,11 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         PhotonNetwork.CreateRoom(createRoomName,new RoomOptions {IsVisible = createPrivacySettings, MaxPlayers = createMaxTotalPlayers}, TypedLobby.Default);
     }
-    //public override void OnRoomListUpdate(List<RoomInfo> roomList)
-    //{
-    //    print("OnRoomListUpdate Is Being Checked!");
-    //    foreach (RoomInfo info in roomList)
-    //    {
-    //        RoomListing listing = Instantiate(roomListing, contentToParent);
-    //        if (listing != null)
-    //            listing.SetRoomInfo(info);
-
-
-
-    //        crButtonPrefab = Instantiate(buttonPrefab, contentToParent);
-    //        crButtonPrefab.GetComponent<RoomNameButton>().SetRoomInfo(info);
-
-    //        if (crButtonPrefab != null)
-    //        {
-    //            print("Sended Info");
-    //        }
-    //        else if (crButtonPrefab == null)
-    //        {
-    //            print("The're no rooms!");
-    //        }
-
-    //    }
-    //    base.OnRoomListUpdate(roomList);
-    //}
+    public void LeaveCreatingRoomButton()
+    {
+        creatingLobby.SetActive(false);
+        choosingLobbyOrCreate.SetActive(true);
+    }
 
     #endregion
 
@@ -120,18 +108,27 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public override void OnConnectedToMaster()
     {
+        isConnectedToMaster = true;
         print("OnConnectedToMaster was activated");
-        loadingText.SetActive(false);
-        choosingLobbyOrCreate.SetActive(true);
 
         PhotonNetwork.JoinLobby();
 
-        if (isConnected)
-        {
-            isConnected = false;
-        }
-
         base.OnConnectedToMaster();
+    }
+    public override void OnJoinedLobby()
+    {
+        isConnectedToLobby = true;
+        
+        if(isConnectedToLobby && isConnectedToMaster)
+        {
+            loadingText.SetActive(false);
+            choosingLobbyOrCreate.SetActive(true);
+        }
+        else
+        {
+            Connect();
+        }
+        base.OnJoinedLobby();
     }
     public override void OnJoinedRoom()
     {
@@ -151,7 +148,6 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         print("OnDisconnected was activated: " + cause);
-        isConnected = false;
         if("Launcher" == SceneManager.GetActiveScene().name)
         {
             if(loadingText != null && mainMenuWindow != null)
@@ -175,14 +171,14 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
         base.OnCreateRoomFailed(returnCode, message);
     }
 
-    public override void OnJoinRandomFailed(short returnCode, string message)
-    {
-        print("OnJoinRandomFailed was activated: " + returnCode + message);
+    //public override void OnJoinRandomFailed(short returnCode, string message)
+    //{
+    //    print("OnJoinRandomFailed was activated: " + returnCode + message);
 
-        //creates new room after he couldn't join one.
-        PhotonNetwork.CreateRoom("GameRoom", new RoomOptions { MaxPlayers = maxPlayersInRoom });
-        base.OnJoinRandomFailed(returnCode, message);
-    }
+    //    //creates new room after he couldn't join one.
+    //    PhotonNetwork.CreateRoom("GameRoom", new RoomOptions { MaxPlayers = maxPlayersInRoom });
+    //    base.OnJoinRandomFailed(returnCode, message);
+    //}
 
     #endregion
 
