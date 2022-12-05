@@ -10,7 +10,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 {
     public static GameLobbyManager gameLobbyInfo;
 
-    public Text playerNameText;
     public GameObject playerSpawnPrefab;
     public Vector3 spawnLocation;
 
@@ -18,10 +17,19 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void Start()
     {
         gameLobbyInfo = this;
-        playerNameText.text = PhotonNetwork.NickName;
 
-        PhotonNetwork.Instantiate(this.playerSpawnPrefab.name, spawnLocation, Quaternion.identity, 0);
+        if (PhotonNetwork.IsConnected)
+        {
+            if (PlayerMovement.thisPlayerPrefab == null)
+            {
+                print("Spawned in a player " + Application.loadedLevelName);
+
+                PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocation, Quaternion.identity, 0);
+            }
+            
+        }
     }
+    
 
     #region Automatic voids
     public override void OnLeftRoom()
@@ -34,22 +42,11 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(newPlayer.NickName + " has joined");
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            print("OnPlayerEnteredRoom IsMasterClient:" + PhotonNetwork.IsMasterClient);
-            LoadArena();
-        }
-
         base.OnPlayerEnteredRoom(newPlayer);
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         print(otherPlayer.NickName + " has leaved");
-        if (PhotonNetwork.IsMasterClient)
-        {
-            print("OnPlayerEnteredRoom IsMasterClient:" + PhotonNetwork.IsMasterClient);
-            LoadArena();
-        }
 
         base.OnPlayerLeftRoom(otherPlayer);
     }
@@ -60,7 +57,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.LeaveRoom();
+            return;
         }
+        SceneManager.LoadScene("Launcher");
     }
 
     public void LoadArena()
@@ -70,7 +69,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             print("Player is not MasterClient");
             return;
         }
-        print("Loading Level: " + PhotonNetwork.CurrentRoom.PlayerCount);
-        PhotonNetwork.LoadLevel("Room for " + PhotonNetwork.CurrentRoom.PlayerCount);
+        print("Loading World, PlayerName: " + PhotonNetwork.NickName);
+        PhotonNetwork.LoadLevel("GameRoom");
     }
 }

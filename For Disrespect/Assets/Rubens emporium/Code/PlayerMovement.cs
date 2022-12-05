@@ -4,9 +4,13 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 {
+    public static PlayerMovement playerMovement;
+
     public int[] movementWASD;
     public int isTotalWalkingWASD;
     public bool holdingShift;
@@ -27,6 +31,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public float distanceBetweenGround;
 
     public Animator playerAnimations;
+    public bool isRobot;
+
+    public Text playerName;
+    public static GameObject thisPlayerPrefab;
+    public GameObject UIPrefab;
+
+    public GameObject multiplayerDeletable;
+    public Vector3 playerOldPos;
+    public Vector3 playerToGoPos;
 
     public PhotonView photonID;
     public NewCameraWork newCameraWork;
@@ -36,13 +49,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (stream.IsWriting)
         {
+            stream.SendNext(transform.position); //playerToGoPos = Vector3.Lerp(transform.position, playerOldPos, 0.1f);
             stream.SendNext(isAttacking);
             stream.SendNext(hp);
             print("sended: ");
         }
-        else
+        else if(stream.IsReading)
         {
-           this.isAttacking = (bool)stream.ReceiveNext();
+            this.playerToGoPos = (Vector3)stream.ReceiveNext();
+            this.isAttacking = (bool)stream.ReceiveNext();
             this.hp = (float)stream.ReceiveNext();
             print("recieved: ");
         }
@@ -120,43 +135,59 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         }
     }
 
-    public void Start()
+    public void Awake()
     {
-        print("ViewID: "+ photonID.ViewID);
-
         if (photonID.IsMine)
         {
-            newCameraWork.OnStartFollowing();
+            thisPlayerPrefab = gameObject;
         }
-        
+        else
+        {
+            for (int i = 0; i < multiplayerDeletable.transform.childCount; i++)
+            {
+                print(multiplayerDeletable.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+               Destroy(multiplayerDeletable.transform.GetChild(i).gameObject);
+            }
+        }
+        DontDestroyOnLoad(gameObject);
+       
+    }
+    public void Start()
+    {
+        playerMovement = this;
+        print("ViewID: "+ photonID.ViewID); 
     }
     void FixedUpdate()
     {
         if (photonID.IsMine)// && !PhotonNetwork.IsConnected
         {
-            
             if (hp <= 0)
             {
                 GameLobbyManager.gameLobbyInfo.LeaveRoom();
             }
 
-            //ROBOT MOVEMENT
-            if(movementWASD[2] > 0 || movementWASD[0] > 0 || playerAnimations.GetFloat("Speed") > 0.001f)
+            if (isRobot)
             {
-                playerAnimations.SetFloat("Speed", -movementWASD[2] + movementWASD[0], 0.25f, Time.deltaTime);
-            }
-            else if(playerAnimations.GetFloat("Speed") < 0.002f && movementWASD[2] == 0 && movementWASD[0] == 0)
-            {
-                playerAnimations.SetFloat("Speed", 0);
-            }
-            
-            if (movementWASD[1] > 0 || movementWASD[3] > 0 || playerAnimations.GetFloat("Direction") > 0.001)
-            {
-                playerAnimations.SetFloat("Direction", -movementWASD[1] + movementWASD[3], 0.25f, Time.deltaTime);
-            }
-            else if (playerAnimations.GetFloat("Direction") < 0.002f && movementWASD[1] == 0 && movementWASD[3] == 0)
-            {
-                playerAnimations.SetFloat("Direction", 0);
+                //ROBOT MOVEMENT
+                if (movementWASD[2] > 0 || movementWASD[0] > 0 || playerAnimations.GetFloat("Speed") > 0.001f)
+                {
+                    playerAnimations.SetFloat("Speed", -movementWASD[2] + movementWASD[0], 0.25f, Time.deltaTime);
+                }
+                else if (playerAnimations.GetFloat("Speed") < 0.002f && movementWASD[2] == 0 && movementWASD[0] == 0)
+                {
+                    playerAnimations.SetFloat("Speed", 0);
+                }
+
+                if (movementWASD[1] > 0 || movementWASD[3] > 0 || playerAnimations.GetFloat("Direction") > 0.001)
+                {
+                    playerAnimations.SetFloat("Direction", -movementWASD[1] + movementWASD[3], 0.25f, Time.deltaTime);
+                }
+                else if (playerAnimations.GetFloat("Direction") < 0.002f && movementWASD[1] == 0 && movementWASD[3] == 0)
+                {
+                    playerAnimations.SetFloat("Direction", 0);
+                }
+
+                return;
             }
 
             //NOMRAL MOVEMENT
@@ -166,32 +197,24 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 characterControl.Move(new Vector3(0,-1,0) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
             }
-            //if (hitSlope.distance >= 0.001f)
-            //{
-            //    characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            //}
-            //else
-            //{
-            //    characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            //}
+            if (hitSlope.distance >= 0.001f)
+            {
+                characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+            }
+            else
+            {
+                characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+            }
 
-            //for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
-            //{
-            //    if(movementWASD[i] > 0)
-            //    {
-            //        isTotalWalkingWASD++;
-            //    }
-            //}
-            //if(isTotalWalkingWASD > 0)
-            //{
-            //    playerAnimations.SetFloat("Speed", 1);
-            //}
-            //else
-            //{
-            //    playerAnimations.SetFloat("Speed", 0);
-            //}
-            //isTotalWalkingWASD = 0; //resets the number
-        }
+            for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
+            {
+                if (movementWASD[i] > 0)
+                {
+                    isTotalWalkingWASD++;
+                }
+            }
+            isTotalWalkingWASD = 0; //resets the number
+        } 
     }
     //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
     //endAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, lookAtAngle, ref velocity, timeToTurn); // hiermee berekent je de angle van de speler naar links of rechts toe via de camera
@@ -214,11 +237,30 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         if (photonID.IsMine)
         {
             Physics.Raycast(transform.position, Vector3.down, out rayCastAttackHit, distanceBetweenGround);
-            //if (rayCastAttackHit.collider.gameObject.tag == "Player") WERKT NIET???
-            //{
-            //    rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
-            //}
+            if(rayCastAttackHit.transform != null)
+            {
+                print("It has Found: " + rayCastAttackHit);
+                if (rayCastAttackHit.transform.tag == "Player")
+                {
+                    rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
+                    rayCastAttackHit.transform.gameObject.GetComponent<UIPlayer>().OnHealthChange(hp);
+                }
+            } 
             isAttacking = false;
         }
+    }
+
+    public void LeaveRoom()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.LeaveRoom();
+            return;
+        }    
+        SceneManager.LoadScene("Launcher");
+    }
+    void OnLevelWasLoaded(int level)
+    {
+        print(level);
     }
 }

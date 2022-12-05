@@ -8,12 +8,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/OutdoorsScene.unity
     guid: 8124e5870f4fd4c779e7a5f994e84ad1
-  - enabled: 0
-    path: Assets/Rubens emporium/PhotonTutorial/GameRoom.unity
-    guid: 9eab0b9382c6577459446197210de93a
   - enabled: 1
     path: Assets/Rubens emporium/PhotonTutorial/Launcher.Unity
     guid: 512cbf022efe417489c8b41ee8be28f4
+  - enabled: 1
+    path: Assets/Rubens emporium/PhotonTutorial/GameRoom.unity
+    guid: 9eab0b9382c6577459446197210de93a
   - enabled: 1
     path: Assets/Rubens emporium/PhotonTutorial/Room For 1.unity
     guid: 18637af780ff8e84b908824fcd107f67
