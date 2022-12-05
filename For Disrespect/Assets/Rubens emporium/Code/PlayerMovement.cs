@@ -159,9 +159,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     void FixedUpdate()
     {
-        if ( 1 == 1 )// && !PhotonNetwork.IsConnected
+        if (photonID.IsMine)// && !PhotonNetwork.IsConnected
         {
-            
             if (hp <= 0)
             {
                 GameLobbyManager.gameLobbyInfo.LeaveRoom();
@@ -214,16 +213,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                     isTotalWalkingWASD++;
                 }
             }
-            //if (isTotalWalkingWASD > 0)
-            //{
-            //    playerAnimations.SetFloat("Speed", 1);
-            //}
-            //else
-            //{
-            //    playerAnimations.SetFloat("Speed", 0);
-            //}
             isTotalWalkingWASD = 0; //resets the number
-        }
+        } 
     }
     //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
     //endAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, lookAtAngle, ref velocity, timeToTurn); // hiermee berekent je de angle van de speler naar links of rechts toe via de camera
