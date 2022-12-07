@@ -653,9 +653,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 3
+  - m_ConditionMode: 4
     m_ConditionEvent: HSelectAxis
-    m_EventTreshold: -1
+    m_EventTreshold: 0.9
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -7874844152015902833}
   m_Solo: 0
@@ -1415,7 +1415,7 @@ BlendTree:
   m_Name: Blend Tree
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 2490391839775344965, guid: 49a7f898e65020844bc487d1c2846298,
+    m_Motion: {fileID: -863855742320619293, guid: 49a7f898e65020844bc487d1c2846298,
       type: 3}
     m_Threshold: -1
     m_Position: {x: 1, y: 0}
@@ -1424,7 +1424,7 @@ BlendTree:
     m_DirectBlendParameter: Vertical
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -6503847180705520382, guid: 49a7f898e65020844bc487d1c2846298,
+    m_Motion: {fileID: 2857334252779481000, guid: 49a7f898e65020844bc487d1c2846298,
       type: 3}
     m_Threshold: 0
     m_Position: {x: -1, y: 0}
@@ -1433,7 +1433,7 @@ BlendTree:
     m_DirectBlendParameter: Vertical
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 8663992554448000803, guid: 49a7f898e65020844bc487d1c2846298,
+    m_Motion: {fileID: -3770584020860478640, guid: 49a7f898e65020844bc487d1c2846298,
       type: 3}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
@@ -1807,7 +1807,7 @@ AnimatorController:
   - serializedVersion: 5
     m_Name: CombatSelect
     m_StateMachine: {fileID: -792252286152587662}
-    m_Mask: {fileID: 31900000, guid: 3665fd2aec216784aa58c07c1a040e58, type: 2}
+    m_Mask: {fileID: 31900000, guid: 97c1457243ed78545b0b543a76273acd, type: 2}
     m_Motions: []
     m_Behaviours: []
     m_BlendingMode: 0
@@ -2050,7 +2050,7 @@ BlendTree:
       type: 3}
     m_Threshold: 1
     m_Position: {x: 1, y: 0}
-    m_TimeScale: 1.5
+    m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Vertical
     m_Mirror: 0
@@ -2077,7 +2077,7 @@ BlendTree:
       type: 3}
     m_Threshold: 1
     m_Position: {x: 0.5, y: 0}
-    m_TimeScale: 1
+    m_TimeScale: 0.5
     m_CycleOffset: 0
     m_DirectBlendParameter: Vertical
     m_Mirror: 0
@@ -2983,9 +2983,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Combat
     m_EventTreshold: 0
-  - m_ConditionMode: 4
+  - m_ConditionMode: 3
     m_ConditionEvent: HSelectAxis
-    m_EventTreshold: -1
+    m_EventTreshold: 0.9
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2606941575442570652}
   m_Solo: 0
@@ -3008,9 +3008,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 4
+  - m_ConditionMode: 3
     m_ConditionEvent: HSelectAxis
-    m_EventTreshold: -1
+    m_EventTreshold: 0.9
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2606941575442570652}
   m_Solo: 0
