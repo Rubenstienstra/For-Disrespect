@@ -9,7 +9,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: MainMenu
+    m_ConditionEvent: Main Menu
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6179779642923509985}
@@ -34,7 +34,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: MainMenu
+    m_ConditionEvent: Main Menu
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3287949379246605425}
@@ -111,7 +111,7 @@ AnimatorController:
   m_Name: MainMenu
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: MainMenu
+  - m_Name: Main Menu
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0

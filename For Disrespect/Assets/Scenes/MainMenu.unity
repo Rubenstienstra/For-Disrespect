@@ -1115,7 +1115,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -4224,7 +4224,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -7730,7 +7730,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -9068,7 +9068,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -12469,7 +12469,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -13712,6 +13712,18 @@ MonoBehaviour:
   join: {fileID: 1637180197}
   beforeCombatCam: {fileID: 1823688469}
   beforeCombatUi: {fileID: 324547685}
+  obMein: {fileID: 295930154}
+  obSettings: {fileID: 1755795141}
+  obMultiplayer: {fileID: 1617525355}
+  obCreate: {fileID: 402736400}
+  obJoin: {fileID: 1637180195}
+  obBeforeCombatUi: {fileID: 324547683}
+  uiMainMenu: 1
+  uiSettings: 0
+  uiMultiplayer: 0
+  uiCreate: 0
+  uiJoin: 0
+  uiBeforeComabtUi: 0
 --- !u!1 &1635407652
 GameObject:
   m_ObjectHideFlags: 0
@@ -16845,7 +16857,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
+    rgba: 2164260863
   m_fontColor: {r: 1, g: 1, b: 1, a: 0.5}
   m_enableVertexGradient: 0
   m_colorMode: 3
