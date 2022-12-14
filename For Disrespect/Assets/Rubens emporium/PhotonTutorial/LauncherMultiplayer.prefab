@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3233908200779319905
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3233908200779319907}
+  - component: {fileID: 3233908200779319906}
+  - component: {fileID: 3233908200779319908}
+  m_Layer: 0
+  m_Name: LauncherMultiplayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3233908200779319907
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3233908200779319905}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3233908200779319906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3233908200779319905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77c2c2e34f9894d4ab90ffd42a21fcff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameVersion: 1
+  maxPlayersInRoom: 4
+  isConnectedToMaster: 0
+  isConnectedToLobby: 0
+  crSelectedRoomName: 
+  createRoomName: 
+  roomName: {fileID: 0}
+  displayingRoomNameInput: {fileID: 0}
+  createMaxTotalPlayers: 2
+  maxTotalPlayers: {fileID: 0}
+  createPrivacySettings: 0
+  privacySettings: {fileID: 0}
+  stringOfAllRooms: []
+  buttonPrefab: {fileID: 8254119407552573839, guid: c882e2d45280e7f4f8a91ca6e770eec6,
+    type: 3}
+  crButtonPrefab: {fileID: 0}
+  loadingText: {fileID: 0}
+  mainMenuWindow: {fileID: 0}
+  choosingLobbyOrCreate: {fileID: 0}
+  creatingLobby: {fileID: 0}
+  contentToParent: {fileID: 0}
+  roomListing: {fileID: 0}
+  crServerAdress: 
+  crPort: 0
+  crAppID: 
+--- !u!114 &3233908200779319908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3233908200779319905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 750b9eba8a9bf674e997da6d33682772, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  crPlayerName: Player
+  defaultSavedName: 
+  playerNameInput: {fileID: 0}
+  playerTextProNameInput: {fileID: 0}
+  gameLobbyManager: {fileID: 0}
+  gameLauncher: {fileID: 3233908200779319906}

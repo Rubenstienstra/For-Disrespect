@@ -10,6 +10,7 @@
 
 using UnityEngine;
 
+//namespace Com.MyCompany.MyGame
 namespace Photon.Pun.Demo.PunBasics
 {
 	/// <summary>
