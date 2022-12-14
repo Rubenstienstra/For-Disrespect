@@ -32,14 +32,14 @@ public class RoomListing : MonoBehaviourPunCallbacks
 
 
 
-            gameLauncher.crButtonPrefab = Instantiate(gameLauncher.buttonPrefab, gameLauncher.contentToParent);
-            gameLauncher.crButtonPrefab.GetComponent<RoomNameButton>().SetRoomInfo(info);
+            gameLauncher.crInstantiatedButtonPrefab = Instantiate(gameLauncher.buttonPrefab, gameLauncher.contentToParent);
+            gameLauncher.crInstantiatedButtonPrefab.GetComponent<RoomNameButton>().SetRoomInfo(info);
 
-            if (gameLauncher.crButtonPrefab != null)
+            if (gameLauncher.crInstantiatedButtonPrefab != null)
             {
                 print("Sended Info");
             }
-            else if (gameLauncher.crButtonPrefab == null)
+            else if (gameLauncher.crInstantiatedButtonPrefab == null)
             {
                 print("The're no rooms!");
             }

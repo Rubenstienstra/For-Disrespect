@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
 {
@@ -23,6 +24,7 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public byte createMaxTotalPlayers;
     public InputField maxTotalPlayers;
 
+
     public bool createPrivacySettings;
     public Toggle privacySettings;
 
@@ -31,7 +33,7 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public List<string> stringOfAllRooms;
     public RoomInfo listOfRoomInfo;
     public GameObject buttonPrefab;
-    public GameObject crButtonPrefab;
+    public GameObject crInstantiatedButtonPrefab;
 
 
     public GameObject loadingText;
@@ -76,8 +78,11 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
         if(PhotonNetwork.IsConnected)
         {
-            loadingText.SetActive(true);
             mainMenuWindow.SetActive(false);
+            choosingLobbyOrCreate.SetActive(true);
+            print("Player connection is: " + PhotonNetwork.IsConnected);
+
+            return;
         }
         else if (!PhotonNetwork.IsConnected)
         {

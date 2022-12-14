@@ -82,8 +82,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 750b9eba8a9bf674e997da6d33682772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crPlayerName: PlayerName
+  crPlayerName: Player
   defaultSavedName: 
   playerNameInput: {fileID: 0}
+  playerTextProNameInput: {fileID: 0}
   gameLobbyManager: {fileID: 0}
   gameLauncher: {fileID: 3233908200779319906}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using TMPro;
 using Photon.Realtime;
 
 //[RequireComponent(typeof(InputField))]
@@ -11,6 +12,7 @@ public class PlayerNameField : MonoBehaviour
     public string crPlayerName;
     public string defaultSavedName;
     public InputField playerNameInput;
+    public TMP_InputField playerTextProNameInput;
 
     public GameLobbyManager gameLobbyManager;
 
@@ -19,12 +21,17 @@ public class PlayerNameField : MonoBehaviour
     //Zorgt er voor dat de default name gedisplayed word
     public void Start()
     {
-        if (playerNameInput != null)
+        if (PlayerPrefs.HasKey(crPlayerName)) // hiermee zie je dierect je gebruikers naam wanneer je inlogt.
         {
-            if (PlayerPrefs.HasKey(crPlayerName))
+            if (playerNameInput != null)
             {
                 defaultSavedName = PlayerPrefs.GetString(crPlayerName);
                 playerNameInput.text = defaultSavedName;
+            }
+            else if (playerTextProNameInput != null)
+            {
+                defaultSavedName = PlayerPrefs.GetString(crPlayerName);
+                playerTextProNameInput.text = defaultSavedName;
             }
         }
         PhotonNetwork.NickName = defaultSavedName;
