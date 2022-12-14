@@ -46,13 +46,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameVersion: 1
-  maxPlayersInRoom: 4
+  maxPlayersInRoom: 2
   isConnectedToMaster: 0
   isConnectedToLobby: 0
   crSelectedRoomName: 
   createRoomName: 
   roomName: {fileID: 0}
   displayingRoomNameInput: {fileID: 0}
+  sceneName: Lobby
   createMaxTotalPlayers: 2
   maxTotalPlayers: {fileID: 0}
   createPrivacySettings: 0
@@ -60,7 +61,7 @@ MonoBehaviour:
   stringOfAllRooms: []
   buttonPrefab: {fileID: 8254119407552573839, guid: c882e2d45280e7f4f8a91ca6e770eec6,
     type: 3}
-  crButtonPrefab: {fileID: 0}
+  crInstantiatedButtonPrefab: {fileID: 0}
   loadingText: {fileID: 0}
   mainMenuWindow: {fileID: 0}
   choosingLobbyOrCreate: {fileID: 0}

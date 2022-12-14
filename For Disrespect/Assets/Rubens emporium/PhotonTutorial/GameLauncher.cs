@@ -12,14 +12,15 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     //GameLauncher is voor wanneer je in de game wil.
 
     public string gameVersion = "1";
-    public byte maxPlayersInRoom = 4;
+    public byte maxPlayersInRoom = 2;
     public bool isConnectedToMaster;
     public bool isConnectedToLobby;
 
     public string crSelectedRoomName;
     public string createRoomName;
     public InputField roomName;
-    public InputField displayingRoomNameInput;
+    public TMP_InputField displayingRoomNameInput;
+    public string sceneName = "Lobby";
 
     public byte createMaxTotalPlayers;
     public InputField maxTotalPlayers;
@@ -39,7 +40,7 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public GameObject loadingText;
     public GameObject mainMenuWindow;
     public GameObject choosingLobbyOrCreate;
-    public GameObject creatingLobby;
+    public GameObject creatingLobby; // is in different scene
 
     public Transform contentToParent;
     public RoomListing roomListing;
@@ -101,9 +102,10 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
     public void JoinRoomButton()
     {
-        if(crSelectedRoomName != "")
+        PhotonNetwork.JoinRoom(crSelectedRoomName);
+        if (crSelectedRoomName != "")
         {
-            PhotonNetwork.JoinRoom(crSelectedRoomName);
+            
         }
     }
     public void CreateRoomButton()
@@ -150,19 +152,17 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
         loadingText.SetActive(false);
         mainMenuWindow.SetActive(true);
 
-        print("Loading GameRoom");
+        print("Loading "+ sceneName);
      
-        if (PhotonNetwork.CurrentRoom.PlayerCount <= maxPlayersInRoom)
-        {
-            PhotonNetwork.LoadLevel("GameRoom");
-        }
+        PhotonNetwork.LoadLevel(sceneName);
+        
         base.OnJoinedRoom();
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         print("OnDisconnected was activated: " + cause);
-        if("Launcher" == SceneManager.GetActiveScene().name)
+        if("MainMenu" == SceneManager.GetActiveScene().name)
         {
             if(loadingText != null && mainMenuWindow != null)
             {
