@@ -74,7 +74,12 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
         crPort = PhotonNetwork.ServerPortOverrides.MasterServerPort;
         crAppID = PhotonNetwork.AppVersion;
 
-        if (!PhotonNetwork.IsConnected)
+        if(PhotonNetwork.IsConnected)
+        {
+            loadingText.SetActive(true);
+            mainMenuWindow.SetActive(false);
+        }
+        else if (!PhotonNetwork.IsConnected)
         {
             loadingText.SetActive(true);
             mainMenuWindow.SetActive(false);
@@ -84,6 +89,10 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
         {
             PhotonNetwork.ConnectToMaster(crServerAdress, crPort, crAppID);
         }
+    }
+    public void Disconnect()
+    {
+        PhotonNetwork.Disconnect();
     }
     public void JoinRoomButton()
     {
