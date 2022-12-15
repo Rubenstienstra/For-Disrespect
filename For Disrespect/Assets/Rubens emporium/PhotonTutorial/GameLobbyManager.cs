@@ -14,28 +14,27 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
     public GameObject playerSpawnPrefab;
     public GameObject crInstantiatedPlayerPrefab;
+    public Vector3[] spawnLocations;
     public TMP_Text playerNameText;
-    public Vector3 spawnLocation;
 
+    public bool toggleEnemyOrFriendly;
+    public GameObject enemyParentForPlayer;
+    public GameObject friendlyParentForPlayer;
+    
     public int minimumRequiredPlayers;
     public bool isHost;
 
     public GameObject hostUI;
     public GameObject guestUI;
 
-    // Game lobby manager is Wanneer je in de game zit
+    // Game lobby manager is Wanneer je in de wacht ruimte zit zit
     public void Start()
     {
         gameLobbyInfo = this;
 
         if (PhotonNetwork.IsConnected)
         {
-            if (PlayerMovement.thisPlayerPrefab == null)
-            {
-                //print("Spawned a player in: " + Application.loadedLevelName);
-                //PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocation, Quaternion.identity, 0);
-            }
-            if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+            if(PhotonNetwork.CurrentRoom.PlayerCount == 0)
             {
                 isHost = true;
                 hostUI.SetActive(true);
@@ -43,7 +42,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             else
             {
                 guestUI.SetActive(true);
-            } 
+            }
+            SpawnPlayer();
         }
     }
     
@@ -58,7 +58,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         print(newPlayer.NickName + " has joined. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
-        SpawnPlayer();
+        
 
         if (PhotonNetwork.CurrentRoom.PlayerCount >= minimumRequiredPlayers)
         {
@@ -84,6 +84,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected)
         {
+            Destroy(photonView);
             PhotonNetwork.LeaveRoom();
             return;
         }
@@ -100,6 +101,13 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         print("Loading World, PlayerName: " + PhotonNetwork.NickName);
         PhotonNetwork.LoadLevel("GameRoom");
     }
+    public void RecalculatePlayers()
+    {
+        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        {
+            SpawnPlayer();
+        }
+    }
     public void EnoughPlayers()
     {
         
@@ -111,7 +119,19 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void SpawnPlayer()
     {
         print("Spawned a player in: " + Application.loadedLevelName);
-        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocation, Quaternion.identity);
+        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount], Quaternion.identity);
+        crInstantiatedPlayerPrefab.transform.GetChild(0).gameObject.SetActive(false);
+        if(toggleEnemyOrFriendly)
+        {
+            crInstantiatedPlayerPrefab.transform.parent = enemyParentForPlayer.transform;
+            toggleEnemyOrFriendly = false;
+        }
+        else
+        {
+            crInstantiatedPlayerPrefab.transform.parent = friendlyParentForPlayer.transform;
+            toggleEnemyOrFriendly = true;
+        }
+        
         
     }
 }

@@ -38,7 +38,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public GameObject UIPrefab;
 
     public GameObject multiplayerDeletable;
-    public Vector3 playerOldPos;
     public Vector3 playerToGoPos;
 
     public PhotonView photonID;
