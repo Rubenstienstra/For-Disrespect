@@ -16,10 +16,10 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public bool isConnectedToMaster;
     public bool isConnectedToLobby;
 
-    public string crSelectedRoomName;
+    public string joinRoomName;
     public string createRoomName;
-    public InputField roomName;
-    public TMP_InputField displayingRoomNameInput;
+    public TMP_InputField joinRoomNameInput;
+    public TMP_InputField createRoomNameInput;
     public string sceneName = "Lobby";
 
     public byte createMaxTotalPlayers;
@@ -102,15 +102,32 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
     public void JoinRoomButton()
     {
-        PhotonNetwork.JoinRoom(crSelectedRoomName);
-        if (crSelectedRoomName != "")
+        PhotonNetwork.JoinRoom(joinRoomName);
+        if (joinRoomName != "")
         {
             
         }
     }
+    public void SetJoinRoomName()
+    {
+        joinRoomName = joinRoomNameInput.text;
+        print("Current RoomName: " + joinRoomName);
+    }
+    public void SetCreateRoomName()
+    {
+       createRoomName = createRoomNameInput.text;
+       print("Current RoomName: " + createRoomName);
+    }
     public void CreateRoomButton()
     {
-        PhotonNetwork.CreateRoom(createRoomName,new RoomOptions {IsVisible = createPrivacySettings, MaxPlayers = createMaxTotalPlayers}, TypedLobby.Default);
+        if(createRoomName != "")
+        {
+            PhotonNetwork.CreateRoom(createRoomName, new RoomOptions { IsVisible = createPrivacySettings, MaxPlayers = createMaxTotalPlayers }, TypedLobby.Default);
+        }
+        else
+        {
+            print("The Room Has No Name! RoomName:" + createRoomName);
+        }
     }
     public void LeaveCreatingRoomButton()
     {
@@ -174,8 +191,16 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
     public override void OnCreatedRoom()
     {
-        print("Created: " + createRoomName);
-
+        if(createRoomName != "")
+        {
+            print("Created: " + createRoomName + ". In: " + sceneName);
+        }
+        else
+        {
+            print("Created: MISSING ROOM NAME" + ". In: " + sceneName);
+        }
+        
+        
         base.OnCreatedRoom();
     }
     public override void OnCreateRoomFailed(short returnCode, string message)

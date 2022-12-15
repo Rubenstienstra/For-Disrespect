@@ -55,14 +55,6 @@ public class PlayerNameField : MonoBehaviour
             print(2);
         }
     }
-    public void SetServerName()
-    {
-        if(gameLauncher != null)
-        {
-            gameLauncher.createRoomName = gameLauncher.roomName.text;
-            print(gameLauncher.roomName.text);
-        }
-    }
     public void SetPrivateSettings()
     {
         if (gameLauncher != null)
@@ -70,10 +62,6 @@ public class PlayerNameField : MonoBehaviour
             gameLauncher.createPrivacySettings = gameLauncher.privacySettings.isOn;
             print(gameLauncher.privacySettings.isOn);
         }
-    }
-    public void SearchServerName()
-    {
-        gameLauncher.crSelectedRoomName = gameLauncher.displayingRoomNameInput.text;
     }
     public void CreatingRoomUI()
     {
