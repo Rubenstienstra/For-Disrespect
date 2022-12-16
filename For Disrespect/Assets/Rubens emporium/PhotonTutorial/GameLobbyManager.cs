@@ -27,7 +27,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject hostUI;
     public GameObject guestUI;
 
-    private Animator uiAnimation;
+    public Animator uiAnimation;
+    public Animator camAnimation;
 
     // Game lobby manager is Wanneer je in de wacht ruimte zit. Elke speler heeft zijn eigen GameLobbyManager.
     public void Start()
@@ -49,6 +50,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             }
             SpawnPlayer();
             uiAnimation.SetBool("BeforeCombat", true);
+            camAnimation.SetBool("BeforeCombat", true);
         }
     }
     
@@ -125,17 +127,18 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void SpawnPlayer()
     {
         print("Spawned a player in: " + Application.loadedLevelName);
-        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount], Quaternion.identity); print(spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount]);
+        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount -1], Quaternion.identity); print(spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount]);
         crInstantiatedPlayerPrefab.transform.GetChild(0).gameObject.SetActive(false);
 
-        if(toggleEnemyOrFriendly)
+        if(toggleEnemyOrFriendly)//enemy
         {
             crInstantiatedPlayerPrefab.transform.parent = enemyParentForPlayer.transform;
             toggleEnemyOrFriendly = false;
         }
-        else
+        else//friendly
         {
             crInstantiatedPlayerPrefab.transform.parent = friendlyParentForPlayer.transform;
+            crInstantiatedPlayerPrefab.transform.rotation = Quaternion.Euler(0,180,0);
             toggleEnemyOrFriendly = true;
         }
     }

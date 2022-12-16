@@ -44,10 +44,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55a656e417431be45808efc8de01560c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpawnPrefab: {fileID: 1960451430545438968, guid: 036f2d6439727ea46b68ed132187dfeb,
+  playerSpawnPrefab: {fileID: 5517115647042295379, guid: bf4d459b73352e744916d992aa9443a0,
     type: 3}
   crInstantiatedPlayerPrefab: {fileID: 0}
-  spawnLocations: []
+  spawnLocations:
+  - {x: 0, y: 1.8, z: 0.089}
+  - {x: 1.8, y: 1.8, z: 10}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   playerNameText: {fileID: 0}
   toggleEnemyOrFriendly: 0
   enemyParentForPlayer: {fileID: 0}
@@ -56,3 +60,5 @@ MonoBehaviour:
   isHost: 0
   hostUI: {fileID: 0}
   guestUI: {fileID: 0}
+  uiAnimation: {fileID: 0}
+  camAnimation: {fileID: 0}
