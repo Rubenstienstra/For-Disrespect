@@ -27,7 +27,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject hostUI;
     public GameObject guestUI;
 
-    // Game lobby manager is Wanneer je in de wacht ruimte zit zit
+    private Animator uiAnimation;
+
+    // Game lobby manager is Wanneer je in de wacht ruimte zit. Elke speler heeft zijn eigen GameLobbyManager.
     public void Start()
     {
         gameLobbyInfo = this;
@@ -38,12 +40,15 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             {
                 isHost = true;
                 hostUI.SetActive(true);
+                uiAnimation = hostUI.GetComponent<Animator>();
             }
             else
             {
                 guestUI.SetActive(true);
+                uiAnimation = guestUI.GetComponent<Animator>();
             }
             SpawnPlayer();
+            uiAnimation.SetBool("BeforeCombat", true);
         }
     }
     
@@ -84,6 +89,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected)
         {
+            uiAnimation.SetBool("BeforeCombat", false);
             Destroy(photonView);
             PhotonNetwork.LeaveRoom();
             return;
@@ -119,8 +125,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void SpawnPlayer()
     {
         print("Spawned a player in: " + Application.loadedLevelName);
-        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount], Quaternion.identity);
+        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount], Quaternion.identity); print(spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount]);
         crInstantiatedPlayerPrefab.transform.GetChild(0).gameObject.SetActive(false);
+
         if(toggleEnemyOrFriendly)
         {
             crInstantiatedPlayerPrefab.transform.parent = enemyParentForPlayer.transform;
@@ -131,7 +138,5 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             crInstantiatedPlayerPrefab.transform.parent = friendlyParentForPlayer.transform;
             toggleEnemyOrFriendly = true;
         }
-        
-        
     }
 }

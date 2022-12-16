@@ -46,4 +46,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSpawnPrefab: {fileID: 1960451430545438968, guid: 036f2d6439727ea46b68ed132187dfeb,
     type: 3}
-  spawnLocation: {x: 1, y: 1, z: 1}
+  crInstantiatedPlayerPrefab: {fileID: 0}
+  spawnLocations: []
+  playerNameText: {fileID: 0}
+  toggleEnemyOrFriendly: 0
+  enemyParentForPlayer: {fileID: 0}
+  friendlyParentForPlayer: {fileID: 0}
+  minimumRequiredPlayers: 0
+  isHost: 0
+  hostUI: {fileID: 0}
+  guestUI: {fileID: 0}
