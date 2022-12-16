@@ -12,14 +12,15 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     //GameLauncher is voor wanneer je in de game wil.
 
     public string gameVersion = "1";
-    public byte maxPlayersInRoom = 4;
+    public byte maxPlayersInRoom = 2;
     public bool isConnectedToMaster;
     public bool isConnectedToLobby;
 
-    public string crSelectedRoomName;
+    public string joinRoomName;
     public string createRoomName;
-    public InputField roomName;
-    public InputField displayingRoomNameInput;
+    public TMP_InputField joinRoomNameInput;
+    public TMP_InputField createRoomNameInput;
+    public string sceneName = "Lobby";
 
     public byte createMaxTotalPlayers;
     public InputField maxTotalPlayers;
@@ -39,7 +40,7 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public GameObject loadingText;
     public GameObject mainMenuWindow;
     public GameObject choosingLobbyOrCreate;
-    public GameObject creatingLobby;
+    public GameObject creatingLobby; // is in different scene
 
     public Transform contentToParent;
     public RoomListing roomListing;
@@ -101,14 +102,32 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
     public void JoinRoomButton()
     {
-        if(crSelectedRoomName != "")
+        PhotonNetwork.JoinRoom(joinRoomName);
+        if (joinRoomName != "")
         {
-            PhotonNetwork.JoinRoom(crSelectedRoomName);
+            
         }
+    }
+    public void SetJoinRoomName()
+    {
+        joinRoomName = joinRoomNameInput.text;
+        print("Current RoomName: " + joinRoomName);
+    }
+    public void SetCreateRoomName()
+    {
+       createRoomName = createRoomNameInput.text;
+       print("Current RoomName: " + createRoomName);
     }
     public void CreateRoomButton()
     {
-        PhotonNetwork.CreateRoom(createRoomName,new RoomOptions {IsVisible = createPrivacySettings, MaxPlayers = createMaxTotalPlayers}, TypedLobby.Default);
+        if(createRoomName != "")
+        {
+            PhotonNetwork.CreateRoom(createRoomName, new RoomOptions { IsVisible = createPrivacySettings, MaxPlayers = createMaxTotalPlayers }, TypedLobby.Default);
+        }
+        else
+        {
+            print("The Room Has No Name! RoomName:" + createRoomName);
+        }
     }
     public void LeaveCreatingRoomButton()
     {
@@ -150,19 +169,17 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
         loadingText.SetActive(false);
         mainMenuWindow.SetActive(true);
 
-        print("Loading GameRoom");
+        print("Loading "+ sceneName);
      
-        if (PhotonNetwork.CurrentRoom.PlayerCount <= maxPlayersInRoom)
-        {
-            PhotonNetwork.LoadLevel("GameRoom");
-        }
+        PhotonNetwork.LoadLevel(sceneName);
+        
         base.OnJoinedRoom();
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         print("OnDisconnected was activated: " + cause);
-        if("Launcher" == SceneManager.GetActiveScene().name)
+        if("MainMenu" == SceneManager.GetActiveScene().name)
         {
             if(loadingText != null && mainMenuWindow != null)
             {
@@ -174,8 +191,16 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
     public override void OnCreatedRoom()
     {
-        print("Created: " + createRoomName);
-
+        if(createRoomName != "")
+        {
+            print("Created: " + createRoomName + ". In: " + sceneName);
+        }
+        else
+        {
+            print("Created: MISSING ROOM NAME" + ". In: " + sceneName);
+        }
+        
+        
         base.OnCreatedRoom();
     }
     public override void OnCreateRoomFailed(short returnCode, string message)

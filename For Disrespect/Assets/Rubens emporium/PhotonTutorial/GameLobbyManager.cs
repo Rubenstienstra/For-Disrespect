@@ -2,31 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Animations;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
 
 public class GameLobbyManager : MonoBehaviourPunCallbacks
 {
     public static GameLobbyManager gameLobbyInfo;
 
     public GameObject playerSpawnPrefab;
-    public Vector3 spawnLocation;
+    public GameObject crInstantiatedPlayerPrefab;
+    public Vector3[] spawnLocations;
+    public TMP_Text playerNameText;
 
-    // Game lobby manager is Wanneer je in de game zit
+    public bool toggleEnemyOrFriendly;
+    public GameObject enemyParentForPlayer;
+    public GameObject friendlyParentForPlayer;
+    
+    public int minimumRequiredPlayers;
+    public bool isHost;
+
+    public GameObject hostUI;
+    public GameObject guestUI;
+
+    // Game lobby manager is Wanneer je in de wacht ruimte zit zit
     public void Start()
     {
         gameLobbyInfo = this;
 
         if (PhotonNetwork.IsConnected)
         {
-            if (PlayerMovement.thisPlayerPrefab == null)
+            if(PhotonNetwork.CurrentRoom.PlayerCount == 0)
             {
-                print("Spawned in a player " + Application.loadedLevelName);
-
-                PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocation, Quaternion.identity, 0);
+                isHost = true;
+                hostUI.SetActive(true);
             }
-            
+            else
+            {
+                guestUI.SetActive(true);
+            }
+            SpawnPlayer();
         }
     }
     
@@ -34,32 +51,44 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     #region Automatic voids
     public override void OnLeftRoom()
     {
-        SceneManager.LoadScene("Launcher");
+        SceneManager.LoadScene("MainMenu");
         base.OnLeftRoom();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        print(newPlayer.NickName + " has joined");
+        print(newPlayer.NickName + " has joined. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
+        
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount >= minimumRequiredPlayers)
+        {
+            EnoughPlayers();
+        }
 
         base.OnPlayerEnteredRoom(newPlayer);
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        print(otherPlayer.NickName + " has leaved");
+        print(otherPlayer.NickName + " has leaved. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
+        
+        if (PhotonNetwork.CurrentRoom.PlayerCount < minimumRequiredPlayers)
+        {
+            NotEnoughPlayers();
+        }
 
         base.OnPlayerLeftRoom(otherPlayer);
     }
     #endregion
 
-    public void LeaveRoom()
+    public void LeaveRoom()//Button Leave room
     {
         if (PhotonNetwork.IsConnected)
         {
+            Destroy(photonView);
             PhotonNetwork.LeaveRoom();
             return;
         }
-        SceneManager.LoadScene("Launcher");
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void LoadArena()
@@ -71,5 +100,38 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         }
         print("Loading World, PlayerName: " + PhotonNetwork.NickName);
         PhotonNetwork.LoadLevel("GameRoom");
+    }
+    public void RecalculatePlayers()
+    {
+        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        {
+            SpawnPlayer();
+        }
+    }
+    public void EnoughPlayers()
+    {
+        
+    }
+    public void NotEnoughPlayers()
+    {
+
+    }
+    public void SpawnPlayer()
+    {
+        print("Spawned a player in: " + Application.loadedLevelName);
+        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount], Quaternion.identity);
+        crInstantiatedPlayerPrefab.transform.GetChild(0).gameObject.SetActive(false);
+        if(toggleEnemyOrFriendly)
+        {
+            crInstantiatedPlayerPrefab.transform.parent = enemyParentForPlayer.transform;
+            toggleEnemyOrFriendly = false;
+        }
+        else
+        {
+            crInstantiatedPlayerPrefab.transform.parent = friendlyParentForPlayer.transform;
+            toggleEnemyOrFriendly = true;
+        }
+        
+        
     }
 }
