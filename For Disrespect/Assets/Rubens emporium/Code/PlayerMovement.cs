@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public int[] movementWASD;
     public int isTotalWalkingWASD;
     public bool holdingShift;
+    public bool allowMoving;
 
     public RaycastHit rayCastAttackHit;
     public float rayCastDistanceAttack;
@@ -36,12 +37,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public Text playerName;
     public static GameObject thisPlayerPrefab;
     public GameObject UIPrefab;
+    public GameObject worldSpaceCanvasPlayerName;
 
     public GameObject multiplayerDeletable;
     public Vector3 playerToGoPos;
 
     public PhotonView photonID;
-    public NewCameraWork newCameraWork;
+    public GameLobbyManager crGameLobbyManager;
     public CharacterController characterControl;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)// ?
@@ -139,6 +141,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         if (photonID.IsMine)
         {
             thisPlayerPrefab = gameObject;
+            worldSpaceCanvasPlayerName.SetActive(false);
         }
         else
         {
@@ -154,11 +157,25 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public void Start()
     {
         playerMovement = this;
-        print("ViewID: "+ photonID.ViewID); 
+        print("ViewID: "+ photonID.ViewID);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+           crGameLobbyManager.isHost = true;
+           crGameLobbyManager.hostUI.SetActive(true);
+           crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
+        }
+        else
+        {
+           crGameLobbyManager.guestUI.SetActive(true);
+           crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
+        }
+       crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true); crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
     }
+
     void FixedUpdate()
     {
-        if (photonID.IsMine)// && !PhotonNetwork.IsConnected
+        if (photonID.IsMine && allowMoving)
         {
             if (hp <= 0)
             {

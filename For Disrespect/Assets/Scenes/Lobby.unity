@@ -385,6 +385,16 @@ PrefabInstance:
       objectReference: {fileID: 1414059623}
     - target: {fileID: 2410681214851170737, guid: 30521e5029ec6d149b588fac0d87c57a,
         type: 3}
+      propertyPath: team0ParentForPlayer
+      value: 
+      objectReference: {fileID: 1414059623}
+    - target: {fileID: 2410681214851170737, guid: 30521e5029ec6d149b588fac0d87c57a,
+        type: 3}
+      propertyPath: team1ParentForPlayer
+      value: 
+      objectReference: {fileID: 478828258}
+    - target: {fileID: 2410681214851170737, guid: 30521e5029ec6d149b588fac0d87c57a,
+        type: 3}
       propertyPath: friendlyParentForPlayer
       value: 
       objectReference: {fileID: 478828258}
@@ -467,7 +477,7 @@ GameObject:
   m_Component:
   - component: {fileID: 478828259}
   m_Layer: 0
-  m_Name: TeamPlayers
+  m_Name: Team1Players
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -874,7 +884,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1414059624}
   m_Layer: 0
-  m_Name: EnemyPlayers
+  m_Name: Team0Players
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -953,7 +963,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1823688465
 AudioListener:
   m_ObjectHideFlags: 0

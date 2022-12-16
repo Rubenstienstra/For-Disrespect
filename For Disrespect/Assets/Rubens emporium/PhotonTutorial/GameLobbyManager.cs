@@ -15,11 +15,11 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject playerSpawnPrefab;
     public GameObject crInstantiatedPlayerPrefab;
     public Vector3[] spawnLocations;
-    public TMP_Text playerNameText;
+    //public TMP_Text playerNameText;
 
-    public bool toggleEnemyOrFriendly;
-    public GameObject enemyParentForPlayer;
-    public GameObject friendlyParentForPlayer;
+    public bool toggleTeam0Or1;
+    public GameObject team0ParentForPlayer;
+    public GameObject team1ParentForPlayer;
     
     public int minimumRequiredPlayers;
     public bool isHost;
@@ -37,20 +37,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsConnected)
         {
-            if(PhotonNetwork.CurrentRoom.PlayerCount == 0)
-            {
-                isHost = true;
-                hostUI.SetActive(true);
-                uiAnimation = hostUI.GetComponent<Animator>();
-            }
-            else
-            {
-                guestUI.SetActive(true);
-                uiAnimation = guestUI.GetComponent<Animator>();
-            }
             SpawnPlayer();
-            uiAnimation.SetBool("BeforeCombat", true);
-            camAnimation.SetBool("BeforeCombat", true);
         }
     }
     
@@ -91,7 +78,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected)
         {
-            uiAnimation.SetBool("BeforeCombat", false);
+            uiAnimation.SetBool("BeforeCombat", false); camAnimation.SetBool("BeforeCombat", false);
             Destroy(photonView);
             PhotonNetwork.LeaveRoom();
             return;
@@ -128,18 +115,19 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print("Spawned a player in: " + Application.loadedLevelName);
         crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount -1], Quaternion.identity); print(spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount]);
-        crInstantiatedPlayerPrefab.transform.GetChild(0).gameObject.SetActive(false);
+        crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().crGameLobbyManager = this;
+        crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().allowMoving = false;
 
-        if(toggleEnemyOrFriendly)//enemy
+        if (!toggleTeam0Or1)//team0
         {
-            crInstantiatedPlayerPrefab.transform.parent = enemyParentForPlayer.transform;
-            toggleEnemyOrFriendly = false;
+            crInstantiatedPlayerPrefab.transform.parent = team0ParentForPlayer.transform;
+            crInstantiatedPlayerPrefab.transform.rotation = Quaternion.Euler(0, 180, 0);
+            toggleTeam0Or1 = false;
         }
-        else//friendly
+        if(toggleTeam0Or1)//team1
         {
-            crInstantiatedPlayerPrefab.transform.parent = friendlyParentForPlayer.transform;
-            crInstantiatedPlayerPrefab.transform.rotation = Quaternion.Euler(0,180,0);
-            toggleEnemyOrFriendly = true;
+            crInstantiatedPlayerPrefab.transform.parent = team1ParentForPlayer.transform;
+            toggleTeam0Or1 = true;
         }
     }
 }
