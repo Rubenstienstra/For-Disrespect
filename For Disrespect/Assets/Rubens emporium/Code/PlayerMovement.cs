@@ -38,10 +38,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public static GameObject thisPlayerPrefab;
     public GameObject UIPrefab;
     public GameObject worldSpaceCanvasPlayerName;
+    public GameObject cameraPlayer;
 
     public GameObject multiplayerDeletable;
     public Vector3 playerToGoPos;
 
+    public int playerID;
     public PhotonView photonID;
     public GameLobbyManager crGameLobbyManager;
     public CharacterController characterControl;

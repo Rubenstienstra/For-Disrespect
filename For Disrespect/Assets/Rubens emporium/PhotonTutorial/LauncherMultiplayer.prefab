@@ -46,15 +46,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameVersion: 1
-  maxPlayersInRoom: 2
+  maxPlayersInRoom: 4
   isConnectedToMaster: 0
   isConnectedToLobby: 0
-  crSelectedRoomName: 
+  joinRoomName: 
   createRoomName: 
-  roomName: {fileID: 0}
-  displayingRoomNameInput: {fileID: 0}
+  joinRoomNameInput: {fileID: 0}
+  createRoomNameInput: {fileID: 0}
   sceneName: Lobby
-  createMaxTotalPlayers: 2
+  createMaxTotalPlayers: 4
   maxTotalPlayers: {fileID: 0}
   createPrivacySettings: 0
   privacySettings: {fileID: 0}

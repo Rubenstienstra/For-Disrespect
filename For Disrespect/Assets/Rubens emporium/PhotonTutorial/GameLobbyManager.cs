@@ -114,9 +114,12 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void SpawnPlayer()
     {
         print("Spawned a player in: " + Application.loadedLevelName);
-        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount -1], Quaternion.identity); print(spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount]);
+        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount -1], Quaternion.identity);
         crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().crGameLobbyManager = this;
         crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().allowMoving = false;
+        crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().UIPrefab.SetActive(false);
+        crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().cameraPlayer.SetActive(false);
+        crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().playerID = PhotonNetwork.CurrentRoom.PlayerCount;
 
         if (!toggleTeam0Or1)//team0
         {
