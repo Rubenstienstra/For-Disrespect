@@ -14,10 +14,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
     public GameObject playerSpawnPrefab;
     public GameObject crInstantiatedPlayerPrefab;
+    public PlayerMovement crInstantietedPlayerMovement;
     public Vector3[] spawnLocations;
-    //public TMP_Text playerNameText;
 
-    public bool toggleTeam0Or1;
     public GameObject team0ParentForPlayer;
     public GameObject team1ParentForPlayer;
     
@@ -115,22 +114,26 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print("Spawned a player in: " + Application.loadedLevelName);
         crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount -1], Quaternion.identity);
-        crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().crGameLobbyManager = this;
-        crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().allowMoving = false;
-        crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().UIPrefab.SetActive(false);
-        crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().cameraPlayer.SetActive(false);
-        crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().playerID = PhotonNetwork.CurrentRoom.PlayerCount;
+        crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
+        crInstantietedPlayerMovement.crGameLobbyManager = this;
+        crInstantietedPlayerMovement.allowMoving = false;
+        crInstantietedPlayerMovement.UIPrefab.SetActive(false);
+        crInstantietedPlayerMovement.cameraPlayer.SetActive(false);
+        crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
 
-        if (!toggleTeam0Or1)//team0
+        //als even is, wordt het 0 en als het getal oneven is is het 1.
+        if (crInstantietedPlayerMovement.playerID %2 == 0)//Team0
         {
             crInstantiatedPlayerPrefab.transform.parent = team0ParentForPlayer.transform;
             crInstantiatedPlayerPrefab.transform.rotation = Quaternion.Euler(0, 180, 0);
-            toggleTeam0Or1 = false;
+
+            print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + "Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
         }
-        if(toggleTeam0Or1)//team1
+        else if(crInstantietedPlayerMovement.playerID % 2 == 1)//Team0
         {
             crInstantiatedPlayerPrefab.transform.parent = team1ParentForPlayer.transform;
-            toggleTeam0Or1 = true;
+
+            print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + ".Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
         }
     }
 }
