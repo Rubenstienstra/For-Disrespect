@@ -1132,8 +1132,7 @@ MonoBehaviour:
   distanceBetweenGround: 10
   playerAnimations: {fileID: 0}
   isRobot: 0
-  playerName: {fileID: 4041232802991530371, guid: 44b21033be6d1cf498ea730973c0c140,
-    type: 3}
+  crPlayerName: 
   UIPrefab: {fileID: 3574377282495681092}
   worldSpaceCanvasPlayerName: {fileID: 1838471723997878224}
   cameraPlayer: {fileID: 1960451429685669110}
@@ -1141,6 +1140,7 @@ MonoBehaviour:
   playerToGoPos: {x: 0, y: 0, z: 0}
   playerID: 0
   photonID: {fileID: 1960451430545438946}
+  playerUI: {fileID: 0}
   crGameLobbyManager: {fileID: 0}
   characterControl: {fileID: 7583660211103564253}
 --- !u!143 &7583660211103564253

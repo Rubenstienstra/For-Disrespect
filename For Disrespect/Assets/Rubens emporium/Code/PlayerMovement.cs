@@ -172,24 +172,29 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         playerMovement = this;
         print("ViewID: "+ photonID.ViewID);
-        
-        if(crGameLobbyManager == null)
-        {
-           crGameLobbyManager = GameObject.Find("GameManager").GetComponent<GameLobbyManager>();
-        }
 
-        if (PhotonNetwork.IsMasterClient)
+        if (photonID.IsMine)
         {
-           crGameLobbyManager.isHost = true;
-           crGameLobbyManager.hostUI.SetActive(true);
-           crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
+            if (crGameLobbyManager == null)
+            {
+                crGameLobbyManager = GameObject.Find("GameManager").GetComponent<GameLobbyManager>();
+            }
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                crGameLobbyManager.isHost = true;
+                crGameLobbyManager.hostUI.SetActive(true);
+                crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
+            }
+            else
+            {
+                crGameLobbyManager.guestUI.SetActive(true);
+                crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
+            }
+            crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true); crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
+
+            crGameLobbyManager.RecalculatePlacementReadyUpRoom();
         }
-        else
-        {
-           crGameLobbyManager.guestUI.SetActive(true);
-           crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
-        }
-       crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true); crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
     }
 
     void FixedUpdate()

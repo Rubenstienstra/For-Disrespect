@@ -14,9 +14,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
     public GameObject playerSpawnPrefab;
     public GameObject crInstantiatedPlayerPrefab;
+    public List<GameObject> allInstantiatedPlayers;
     public PlayerMovement crInstantietedPlayerMovement;
     public Vector3[] spawnLocations;
-    public bool doneMakingPlayer = true;
 
     public GameObject team0ParentForPlayer;
     public GameObject team1ParentForPlayer;
@@ -63,7 +63,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         print(otherPlayer.NickName + " has leaved. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
-        
+
+        allInstantiatedPlayers.RemoveAt(allInstantiatedPlayers.Count -1);
+
         if (PhotonNetwork.CurrentRoom.PlayerCount < minimumRequiredPlayers)
         {
             NotEnoughPlayers();
@@ -113,38 +115,37 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     }
     public void SpawnPlayer()
     {
-        if (!doneMakingPlayer)
-        {
-            new WaitForSeconds(0.1f);
-            SpawnPlayer();
-            return;
-        }
 
         print("Spawned a player in: " + SceneManager.GetActiveScene());
+        crInstantiatedPlayerPrefab = null;
         crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount -1], Quaternion.identity);
+        allInstantiatedPlayers.Add(crInstantiatedPlayerPrefab);
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerMovement.crGameLobbyManager = this;
         crInstantietedPlayerMovement.allowMoving = false;
         crInstantietedPlayerMovement.UIPrefab.SetActive(false);
         crInstantietedPlayerMovement.cameraPlayer.SetActive(false);
-        crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount; // -1 so player 1 has PlayerID 0.
-
-        //als even is, wordt het 0 en als het getal oneven is is het 1.
-        if (crInstantietedPlayerMovement.playerID %2 == 0)//Team0
+        crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
+       
+    }
+    public void RecalculatePlacementReadyUpRoom()
+    {
+        for (int i = 0; i < allInstantiatedPlayers.Count; i++)
         {
-            crInstantiatedPlayerPrefab.transform.parent = team0ParentForPlayer.transform;
-            crInstantiatedPlayerPrefab.transform.rotation = Quaternion.Euler(0, 180, 0);
+            //als even is, wordt het 0 en als het getal oneven is is het 1.
+            if (crInstantietedPlayerMovement.playerID % 2 == 0)//Team0
+            {
+                crInstantiatedPlayerPrefab.transform.parent = team0ParentForPlayer.transform;
+                crInstantiatedPlayerPrefab.transform.rotation = Quaternion.Euler(0, 180, 0);
 
-            print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + "Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
+                print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + "Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
+            }
+            else if (crInstantietedPlayerMovement.playerID % 2 == 1)//Team0
+            {
+                crInstantiatedPlayerPrefab.transform.parent = team1ParentForPlayer.transform;
+
+                print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + ".Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
+            }
         }
-        else if(crInstantietedPlayerMovement.playerID % 2 == 1)//Team0
-        {
-            crInstantiatedPlayerPrefab.transform.parent = team1ParentForPlayer.transform;
-
-            print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + ".Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
-        }
-
-        crInstantiatedPlayerPrefab = null;
-        doneMakingPlayer = true;
     }
 }
