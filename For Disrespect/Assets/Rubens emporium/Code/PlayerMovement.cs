@@ -6,6 +6,7 @@ using Photon.Realtime;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 {
@@ -34,7 +35,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public Animator playerAnimations;
     public bool isRobot;
 
-    public Text playerName;
+    public string crPlayerName;
     public static GameObject thisPlayerPrefab;
     public GameObject UIPrefab;
     public GameObject worldSpaceCanvasPlayerName;
@@ -45,6 +46,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     public int playerID;
     public PhotonView photonID;
+    public UIPlayer playerUI;
     public GameLobbyManager crGameLobbyManager;
     public CharacterController characterControl;
 
@@ -55,6 +57,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(transform.position); //playerToGoPos = Vector3.Lerp(transform.position, playerOldPos, 0.1f);
             stream.SendNext(isAttacking);
             stream.SendNext(hp);
+            stream.SendNext(playerID);
+            stream.SendNext(crPlayerName);
             //print("sended: ");
         }
         else if(stream.IsReading)
@@ -62,6 +66,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             this.playerToGoPos = (Vector3)stream.ReceiveNext();
             this.isAttacking = (bool)stream.ReceiveNext();
             this.hp = (float)stream.ReceiveNext();
+            this.playerID = (int)stream.ReceiveNext();
+            this.crPlayerName = (string)stream.ReceiveNext();
             print("recieved: ");
         }
     }
@@ -143,6 +149,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         if (photonID.IsMine)
         {
             thisPlayerPrefab = gameObject;
+            crPlayerName = PhotonNetwork.NickName;
+
             worldSpaceCanvasPlayerName.SetActive(false);
         }
         else
@@ -152,6 +160,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 print("Destroyed: " + multiplayerDeletable.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                Destroy(multiplayerDeletable.transform.GetChild(i).gameObject);
             }
+            //if(crPlayerName != "")
+            //{
+            //      photonID.Owner.NickName;
+            //}
         }
         //DontDestroyOnLoad(gameObject);
        

@@ -47,15 +47,15 @@ MonoBehaviour:
   playerSpawnPrefab: {fileID: 1960451430545438968, guid: 036f2d6439727ea46b68ed132187dfeb,
     type: 3}
   crInstantiatedPlayerPrefab: {fileID: 0}
+  crInstantietedPlayerMovement: {fileID: 0}
   spawnLocations:
   - {x: 0, y: 1.8, z: 0.089}
   - {x: 1.8, y: 1.8, z: 10}
   - {x: 1, y: 1.8, z: 0.089}
   - {x: 0, y: 0, z: 0}
-  toggleTeam0Or1: 0
   team0ParentForPlayer: {fileID: 0}
   team1ParentForPlayer: {fileID: 0}
-  minimumRequiredPlayers: 0
+  minimumRequiredPlayers: 2
   isHost: 0
   hostUI: {fileID: 0}
   guestUI: {fileID: 0}
