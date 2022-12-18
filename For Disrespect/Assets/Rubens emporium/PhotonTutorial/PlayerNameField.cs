@@ -14,8 +14,9 @@ public class PlayerNameField : MonoBehaviour
     public InputField playerNameInput;
     public TMP_InputField playerTextProNameInput;
 
-    public GameLobbyManager gameLobbyManager;
+    public TMP_Text playerTextProNameMainMenu;
 
+    //public GameLobbyManager gameLobbyManager;
     public GameLauncher gameLauncher;
 
     //Zorgt er voor dat de default name gedisplayed word
@@ -33,6 +34,10 @@ public class PlayerNameField : MonoBehaviour
                 defaultSavedName = PlayerPrefs.GetString(crPlayerName);
                 playerTextProNameInput.text = defaultSavedName;
             }
+            if(playerTextProNameMainMenu != null && defaultSavedName != null)
+            {
+                playerTextProNameMainMenu.text = defaultSavedName;
+            }
         }
         PhotonNetwork.NickName = defaultSavedName;
     }
@@ -46,6 +51,11 @@ public class PlayerNameField : MonoBehaviour
         }
         PhotonNetwork.NickName = value;
         PlayerPrefs.SetString(crPlayerName, value);
+        
+        if(playerTextProNameMainMenu != null)
+        {
+            playerTextProNameMainMenu.text = value;
+        }
     }
     public void SetMaxPlayers()
     {

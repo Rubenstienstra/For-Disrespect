@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(transform.position); //playerToGoPos = Vector3.Lerp(transform.position, playerOldPos, 0.1f);
             stream.SendNext(isAttacking);
             stream.SendNext(hp);
-            print("sended: ");
+            //print("sended: ");
         }
         else if(stream.IsReading)
         {
@@ -149,17 +149,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             for (int i = 0; i < multiplayerDeletable.transform.childCount; i++)
             {
-                print(multiplayerDeletable.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+                print("Destroyed: " + multiplayerDeletable.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                Destroy(multiplayerDeletable.transform.GetChild(i).gameObject);
             }
         }
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
        
     }
     public void Start()
     {
         playerMovement = this;
         print("ViewID: "+ photonID.ViewID);
+        
+        if(crGameLobbyManager == null)
+        {
+           crGameLobbyManager = GameObject.Find("GameManager").GetComponent<GameLobbyManager>();
+        }
 
         if (PhotonNetwork.IsMasterClient)
         {

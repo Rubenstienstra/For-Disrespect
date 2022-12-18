@@ -52,7 +52,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(newPlayer.NickName + " has joined. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
         
-
         if (PhotonNetwork.CurrentRoom.PlayerCount >= minimumRequiredPlayers)
         {
             EnoughPlayers();
@@ -112,7 +111,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     }
     public void SpawnPlayer()
     {
-        print("Spawned a player in: " + Application.loadedLevelName);
+        print("Spawned a player in: " + SceneManager.GetActiveScene());
+        crInstantiatedPlayerPrefab = null;
         crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount -1], Quaternion.identity);
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerMovement.crGameLobbyManager = this;
