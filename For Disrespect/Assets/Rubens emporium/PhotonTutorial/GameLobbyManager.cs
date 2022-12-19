@@ -22,7 +22,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject team1ParentForPlayer;
     
     public int minimumRequiredPlayers;
-    public bool isHost;
 
     public GameObject hostUI;
     public GameObject guestUI;
@@ -35,10 +34,17 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         gameLobbyInfo = this;
 
+        if (camAnimation == null)
+        {
+            GameObject crCameraGameobject = GameObject.Find("Main Camera");
+            camAnimation = crCameraGameobject.GetComponent<Animator>();
+        }
+
         if (PhotonNetwork.IsConnected)
         {
             SpawnPlayer();
         }
+        
     }
     
 
@@ -115,8 +121,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     }
     public void SpawnPlayer()
     {
-
-        print("Spawned a player in: " + SceneManager.GetActiveScene());
+        print("Spawned a player in: " + SceneManager.GetActiveScene().name);
         crInstantiatedPlayerPrefab = null;
         crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount -1], Quaternion.identity);
         allInstantiatedPlayers.Add(crInstantiatedPlayerPrefab);

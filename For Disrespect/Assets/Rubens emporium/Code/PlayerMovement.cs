@@ -35,19 +35,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public Animator playerAnimations;
     public bool isRobot;
 
+    public bool isHost;
+    public bool isGuest;
+
     public string crPlayerName;
     public static GameObject thisPlayerPrefab;
-    public GameObject UIPrefab;
+    public GameObject UIPrefab; // Missing
     public GameObject worldSpaceCanvasPlayerName;
-    public GameObject cameraPlayer;
+    public GameObject cameraPlayer; // Missing
 
     public GameObject multiplayerDeletable;
     public Vector3 playerToGoPos;
 
     public int playerID;
     public PhotonView photonID;
-    public UIPlayer playerUI;
-    public GameLobbyManager crGameLobbyManager;
+    public UIPlayer playerUI; // missing
+    public GameLobbyManager crGameLobbyManager; //missing
     public CharacterController characterControl;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)// ?
@@ -158,7 +161,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             for (int i = 0; i < multiplayerDeletable.transform.childCount; i++)
             {
                 print("Destroyed: " + multiplayerDeletable.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
-               Destroy(multiplayerDeletable.transform.GetChild(i).gameObject);
+                multiplayerDeletable.transform.GetChild(i).gameObject.SetActive(false);
             }
             //if(crPlayerName != "")
             //{
@@ -182,19 +185,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
             if (PhotonNetwork.IsMasterClient)
             {
-                crGameLobbyManager.isHost = true;
+                isHost = true;
                 crGameLobbyManager.hostUI.SetActive(true);
                 crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
             }
             else
             {
+                isGuest = true;
                 crGameLobbyManager.guestUI.SetActive(true);
                 crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
             }
-            crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true); crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
+            crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
 
-            crGameLobbyManager.RecalculatePlacementReadyUpRoom();
+            crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
+
         }
+        crGameLobbyManager.RecalculatePlacementReadyUpRoom();
     }
 
     void FixedUpdate()

@@ -16,7 +16,7 @@ public class UIPlayer : MonoBehaviour
     {
         if (!playerMovement.photonID.IsMine)
         {
-            Destroy(gameObject);
+            //gameObject.SetActive(false);
         }
 
         if (playerName != null && playerMovement != null)
