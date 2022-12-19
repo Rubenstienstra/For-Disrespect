@@ -168,38 +168,43 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             //      photonID.Owner.NickName;
             //}
         }
+        if (crGameLobbyManager == null)
+        {
+            GameObject GameLobbyManagerGameObject = GameObject.Find("GameManager(Clone)");
+            crGameLobbyManager = GameLobbyManagerGameObject.GetComponent<GameLobbyManager>();
+        }
         //DontDestroyOnLoad(gameObject);
-       
+
     }
     public void Start()
     {
         playerMovement = this;
         print("ViewID: "+ photonID.ViewID);
 
-        if (photonID.IsMine)
-        {
-            if (crGameLobbyManager == null)
-            {
-                crGameLobbyManager = GameObject.Find("GameManager").GetComponent<GameLobbyManager>();
-            }
-
             if (PhotonNetwork.IsMasterClient)
             {
                 isHost = true;
-                crGameLobbyManager.hostUI.SetActive(true);
                 crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
+                if (photonID.IsMine)
+                {
+                    crGameLobbyManager.hostUI.SetActive(true);
+                }
             }
             else
             {
                 isGuest = true;
-                crGameLobbyManager.guestUI.SetActive(true);
                 crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
+
+                if (photonID.IsMine)
+                {
+                    crGameLobbyManager.guestUI.SetActive(true);
+                }
             }
             crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
 
             crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
 
-        }
+        SendMessageUpwards("RecalculatePlacementReadyUpRoom",crGameLobbyManager,SendMessageOptions.DontRequireReceiver);
         crGameLobbyManager.RecalculatePlacementReadyUpRoom();
     }
 

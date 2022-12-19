@@ -135,8 +135,10 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     }
     public void RecalculatePlacementReadyUpRoom()
     {
+        
         for (int i = 0; i < allInstantiatedPlayers.Count; i++)
         {
+            print("Is Recalculating for Player: " + crInstantietedPlayerMovement.playerID);
             //als even is, wordt het 0 en als het getal oneven is is het 1.
             if (crInstantietedPlayerMovement.playerID % 2 == 0)//Team0
             {

@@ -192,17 +192,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2106110124822543244, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LeaveRoom
-      objectReference: {fileID: 0}
-    - target: {fileID: 2106110124822543244, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: GameLobbyManager, Assembly-CSharp
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2410681214851170737}
     - target: {fileID: 2580697347064293735, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -220,24 +210,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5334816173352953058, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5334816173352953058, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
-        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5334816173352953058, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LeaveRoom
-      objectReference: {fileID: 0}
-    - target: {fileID: 5334816173352953058, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: GameLobbyManager, Assembly-CSharp
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2410681214851170737}
     - target: {fileID: 5348591585651899299, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
         type: 3}
       propertyPath: m_IsActive
