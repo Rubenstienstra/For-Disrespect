@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UIPlayer : MonoBehaviour
 {
-    public PlayerMovement playerMovement;//(TARGET)
+    public PlayerMovement playerMovement;
 
     public Text playerName;
     public Slider playerHPBar;
@@ -16,21 +16,19 @@ public class UIPlayer : MonoBehaviour
     {
         if (!playerMovement.photonID.IsMine)
         {
-            Destroy(gameObject);
+            //gameObject.SetActive(false);
         }
 
         if (playerName != null && playerMovement != null)
         {
-            playerName.text = playerMovement.photonID.Owner.NickName.ToString();
+            if (playerMovement.photonID.IsMine)
+            {
+                playerName.text = playerMovement.photonID.Owner.NickName.ToString();
+                return;
+            }
+            playerName.text = playerMovement.crPlayerName;
         }
-
-        //parentComponent.SetParent(GameObject.Find("MainCanvas").GetComponent<Transform>());
-        //if (playerMovement != null)
-        //{
-        //    transformPlayer = playerMovement.GetComponent<Transform>();
-        //    rendererPlayer = playerMovement.GetComponent<Renderer>();
-        //    characterControlPlayer = playerMovement.GetComponent<CharacterController>();
-        //}
+        
     }
     public void OnHealthChange(float hp)
     {

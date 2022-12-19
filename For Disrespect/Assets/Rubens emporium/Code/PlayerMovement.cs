@@ -6,6 +6,7 @@ using Photon.Realtime;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 {
@@ -14,6 +15,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public int[] movementWASD;
     public int isTotalWalkingWASD;
     public bool holdingShift;
+    public bool allowMoving;
 
     public RaycastHit rayCastAttackHit;
     public float rayCastDistanceAttack;
@@ -33,15 +35,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public Animator playerAnimations;
     public bool isRobot;
 
-    public Text playerName;
+    public bool isHost;
+    public bool isGuest;
+
+    public string crPlayerName;
     public static GameObject thisPlayerPrefab;
-    public GameObject UIPrefab;
+    public GameObject UIPrefab; // Missing
+    public GameObject worldSpaceCanvasPlayerName;
+    public GameObject cameraPlayer; // Missing
 
     public GameObject multiplayerDeletable;
     public Vector3 playerToGoPos;
 
+    public int playerID;
     public PhotonView photonID;
-    public NewCameraWork newCameraWork;
+    public UIPlayer playerUI; // missing
+    public GameLobbyManager crGameLobbyManager; //missing
     public CharacterController characterControl;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)// ?
@@ -51,13 +60,17 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(transform.position); //playerToGoPos = Vector3.Lerp(transform.position, playerOldPos, 0.1f);
             stream.SendNext(isAttacking);
             stream.SendNext(hp);
-            print("sended: ");
+            stream.SendNext(playerID);
+            stream.SendNext(crPlayerName);
+            //print("sended: ");
         }
         else if(stream.IsReading)
         {
             this.playerToGoPos = (Vector3)stream.ReceiveNext();
             this.isAttacking = (bool)stream.ReceiveNext();
             this.hp = (float)stream.ReceiveNext();
+            this.playerID = (int)stream.ReceiveNext();
+            this.crPlayerName = (string)stream.ReceiveNext();
             print("recieved: ");
         }
     }
@@ -139,26 +152,60 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         if (photonID.IsMine)
         {
             thisPlayerPrefab = gameObject;
+            crPlayerName = PhotonNetwork.NickName;
+
+            worldSpaceCanvasPlayerName.SetActive(false);
         }
         else
         {
             for (int i = 0; i < multiplayerDeletable.transform.childCount; i++)
             {
-                print(multiplayerDeletable.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
-               Destroy(multiplayerDeletable.transform.GetChild(i).gameObject);
+                print("Destroyed: " + multiplayerDeletable.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+                multiplayerDeletable.transform.GetChild(i).gameObject.SetActive(false);
             }
+            //if(crPlayerName != "")
+            //{
+            //      photonID.Owner.NickName;
+            //}
         }
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
        
     }
     public void Start()
     {
         playerMovement = this;
-        print("ViewID: "+ photonID.ViewID); 
+        print("ViewID: "+ photonID.ViewID);
+
+        if (photonID.IsMine)
+        {
+            if (crGameLobbyManager == null)
+            {
+                crGameLobbyManager = GameObject.Find("GameManager").GetComponent<GameLobbyManager>();
+            }
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                isHost = true;
+                crGameLobbyManager.hostUI.SetActive(true);
+                crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
+            }
+            else
+            {
+                isGuest = true;
+                crGameLobbyManager.guestUI.SetActive(true);
+                crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
+            }
+            crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
+
+            crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
+
+        }
+        crGameLobbyManager.RecalculatePlacementReadyUpRoom();
     }
+
     void FixedUpdate()
     {
-        if (photonID.IsMine)// && !PhotonNetwork.IsConnected
+        if (photonID.IsMine && allowMoving)
         {
             if (hp <= 0)
             {
