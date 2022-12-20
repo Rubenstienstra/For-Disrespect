@@ -174,6 +174,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             crGameLobbyManager = GameLobbyManagerGameObject.GetComponent<GameLobbyManager>();
         }
         //DontDestroyOnLoad(gameObject);
+        //PhotonNetwork.AutomaticallySyncScene = true;
 
     }
     public void Start()
