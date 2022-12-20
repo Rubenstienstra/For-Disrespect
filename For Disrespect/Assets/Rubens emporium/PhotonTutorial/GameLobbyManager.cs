@@ -24,7 +24,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public int minimumRequiredPlayers;
 
     public GameObject hostUI;
+    public TMP_Text hostUIRoomName;
     public GameObject guestUI;
+    public TMP_Text guestUIRoomName;
 
     public Animator uiAnimation;
     public Animator camAnimation;
@@ -39,6 +41,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             GameObject crCameraGameobject = GameObject.Find("Main Camera");
             camAnimation = crCameraGameobject.GetComponent<Animator>();
         }
+        hostUIRoomName.text = PhotonNetwork.CurrentRoom.Name;
+        guestUIRoomName.text = PhotonNetwork.CurrentRoom.Name;
 
         if (PhotonNetwork.IsConnected)
         {
@@ -133,9 +137,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
        
     }
-    public void RecalculatePlacementReadyUpRoom()
+    public void RecalculatePlacementReadyUpRoom(PhotonView playerPhotonView)
     {
-        
+
         for (int i = 0; i < allInstantiatedPlayers.Count; i++)
         {
             print("Is Recalculating for Player: " + crInstantietedPlayerMovement.playerID);

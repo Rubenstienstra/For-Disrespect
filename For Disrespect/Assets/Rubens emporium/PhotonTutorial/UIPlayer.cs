@@ -19,7 +19,7 @@ public class UIPlayer : MonoBehaviour
             //gameObject.SetActive(false);
         }
 
-        if (playerName != null && playerMovement != null)
+        if (playerName != null && playerMovement != null)//Canvas 
         {
             if (playerMovement.photonID.IsMine)
             {
@@ -28,6 +28,9 @@ public class UIPlayer : MonoBehaviour
             }
             playerName.text = playerMovement.crPlayerName;
         }
+
+
+
         
     }
     public void OnHealthChange(float hp)

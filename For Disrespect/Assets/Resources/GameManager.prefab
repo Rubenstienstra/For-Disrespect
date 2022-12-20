@@ -156,7 +156,9 @@ MonoBehaviour:
   team1ParentForPlayer: {fileID: 1414059623}
   minimumRequiredPlayers: 2
   hostUI: {fileID: 785936291704947584}
+  hostUIRoomName: {fileID: 785936292013706004}
   guestUI: {fileID: 785936292009266481}
+  guestUIRoomName: {fileID: 785936291358485321}
   uiAnimation: {fileID: 0}
   camAnimation: {fileID: 0}
 --- !u!114 &3621801575891606798
@@ -252,6 +254,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[5].m_Target
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5348591586513474410, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
+        type: 3}
+      propertyPath: m_text
+      value: Current Room Name
       objectReference: {fileID: 0}
     - target: {fileID: 5348591586549035590, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
         type: 3}
@@ -375,6 +382,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c, type: 3}
+--- !u!114 &785936291358485321 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5348591586513474410, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
+    type: 3}
+  m_PrefabInstance: {fileID: 4670856585311287331}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &785936291704947584 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5348591585651899299, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
@@ -387,6 +406,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4670856585311287331}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &785936292013706004 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5348591585826534199, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
+    type: 3}
+  m_PrefabInstance: {fileID: 4670856585311287331}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &785936292471047344 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5348591587483384979, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,

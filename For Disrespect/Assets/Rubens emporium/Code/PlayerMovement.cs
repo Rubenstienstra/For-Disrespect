@@ -206,7 +206,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
 
         SendMessageUpwards("RecalculatePlacementReadyUpRoom",crGameLobbyManager,SendMessageOptions.DontRequireReceiver);
-        crGameLobbyManager.RecalculatePlacementReadyUpRoom();
+        crGameLobbyManager.RecalculatePlacementReadyUpRoom(photonID);
     }
 
     void FixedUpdate()
