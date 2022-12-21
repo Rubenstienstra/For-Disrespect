@@ -16,12 +16,13 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject crInstantiatedPlayerPrefab;
     public List<GameObject> allInstantiatedPlayers;
     public PlayerMovement crInstantietedPlayerMovement;
-    public Vector3[] spawnLocations;
+    public Vector3[] PlayerSpawnLocations;
 
     public GameObject team0ParentForPlayer;
     public GameObject team1ParentForPlayer;
+    public GameObject[] playerDummyGameObjects;
     
-    public int minimumRequiredPlayers;
+    public int minimumRequiredPlayers = 2;
 
     public GameObject hostUI;
     public TMP_Text hostUIRoomName;
@@ -50,7 +51,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         }
         
     }
-    
 
     #region Automatic voids
     public override void OnLeftRoom()
@@ -63,10 +63,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(newPlayer.NickName + " has joined. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        if (PhotonNetwork.CurrentRoom.PlayerCount >= minimumRequiredPlayers)
-        {
-            EnoughPlayers();
-        }
+        //if (PhotonNetwork.CurrentRoom.PlayerCount >= PhotonNetwork.CurrentRoom.MaxPlayers)
+        CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, true);
 
         base.OnPlayerEnteredRoom(newPlayer);
     }
@@ -76,11 +74,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
         allInstantiatedPlayers.RemoveAt(allInstantiatedPlayers.Count -1);
 
-        if (PhotonNetwork.CurrentRoom.PlayerCount < minimumRequiredPlayers)
-        {
-            NotEnoughPlayers();
-        }
-
+        //if (PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
+        CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, false);
+        
         base.OnPlayerLeftRoom(otherPlayer);
     }
     #endregion
@@ -107,27 +103,17 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         print("Loading World, PlayerName: " + PhotonNetwork.NickName);
         PhotonNetwork.LoadLevel("GameRoom");
     }
-    public void RecalculatePlayers()
+    
+    public void CheckingPlayersInRoom(int totalPlayers, bool enableOrDisable)
     {
-        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
-        {
-            //SpawnPlayer();
-            print("Needs extra player? (used to spawn player)");
-        }
+        playerDummyGameObjects[totalPlayers -1].SetActive(enableOrDisable);
     }
-    public void EnoughPlayers()
-    {
-        
-    }
-    public void NotEnoughPlayers()
-    {
 
-    }
     public void SpawnPlayer()
     {
         print("Spawned a player in: " + SceneManager.GetActiveScene().name);
         crInstantiatedPlayerPrefab = null;
-        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount -1], Quaternion.identity);
+        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, new Vector3(10,0,10), Quaternion.identity);
         allInstantiatedPlayers.Add(crInstantiatedPlayerPrefab);
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerMovement.crGameLobbyManager = this;
@@ -137,7 +123,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
        
     }
-    public void RecalculatePlacementReadyUpRoom(PhotonView playerPhotonView)
+    public void RecalculatePlacementReadyUpRoom()// heb ik niet nodig als de max 2 spelers zijn.
     {
 
         for (int i = 0; i < allInstantiatedPlayers.Count; i++)
@@ -151,7 +137,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
                 print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + "Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
             }
-            else if (crInstantietedPlayerMovement.playerID % 2 == 1)//Team0
+            else if (crInstantietedPlayerMovement.playerID % 2 == 1)//Team1
             {
                 crInstantiatedPlayerPrefab.transform.parent = team1ParentForPlayer.transform;
 

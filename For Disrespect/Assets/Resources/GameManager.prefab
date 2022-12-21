@@ -105,7 +105,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2410681214851170738}
   - component: {fileID: 2410681214851170737}
-  - component: {fileID: 3621801575891606798}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -147,13 +146,12 @@ MonoBehaviour:
   crInstantiatedPlayerPrefab: {fileID: 0}
   allInstantiatedPlayers: []
   crInstantietedPlayerMovement: {fileID: 0}
-  spawnLocations:
-  - {x: 0, y: 0, z: 0.089}
-  - {x: 1.8, y: 0, z: 10}
-  - {x: 1, y: 0, z: 0.089}
-  - {x: 0, y: 0, z: 0}
+  PlayerSpawnLocations: []
   team0ParentForPlayer: {fileID: 478828258}
   team1ParentForPlayer: {fileID: 1414059623}
+  playerDummyGameObjects:
+  - {fileID: 0}
+  - {fileID: 0}
   minimumRequiredPlayers: 2
   hostUI: {fileID: 785936291704947584}
   hostUIRoomName: {fileID: 785936292013706004}
@@ -161,28 +159,6 @@ MonoBehaviour:
   guestUIRoomName: {fileID: 785936291358485321}
   uiAnimation: {fileID: 0}
   camAnimation: {fileID: 0}
---- !u!114 &3621801575891606798
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2410681214851170736}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 0
-  OwnershipTransfer: 2
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1001 &4670856585311287331
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -218,7 +194,7 @@ PrefabInstance:
     - target: {fileID: 5348591585651899299, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5348591585813148946, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
         type: 3}

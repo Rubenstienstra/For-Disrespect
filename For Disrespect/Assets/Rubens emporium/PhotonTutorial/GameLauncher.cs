@@ -200,12 +200,13 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
             print("Created: MISSING ROOM NAME" + ". In: " + sceneName);
         }
         
-        
         base.OnCreatedRoom();
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         print(returnCode + message);
+
+        choosingLobbyOrCreate.SetActive(true);
 
         base.OnCreateRoomFailed(returnCode, message);
     }

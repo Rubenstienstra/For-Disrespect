@@ -170,7 +170,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         }
         if (crGameLobbyManager == null)
         {
-            GameObject GameLobbyManagerGameObject = GameObject.Find("GameManager(Clone)");
+            GameObject GameLobbyManagerGameObject = GameObject.Find("GameManager");
             crGameLobbyManager = GameLobbyManagerGameObject.GetComponent<GameLobbyManager>();
         }
         //DontDestroyOnLoad(gameObject);
@@ -206,7 +206,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
 
         SendMessageUpwards("RecalculatePlacementReadyUpRoom",crGameLobbyManager,SendMessageOptions.DontRequireReceiver);
-        crGameLobbyManager.RecalculatePlacementReadyUpRoom(photonID);
+        //crGameLobbyManager.RecalculatePlacementReadyUpRoom();
     }
 
     void FixedUpdate()
@@ -307,7 +307,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.LeaveRoom();
-            return;
         }    
         SceneManager.LoadScene("Launcher");
     }
