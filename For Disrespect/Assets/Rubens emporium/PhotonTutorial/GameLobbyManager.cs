@@ -28,6 +28,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public TMP_Text hostUIRoomName;
     public GameObject guestUI;
     public TMP_Text guestUIRoomName;
+    public TMP_Text worldSpaceNameEnemy;
 
     public Animator uiAnimation;
     public Animator camAnimation;
@@ -63,19 +64,15 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(newPlayer.NickName + " has joined. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
-        crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = newPlayer.NickName;
-
         //if (PhotonNetwork.CurrentRoom.PlayerCount >= PhotonNetwork.CurrentRoom.MaxPlayers)
         CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, true);
-
         base.OnPlayerEnteredRoom(newPlayer);
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         print(otherPlayer.NickName + " has leaved. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        if(allPlayers.Count >= 1)
+        if (allPlayers.Count >= 1)
         {
             allPlayers.RemoveAt(allPlayers.Count - 1);
         }
@@ -152,5 +149,20 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
                 print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + ".Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
             }
         }
+    }
+    public void OnTriggerEnter(Collider other)
+    {
+        if(other.transform.gameObject.tag == "Player")
+        {
+            allPlayers.Add(other.gameObject);
+            allPlayers[0].GetComponent<PlayerMovement>().GiveEnemyNames();
+            if(allPlayers.Count >= 2)
+            {
+                allPlayers[1].GetComponent<PlayerMovement>().GiveEnemyNames();
+            }
+            print(other.gameObject.name + "Has entered the triggerZone");
+            
+        }
+        
     }
 }

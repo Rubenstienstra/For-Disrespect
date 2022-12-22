@@ -631,11 +631,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1293710629552689932, guid: 30521e5029ec6d149b588fac0d87c57a,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1293710629552689932, guid: 30521e5029ec6d149b588fac0d87c57a,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2410681214851170736, guid: 30521e5029ec6d149b588fac0d87c57a,
         type: 3}
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2410681214851170737, guid: 30521e5029ec6d149b588fac0d87c57a,
+        type: 3}
+      propertyPath: worldSpaceNameEnemy
+      value: 
+      objectReference: {fileID: 1724310007}
     - target: {fileID: 2410681214851170737, guid: 30521e5029ec6d149b588fac0d87c57a,
         type: 3}
       propertyPath: playerDummyGameObjects.Array.data[0]
@@ -654,7 +669,7 @@ PrefabInstance:
     - target: {fileID: 2410681214851170738, guid: 30521e5029ec6d149b588fac0d87c57a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2410681214851170738, guid: 30521e5029ec6d149b588fac0d87c57a,
         type: 3}
@@ -664,7 +679,7 @@ PrefabInstance:
     - target: {fileID: 2410681214851170738, guid: 30521e5029ec6d149b588fac0d87c57a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2410681214851170738, guid: 30521e5029ec6d149b588fac0d87c57a,
         type: 3}

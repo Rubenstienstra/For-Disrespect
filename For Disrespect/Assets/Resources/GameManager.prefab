@@ -105,6 +105,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2410681214851170738}
   - component: {fileID: 2410681214851170737}
+  - component: {fileID: 1293710629552689932}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -144,7 +145,7 @@ MonoBehaviour:
   playerSpawnPrefab: {fileID: 1960451430545438968, guid: 036f2d6439727ea46b68ed132187dfeb,
     type: 3}
   crInstantiatedPlayerPrefab: {fileID: 0}
-  allInstantiatedPlayers: []
+  allPlayers: []
   crInstantietedPlayerMovement: {fileID: 0}
   PlayerSpawnLocations: []
   team0ParentForPlayer: {fileID: 478828258}
@@ -157,8 +158,22 @@ MonoBehaviour:
   hostUIRoomName: {fileID: 785936292013706004}
   guestUI: {fileID: 785936292009266481}
   guestUIRoomName: {fileID: 785936291358485321}
+  worldSpaceNameEnemy: {fileID: 0}
   uiAnimation: {fileID: 0}
   camAnimation: {fileID: 0}
+--- !u!65 &1293710629552689932
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2410681214851170736}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &4670856585311287331
 PrefabInstance:
   m_ObjectHideFlags: 0
