@@ -106,7 +106,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     
     public void CheckingPlayersInRoom(int totalPlayers, bool enableOrDisable)
     {
-        playerDummyGameObjects[totalPlayers -1].SetActive(enableOrDisable);
+        playerDummyGameObjects[1].SetActive(enableOrDisable);
     }
 
     public void SpawnPlayer()
@@ -121,6 +121,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         crInstantietedPlayerMovement.UIPrefab.SetActive(false);
         crInstantietedPlayerMovement.cameraPlayer.SetActive(false);
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
+
+        //CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, true);
        
     }
     public void RecalculatePlacementReadyUpRoom()// heb ik niet nodig als de max 2 spelers zijn.

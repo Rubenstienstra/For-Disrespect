@@ -126,13 +126,18 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
         }
         else
         {
-            print("The Room Has No Name! RoomName:" + createRoomName);
+            print("The Room Has No Name!");
+            choosingLobbyOrCreate.SetActive(true);
         }
     }
     public void LeaveCreatingRoomButton()
     {
         creatingLobby.SetActive(false);
         choosingLobbyOrCreate.SetActive(true);
+    }
+    public void LeaveApplicationButton()
+    {
+        Application.Quit();
     }
 
     #endregion
