@@ -201,11 +201,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             if (photonID.IsMine)
             {
                 crGameLobbyManager.guestUI.SetActive(true);
-
-                //if (crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text == "")
-                //{
-                //    crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crGameLobbyManager.crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().crPlayerName;
-                //}
             }
         }
         crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
@@ -307,14 +302,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             isAttacking = false;
         }
     }
-    public void GiveEnemyNames()
+    public void GiveEnemyNames()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
         GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
         if (photonID.IsMine && crGameLobbyManager.allPlayers.Count >= 2)
         {
             crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().crPlayerName;
+            print("tried giving enemy names");
         }
-        print("tried giving enemy names");
     }
 
     public void LeaveRoom()

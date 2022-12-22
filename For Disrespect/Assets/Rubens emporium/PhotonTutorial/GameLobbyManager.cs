@@ -72,6 +72,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(otherPlayer.NickName + " has leaved. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
+        worldSpaceNameEnemy.text = "";
         if (allPlayers.Count >= 1)
         {
             allPlayers.RemoveAt(allPlayers.Count - 1);
@@ -90,6 +91,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             uiAnimation.SetBool("BeforeCombat", false); camAnimation.SetBool("BeforeCombat", false);
+            worldSpaceNameEnemy.text = "";
             Destroy(photonView);
             PhotonNetwork.LeaveRoom();
             return;
@@ -155,13 +157,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         if(other.transform.gameObject.tag == "Player")
         {
             allPlayers.Add(other.gameObject);
-            allPlayers[0].GetComponent<PlayerMovement>().GiveEnemyNames();
-            if(allPlayers.Count >= 2)
-            {
-                allPlayers[1].GetComponent<PlayerMovement>().GiveEnemyNames();
-            }
+            allPlayers[0].GetComponent<PlayerMovement>().GiveEnemyNames();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
             print(other.gameObject.name + "Has entered the triggerZone");
-            
         }
         
     }
