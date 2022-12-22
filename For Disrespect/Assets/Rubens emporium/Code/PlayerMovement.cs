@@ -180,30 +180,35 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public void Start()
     {
         playerMovement = this;
+        GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
         print("ViewID: "+ photonID.ViewID);
 
-            if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
+        {
+            isHost = true;
+            crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
+            if (photonID.IsMine)
             {
-                isHost = true;
-                crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
-                if (photonID.IsMine)
-                {
-                    crGameLobbyManager.hostUI.SetActive(true);
-                }
+               crGameLobbyManager.hostUI.SetActive(true);
             }
-            else
-            {
-                isGuest = true;
-                crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
-                crGameLobbyManager.CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount - 1, true);
+        }
+        else
+        {
+            isGuest = true;
+            crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
+            crGameLobbyManager.CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount - 1, true);
 
-                if (photonID.IsMine)
+            if (photonID.IsMine)
+            {
+                crGameLobbyManager.guestUI.SetActive(true);
+                if(crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text == "")
                 {
-                    crGameLobbyManager.guestUI.SetActive(true);
+                    crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crGameLobbyManager.crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>().crPlayerName;
                 }
             }
-            crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
-            crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
+        }
+        crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
+        crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
 
         SendMessageUpwards("RecalculatePlacementReadyUpRoom",crGameLobbyManager,SendMessageOptions.DontRequireReceiver);
         //crGameLobbyManager.RecalculatePlacementReadyUpRoom();

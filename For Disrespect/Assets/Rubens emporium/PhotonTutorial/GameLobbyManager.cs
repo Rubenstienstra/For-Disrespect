@@ -63,6 +63,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(newPlayer.NickName + " has joined. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
+        GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
+        crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = newPlayer.NickName;
+
         //if (PhotonNetwork.CurrentRoom.PlayerCount >= PhotonNetwork.CurrentRoom.MaxPlayers)
         CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, true);
 
