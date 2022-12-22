@@ -14,7 +14,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
     public GameObject playerSpawnPrefab;
     public GameObject crInstantiatedPlayerPrefab;
-    public List<GameObject> allInstantiatedPlayers;
+    public List<GameObject> allPlayers;
     public PlayerMovement crInstantietedPlayerMovement;
     public Vector3[] PlayerSpawnLocations;
 
@@ -72,7 +72,11 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(otherPlayer.NickName + " has leaved. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        allInstantiatedPlayers.RemoveAt(allInstantiatedPlayers.Count -1);
+        if(allPlayers.Count >= 1)
+        {
+            allPlayers.RemoveAt(allPlayers.Count - 1);
+        }
+
 
         //if (PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
         CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, false);
@@ -114,7 +118,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         print("Spawned a player in: " + SceneManager.GetActiveScene().name);
         crInstantiatedPlayerPrefab = null;
         crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, new Vector3(10,0,10), Quaternion.identity);
-        allInstantiatedPlayers.Add(crInstantiatedPlayerPrefab);
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerMovement.crGameLobbyManager = this;
         crInstantietedPlayerMovement.allowMoving = false;
@@ -128,7 +131,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void RecalculatePlacementReadyUpRoom()// heb ik niet nodig als de max 2 spelers zijn.
     {
 
-        for (int i = 0; i < allInstantiatedPlayers.Count; i++)
+        for (int i = 0; i < allPlayers.Count; i++)
         {
             print("Is Recalculating for Player: " + crInstantietedPlayerMovement.playerID);
             //als even is, wordt het 0 en als het getal oneven is is het 1.

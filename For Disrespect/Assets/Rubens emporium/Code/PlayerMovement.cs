@@ -195,6 +195,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 isGuest = true;
                 crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
+                crGameLobbyManager.CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount - 1, true);
 
                 if (photonID.IsMine)
                 {
@@ -202,7 +203,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 }
             }
             crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
-
             crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
 
         SendMessageUpwards("RecalculatePlacementReadyUpRoom",crGameLobbyManager,SendMessageOptions.DontRequireReceiver);
