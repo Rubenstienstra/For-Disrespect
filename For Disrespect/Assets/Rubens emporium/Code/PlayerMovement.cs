@@ -168,39 +168,46 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             //      photonID.Owner.NickName;
             //}
         }
+        if (crGameLobbyManager == null)
+        {
+            GameObject GameLobbyManagerGameObject = GameObject.Find("GameManager");
+            crGameLobbyManager = GameLobbyManagerGameObject.GetComponent<GameLobbyManager>();
+        }
         //DontDestroyOnLoad(gameObject);
-       
+        //PhotonNetwork.AutomaticallySyncScene = true;
+
     }
     public void Start()
     {
         playerMovement = this;
+        GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
         print("ViewID: "+ photonID.ViewID);
 
-        if (photonID.IsMine)
+        if (PhotonNetwork.IsMasterClient)
         {
-            if (crGameLobbyManager == null)
+            isHost = true;
+            crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
+            if (photonID.IsMine)
             {
-                crGameLobbyManager = GameObject.Find("GameManager").GetComponent<GameLobbyManager>();
+               crGameLobbyManager.hostUI.SetActive(true);
             }
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                isHost = true;
-                crGameLobbyManager.hostUI.SetActive(true);
-                crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
-            }
-            else
-            {
-                isGuest = true;
-                crGameLobbyManager.guestUI.SetActive(true);
-                crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
-            }
-            crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
-
-            crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
-
         }
-        crGameLobbyManager.RecalculatePlacementReadyUpRoom();
+        else
+        {
+            isGuest = true;
+            crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
+            crGameLobbyManager.CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount - 1, true);
+
+            if (photonID.IsMine)
+            {
+                crGameLobbyManager.guestUI.SetActive(true);
+            }
+        }
+        crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
+        crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
+
+        SendMessageUpwards("RecalculatePlacementReadyUpRoom",crGameLobbyManager,SendMessageOptions.DontRequireReceiver);
+        //crGameLobbyManager.RecalculatePlacementReadyUpRoom();
     }
 
     void FixedUpdate()
@@ -295,13 +302,21 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             isAttacking = false;
         }
     }
+    public void GiveEnemyNames()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
+    {
+        GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
+        if (photonID.IsMine && crGameLobbyManager.allPlayers.Count >= 2)
+        {
+            crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().crPlayerName;
+            print("tried giving enemy names");
+        }
+    }
 
     public void LeaveRoom()
     {
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.LeaveRoom();
-            return;
         }    
         SceneManager.LoadScene("Launcher");
     }

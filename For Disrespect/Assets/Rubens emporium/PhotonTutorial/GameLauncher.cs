@@ -126,13 +126,18 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
         }
         else
         {
-            print("The Room Has No Name! RoomName:" + createRoomName);
+            print("The Room Has No Name!");
+            choosingLobbyOrCreate.SetActive(true);
         }
     }
     public void LeaveCreatingRoomButton()
     {
         creatingLobby.SetActive(false);
         choosingLobbyOrCreate.SetActive(true);
+    }
+    public void LeaveApplicationButton()
+    {
+        Application.Quit();
     }
 
     #endregion
@@ -200,12 +205,13 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
             print("Created: MISSING ROOM NAME" + ". In: " + sceneName);
         }
         
-        
         base.OnCreatedRoom();
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         print(returnCode + message);
+
+        choosingLobbyOrCreate.SetActive(true);
 
         base.OnCreateRoomFailed(returnCode, message);
     }

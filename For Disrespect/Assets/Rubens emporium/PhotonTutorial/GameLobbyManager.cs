@@ -14,17 +14,25 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
     public GameObject playerSpawnPrefab;
     public GameObject crInstantiatedPlayerPrefab;
-    public List<GameObject> allInstantiatedPlayers;
+    public List<GameObject> allPlayers;
     public PlayerMovement crInstantietedPlayerMovement;
-    public Vector3[] spawnLocations;
+    public Vector3[] PlayerSpawnLocations;
 
     public GameObject team0ParentForPlayer;
     public GameObject team1ParentForPlayer;
+    public GameObject[] playerDummyGameObjects;
     
-    public int minimumRequiredPlayers;
+    public int minimumRequiredPlayers = 2;
 
     public GameObject hostUI;
+    public TMP_Text hostUIRoomName;
+    public bool hostUIReady;
+
     public GameObject guestUI;
+    public TMP_Text guestUIRoomName;
+    public bool guestUIReady;
+
+    public TMP_Text worldSpaceNameEnemy;
 
     public Animator uiAnimation;
     public Animator camAnimation;
@@ -39,6 +47,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             GameObject crCameraGameobject = GameObject.Find("Main Camera");
             camAnimation = crCameraGameobject.GetComponent<Animator>();
         }
+        hostUIRoomName.text = PhotonNetwork.CurrentRoom.Name;
+        guestUIRoomName.text = PhotonNetwork.CurrentRoom.Name;
 
         if (PhotonNetwork.IsConnected)
         {
@@ -46,7 +56,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         }
         
     }
-    
 
     #region Automatic voids
     public override void OnLeftRoom()
@@ -59,24 +68,24 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(newPlayer.NickName + " has joined. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        if (PhotonNetwork.CurrentRoom.PlayerCount >= minimumRequiredPlayers)
-        {
-            EnoughPlayers();
-        }
-
+        //if (PhotonNetwork.CurrentRoom.PlayerCount >= PhotonNetwork.CurrentRoom.MaxPlayers)
+        CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, true);
         base.OnPlayerEnteredRoom(newPlayer);
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         print(otherPlayer.NickName + " has leaved. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        allInstantiatedPlayers.RemoveAt(allInstantiatedPlayers.Count -1);
-
-        if (PhotonNetwork.CurrentRoom.PlayerCount < minimumRequiredPlayers)
+        worldSpaceNameEnemy.text = "";
+        if (allPlayers.Count >= 1)
         {
-            NotEnoughPlayers();
+            allPlayers.RemoveAt(allPlayers.Count - 1);
         }
 
+
+        //if (PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
+        CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, false);
+        
         base.OnPlayerLeftRoom(otherPlayer);
     }
     #endregion
@@ -86,6 +95,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             uiAnimation.SetBool("BeforeCombat", false); camAnimation.SetBool("BeforeCombat", false);
+            worldSpaceNameEnemy.text = "";
             Destroy(photonView);
             PhotonNetwork.LeaveRoom();
             return;
@@ -103,40 +113,33 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         print("Loading World, PlayerName: " + PhotonNetwork.NickName);
         PhotonNetwork.LoadLevel("GameRoom");
     }
-    public void RecalculatePlayers()
+    
+    public void CheckingPlayersInRoom(int totalPlayers, bool enableOrDisable)
     {
-        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
-        {
-            //SpawnPlayer();
-            print("Needs extra player? (used to spawn player)");
-        }
+        playerDummyGameObjects[1].SetActive(enableOrDisable);
     }
-    public void EnoughPlayers()
-    {
-        
-    }
-    public void NotEnoughPlayers()
-    {
 
-    }
     public void SpawnPlayer()
     {
         print("Spawned a player in: " + SceneManager.GetActiveScene().name);
         crInstantiatedPlayerPrefab = null;
-        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, spawnLocations[PhotonNetwork.CurrentRoom.PlayerCount -1], Quaternion.identity);
-        allInstantiatedPlayers.Add(crInstantiatedPlayerPrefab);
+        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, new Vector3(10,0,10), Quaternion.identity);
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerMovement.crGameLobbyManager = this;
         crInstantietedPlayerMovement.allowMoving = false;
         crInstantietedPlayerMovement.UIPrefab.SetActive(false);
         crInstantietedPlayerMovement.cameraPlayer.SetActive(false);
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
+
+        //CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, true);
        
     }
-    public void RecalculatePlacementReadyUpRoom()
+    public void RecalculatePlacementReadyUpRoom()// heb ik niet nodig als de max 2 spelers zijn.
     {
-        for (int i = 0; i < allInstantiatedPlayers.Count; i++)
+
+        for (int i = 0; i < allPlayers.Count; i++)
         {
+            print("Is Recalculating for Player: " + crInstantietedPlayerMovement.playerID);
             //als even is, wordt het 0 en als het getal oneven is is het 1.
             if (crInstantietedPlayerMovement.playerID % 2 == 0)//Team0
             {
@@ -145,12 +148,36 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
                 print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + "Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
             }
-            else if (crInstantietedPlayerMovement.playerID % 2 == 1)//Team0
+            else if (crInstantietedPlayerMovement.playerID % 2 == 1)//Team1
             {
                 crInstantiatedPlayerPrefab.transform.parent = team1ParentForPlayer.transform;
 
                 print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + ".Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
             }
         }
+    }
+    public void OnTriggerEnter(Collider other)
+    {
+        if(other.transform.gameObject.tag == "Player")
+        {
+            allPlayers.Add(other.gameObject);
+            print(other.gameObject.name + "Has entered the triggerZone");
+            StartCoroutine(WaitBeforeGivingNames());
+            
+        }
+    }
+    public IEnumerator WaitBeforeGivingNames()
+    {
+        yield return new WaitForSeconds(0.4f);//Het heeft processing tijd nodig.
+        allPlayers[0].GetComponent<PlayerMovement>().GiveEnemyNames();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
+    }
+    
+    public void ReadyUpHostUI(bool readyOrUnready)
+    {
+        hostUIReady = readyOrUnready;
+    }
+    public void ReadyUpGuestUI(bool readyOrUnready)
+    {
+        guestUIReady = readyOrUnready;
     }
 }
