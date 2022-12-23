@@ -157,9 +157,14 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         if(other.transform.gameObject.tag == "Player")
         {
             allPlayers.Add(other.gameObject);
-            allPlayers[0].GetComponent<PlayerMovement>().GiveEnemyNames();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
             print(other.gameObject.name + "Has entered the triggerZone");
+            StartCoroutine(WaitBeforeGivingNames());
+            
         }
-        
+    }
+    public IEnumerator WaitBeforeGivingNames()
+    {
+        yield return new WaitForSeconds(0.4f);
+        allPlayers[0].GetComponent<PlayerMovement>().GiveEnemyNames();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
     }
 }
