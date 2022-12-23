@@ -28,10 +28,6 @@ public class UIPlayer : MonoBehaviour
             }
             playerName.text = playerMovement.crPlayerName;
         }
-
-
-
-        
     }
     public void OnHealthChange(float hp)
     {

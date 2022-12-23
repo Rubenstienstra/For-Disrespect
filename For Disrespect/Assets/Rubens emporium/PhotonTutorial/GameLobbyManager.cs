@@ -26,8 +26,12 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
     public GameObject hostUI;
     public TMP_Text hostUIRoomName;
+    public bool hostUIReady;
+
     public GameObject guestUI;
     public TMP_Text guestUIRoomName;
+    public bool guestUIReady;
+
     public TMP_Text worldSpaceNameEnemy;
 
     public Animator uiAnimation;
@@ -164,7 +168,16 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     }
     public IEnumerator WaitBeforeGivingNames()
     {
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.4f);//Het heeft processing tijd nodig.
         allPlayers[0].GetComponent<PlayerMovement>().GiveEnemyNames();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
+    }
+    
+    public void ReadyUpHostUI(bool readyOrUnready)
+    {
+        hostUIReady = readyOrUnready;
+    }
+    public void ReadyUpGuestUI(bool readyOrUnready)
+    {
+        guestUIReady = readyOrUnready;
     }
 }
