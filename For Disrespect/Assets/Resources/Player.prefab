@@ -1144,7 +1144,7 @@ MonoBehaviour:
   rayCastDistance: 0
   distanceBetweenGround: 10
   playerAnimations: {fileID: 0}
-  isRobot: 0
+  AllReadyUpAnimations: {fileID: 0}
   isHost: 0
   isGuest: 0
   crPlayerName: 

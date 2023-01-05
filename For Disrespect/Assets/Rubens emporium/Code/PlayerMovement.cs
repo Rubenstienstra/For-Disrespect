@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public float distanceBetweenGround;
 
     public Animator playerAnimations;
-    public bool isRobot;
+    public Animator AllReadyUpAnimations;
 
     public bool isHost;
     public bool isGuest;
@@ -219,30 +219,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 GameLobbyManager.gameLobbyInfo.LeaveRoom();
             }
 
-            if (isRobot)
-            {
-                //ROBOT MOVEMENT
-                if (movementWASD[2] > 0 || movementWASD[0] > 0 || playerAnimations.GetFloat("Speed") > 0.001f)
-                {
-                    playerAnimations.SetFloat("Speed", -movementWASD[2] + movementWASD[0], 0.25f, Time.deltaTime);
-                }
-                else if (playerAnimations.GetFloat("Speed") < 0.002f && movementWASD[2] == 0 && movementWASD[0] == 0)
-                {
-                    playerAnimations.SetFloat("Speed", 0);
-                }
-
-                if (movementWASD[1] > 0 || movementWASD[3] > 0 || playerAnimations.GetFloat("Direction") > 0.001)
-                {
-                    playerAnimations.SetFloat("Direction", -movementWASD[1] + movementWASD[3], 0.25f, Time.deltaTime);
-                }
-                else if (playerAnimations.GetFloat("Direction") < 0.002f && movementWASD[1] == 0 && movementWASD[3] == 0)
-                {
-                    playerAnimations.SetFloat("Direction", 0);
-                }
-
-                return;
-            }
-
             //NOMRAL MOVEMENT
             Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
             distanceBetweenGround = hitSlope.distance;
@@ -319,6 +295,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             PhotonNetwork.LeaveRoom();
         }    
         SceneManager.LoadScene("Launcher");
+    }
+    public void LoadIntoGame()
+    {
+        AllReadyUpAnimations = crGameLobbyManager.camAnimation;
+        AllReadyUpAnimations.SetBool("GameStart", true);
     }
     void OnLevelWasLoaded(int level)
     {

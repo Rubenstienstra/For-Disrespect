@@ -56,6 +56,22 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         }
         
     }
+    #region Photon calls
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(hostUIReady);
+            stream.SendNext(guestUIReady);
+        }
+        else if (stream.IsReading)
+        {
+            this.hostUIReady = (bool)stream.ReceiveNext();
+            this.guestUIReady = (bool)stream.ReceiveNext();
+        }
+    }
+
+    #endregion
 
     #region Automatic voids
     public override void OnLeftRoom()
@@ -97,8 +113,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             uiAnimation.SetBool("BeforeCombat", false); camAnimation.SetBool("BeforeCombat", false);
             worldSpaceNameEnemy.text = "";
             Destroy(photonView);
+            guestUIReady = false;
             PhotonNetwork.LeaveRoom();
-            return;
         }
         SceneManager.LoadScene("MainMenu");
     }
@@ -175,9 +191,20 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void ReadyUpHostUI(bool readyOrUnready)
     {
         hostUIReady = readyOrUnready;
+        if(hostUIReady && guestUIReady)
+        {
+            allPlayers[0].SendMessage("LoadIntoGame");
+            allPlayers[1].SendMessage("LoadIntoGame");
+        }
     }
     public void ReadyUpGuestUI(bool readyOrUnready)
     {
         guestUIReady = readyOrUnready;
+
+        if (hostUIReady && guestUIReady)
+        {
+            allPlayers[0].SendMessage("LoadIntoGame");
+            allPlayers[1].SendMessage("LoadIntoGame");
+        }
     }
 }
