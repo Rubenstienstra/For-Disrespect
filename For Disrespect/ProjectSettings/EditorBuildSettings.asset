@@ -12,18 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: 375dd8f6c06b3864eb84024ea3a15228
   - enabled: 1
-    path: Assets/Rubens emporium/PhotonTutorial/Launcher.Unity
-    guid: 512cbf022efe417489c8b41ee8be28f4
-  - enabled: 1
-    path: Assets/Rubens emporium/PhotonTutorial/GameRoom.unity
+    path: Assets/Rubens emporium/GameRoom.unity
     guid: 9eab0b9382c6577459446197210de93a
-  - enabled: 1
-    path: Assets/Rubens emporium/PhotonTutorial/Room For 1.unity
-    guid: 18637af780ff8e84b908824fcd107f67
-  - enabled: 1
-    path: Assets/Rubens emporium/PhotonTutorial/Room for 2.unity
-    guid: 8396abf62d0b42d478c8556a13516ecb
-  - enabled: 1
-    path: Assets/Rubens emporium/PhotonTutorial/Room for 3.unity
-    guid: 26f69285703f51041928ca2440417261
   m_configObjects: {}
