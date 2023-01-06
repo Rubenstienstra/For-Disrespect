@@ -1147,6 +1147,7 @@ MonoBehaviour:
   AllReadyUpAnimations: {fileID: 0}
   isHost: 0
   isGuest: 0
+  isReady: 0
   crPlayerName: 
   UIPrefab: {fileID: 3574377282495681092}
   worldSpaceCanvasPlayerName: {fileID: 1838471723997878224}

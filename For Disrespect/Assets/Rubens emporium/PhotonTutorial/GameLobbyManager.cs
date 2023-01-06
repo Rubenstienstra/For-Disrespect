@@ -26,11 +26,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
     public GameObject hostUI;
     public TMP_Text hostUIRoomName;
-    public bool hostUIReady;
 
     public GameObject guestUI;
     public TMP_Text guestUIRoomName;
-    public bool guestUIReady;
 
     public TMP_Text worldSpaceNameEnemy;
 
@@ -57,19 +55,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         
     }
     #region Photon calls
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(hostUIReady);
-            stream.SendNext(guestUIReady);
-        }
-        else if (stream.IsReading)
-        {
-            this.hostUIReady = (bool)stream.ReceiveNext();
-            this.guestUIReady = (bool)stream.ReceiveNext();
-        }
-    }
 
     #endregion
 
@@ -77,6 +62,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         SceneManager.LoadScene("MainMenu");
+
         base.OnLeftRoom();
     }
 
@@ -113,10 +99,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             uiAnimation.SetBool("BeforeCombat", false); camAnimation.SetBool("BeforeCombat", false);
             worldSpaceNameEnemy.text = "";
             Destroy(photonView);
-            guestUIReady = false;
             PhotonNetwork.LeaveRoom();
         }
-        SceneManager.LoadScene("MainMenu");
     }
 
     public void LoadArena()
@@ -190,8 +174,13 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     
     public void ReadyUpHostUI(bool readyOrUnready)
     {
-        hostUIReady = readyOrUnready;
-        if(hostUIReady && guestUIReady)
+        allPlayers[0].GetComponent<PlayerMovement>().isReady = readyOrUnready;
+
+        if(allPlayers.Count <= 1)
+        {
+            return;
+        }
+        if(allPlayers[0].GetComponent<PlayerMovement>().isReady && allPlayers[1].GetComponent<PlayerMovement>().isReady)
         {
             allPlayers[0].SendMessage("LoadIntoGame");
             allPlayers[1].SendMessage("LoadIntoGame");
@@ -199,12 +188,17 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     }
     public void ReadyUpGuestUI(bool readyOrUnready)
     {
-        guestUIReady = readyOrUnready;
+        allPlayers[0].GetComponent<PlayerMovement>().isReady = readyOrUnready;
 
-        if (hostUIReady && guestUIReady)
+        if(allPlayers.Count <= 1)
         {
-            allPlayers[0].SendMessage("LoadIntoGame");
-            allPlayers[1].SendMessage("LoadIntoGame");
+            return;
+        }
+        if(allPlayers[0].GetComponent<PlayerMovement>().isReady && allPlayers[1].GetComponent<PlayerMovement>().isReady)
+        {
+            allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame",RpcTarget.All);
+            //allPlayers[0].SendMessage("LoadIntoGame");
+            //allPlayers[1].SendMessage("LoadIntoGame");
         }
     }
 }

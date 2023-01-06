@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     public bool isHost;
     public bool isGuest;
+    public bool isReady;
 
     public string crPlayerName;
     public static GameObject thisPlayerPrefab;
@@ -62,6 +63,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(hp);
             stream.SendNext(playerID);
             stream.SendNext(crPlayerName);
+            stream.SendNext(isReady);
             //print("sended: ");
         }
         else if(stream.IsReading)
@@ -71,6 +73,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             this.hp = (float)stream.ReceiveNext();
             this.playerID = (int)stream.ReceiveNext();
             this.crPlayerName = (string)stream.ReceiveNext();
+            this.isReady = (bool)stream.ReceiveNext();
             print("recieved: ");
         }
     }
@@ -288,14 +291,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         }
     }
 
-    public void LeaveRoom()
-    {
-        if (PhotonNetwork.IsConnected)
-        {
-            PhotonNetwork.LeaveRoom();
-        }    
-        SceneManager.LoadScene("Launcher");
-    }
+    //public void LeaveRoom()
+    //{
+    //    if (PhotonNetwork.IsConnected)
+    //    {
+    //        PhotonNetwork.LeaveRoom();
+    //    }    
+    //}
+    [PunRPC]
     public void LoadIntoGame()
     {
         AllReadyUpAnimations = crGameLobbyManager.camAnimation;
