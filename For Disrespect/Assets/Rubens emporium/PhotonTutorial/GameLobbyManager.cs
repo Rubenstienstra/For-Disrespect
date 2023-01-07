@@ -30,9 +30,11 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public TMP_Text GuestTotalRoundsUI;
 
     public GameObject hostUI;
+    public GameObject hostUISettings;
     public TMP_Text hostUIRoomName;
 
     public GameObject guestUI;
+    public GameObject guestUISettings;
     public TMP_Text guestUIRoomName;
 
     public TMP_Text worldSpaceNameEnemy;
@@ -82,6 +84,17 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         print(otherPlayer.NickName + " has leaved. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
+
+        if (guestUI.activeInHierarchy)
+        {
+            guestUI.SetActive(false);
+            hostUI.SetActive(true);
+        }
+        else if(guestUISettings.activeInHierarchy)
+        {
+            guestUISettings.SetActive(false);
+            hostUISettings.SetActive(true);
+        }
 
         worldSpaceNameEnemy.text = "";
         if (allPlayers.Count >= 1)

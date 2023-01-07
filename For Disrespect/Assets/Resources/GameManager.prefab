@@ -160,8 +160,10 @@ MonoBehaviour:
   HostTotalRoundsUI: {fileID: 785936292158661317}
   GuestTotalRoundsUI: {fileID: 785936291699536568}
   hostUI: {fileID: 785936291704947584}
+  hostUISettings: {fileID: 785936292803611966}
   hostUIRoomName: {fileID: 785936292013706004}
   guestUI: {fileID: 785936292009266481}
+  guestUISettings: {fileID: 785936291259746917}
   guestUIRoomName: {fileID: 785936291358485321}
   worldSpaceNameEnemy: {fileID: 0}
   uiAnimation: {fileID: 0}
@@ -610,6 +612,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c, type: 3}
+--- !u!1 &785936291259746917 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5348591586549035590, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
+    type: 3}
+  m_PrefabInstance: {fileID: 4670856585311287331}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &785936291358485321 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5348591586513474410, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
@@ -700,3 +708,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &785936292803611966 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5348591586615784733, guid: 9b34b6c12e7bbf248bba03afaf6f0d8c,
+    type: 3}
+  m_PrefabInstance: {fileID: 4670856585311287331}
+  m_PrefabAsset: {fileID: 0}
