@@ -21,8 +21,13 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject team0ParentForPlayer;
     public GameObject team1ParentForPlayer;
     public GameObject[] playerDummyGameObjects;
-    
-    public int minimumRequiredPlayers = 2;
+
+    public int totalRounds;
+    public int MaxTotalRounds;
+    public Button lessRoundsButton;
+    public Button moreRoundsButton;
+    public TMP_Text HostTotalRoundsUI;
+    public TMP_Text GuestTotalRoundsUI;
 
     public GameObject hostUI;
     public TMP_Text hostUIRoomName;
@@ -134,9 +139,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         //CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, true);
        
     }
+    #region Unused Code
     public void RecalculatePlacementReadyUpRoom()// heb ik niet nodig als de max 2 spelers zijn.
     {
-
         for (int i = 0; i < allPlayers.Count; i++)
         {
             print("Is Recalculating for Player: " + crInstantietedPlayerMovement.playerID);
@@ -156,6 +161,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             }
         }
     }
+    #endregion  
     public void OnTriggerEnter(Collider other)
     {
         if(other.transform.gameObject.tag == "Player")
@@ -163,15 +169,14 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             allPlayers.Add(other.gameObject);
             print(other.gameObject.name + "Has entered the triggerZone");
             StartCoroutine(WaitBeforeGivingNames());
-            
         }
     }
     public IEnumerator WaitBeforeGivingNames()
     {
-        yield return new WaitForSeconds(0.4f);//Het heeft processing tijd nodig.
+        yield return new WaitForSeconds(0.5f);//Het heeft processing tijd nodig.
         allPlayers[0].GetComponent<PlayerMovement>().GiveEnemyNames();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
     }
-    
+    #region ReadyUpCode
     public void ReadyUpHostUI(bool readyOrUnready)
     {
         allPlayers[0].GetComponent<PlayerMovement>().isReady = readyOrUnready;
@@ -182,8 +187,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         }
         if(allPlayers[0].GetComponent<PlayerMovement>().isReady && allPlayers[1].GetComponent<PlayerMovement>().isReady)
         {
-            allPlayers[0].SendMessage("LoadIntoGame");
-            allPlayers[1].SendMessage("LoadIntoGame");
+            EveryoneIsReady();
         }
     }
     public void ReadyUpGuestUI(bool readyOrUnready)
@@ -196,9 +200,44 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         }
         if(allPlayers[0].GetComponent<PlayerMovement>().isReady && allPlayers[1].GetComponent<PlayerMovement>().isReady)
         {
-            allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame",RpcTarget.All);
-            //allPlayers[0].SendMessage("LoadIntoGame");
-            //allPlayers[1].SendMessage("LoadIntoGame");
+            EveryoneIsReady();
         }
     }
+    public void EveryoneIsReady()
+    {
+        foreach(GameObject crPlayer in allPlayers)
+        {
+            DontDestroyOnLoad(crPlayer);
+        }
+        DontDestroyOnLoad(this.gameObject);
+        allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren
+    }
+    #endregion
+    #region VoidsForUIButtons
+    public void ChangeTotalRounds(int addNumber)
+    {
+        if(totalRounds > 1 && totalRounds < MaxTotalRounds)
+        {
+            totalRounds += addNumber;
+
+            lessRoundsButton.interactable = true;
+            moreRoundsButton.interactable = true;
+        }
+
+        else if (totalRounds >= MaxTotalRounds)
+        {
+            moreRoundsButton.interactable = false;
+        }
+        else if (totalRounds <= 1)
+        {
+            lessRoundsButton.interactable = false;
+        }
+
+        HostTotalRoundsUI.text = totalRounds.ToString();
+        GuestTotalRoundsUI.text = totalRounds.ToString();
+
+        print("Changed Number to: " + totalRounds);
+    }
+
+    #endregion
 }

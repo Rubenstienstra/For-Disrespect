@@ -35,9 +35,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public Animator playerAnimations;
     public Animator AllReadyUpAnimations;
 
-    public bool isHost;
-    public bool isGuest;
+    //public bool isHost;
+    //public bool isGuest;
     public bool isReady;
+    public float waitTimeAnimation;
 
     public string crPlayerName;
     public static GameObject thisPlayerPrefab;
@@ -188,7 +189,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
         if (PhotonNetwork.IsMasterClient)
         {
-            isHost = true;
+            //isHost = true;
             crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
             if (photonID.IsMine)
             {
@@ -197,7 +198,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         }
         else
         {
-            isGuest = true;
+            //isGuest = true;
             crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
             crGameLobbyManager.CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount - 1, true);
 
@@ -281,6 +282,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             isAttacking = false;
         }
     }
+
     public void GiveEnemyNames()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
         GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
@@ -303,6 +305,17 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         AllReadyUpAnimations = crGameLobbyManager.camAnimation;
         AllReadyUpAnimations.SetBool("GameStart", true);
+
+        StartCoroutine(WaitingReadyUpAnimation());
+    }
+    public IEnumerator WaitingReadyUpAnimation()
+    {
+        new WaitForSeconds(waitTimeAnimation);
+
+        AllReadyUpAnimations.SetBool("GameStart", false);
+        SceneManager.LoadSceneAsync("GameRoom");
+
+        yield return new WaitForSeconds(0);
     }
     void OnLevelWasLoaded(int level)
     {

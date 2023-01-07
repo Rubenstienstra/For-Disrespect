@@ -22,7 +22,7 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public TMP_InputField createRoomNameInput;
     public string sceneName = "Lobby";
 
-    public byte createMaxTotalPlayers;
+    public byte createMaxTotalPlayers = 2;
     public InputField maxTotalPlayers;
 
 
