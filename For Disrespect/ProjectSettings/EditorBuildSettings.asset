@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: 375dd8f6c06b3864eb84024ea3a15228
   - enabled: 1
-    path: Assets/Rubens emporium/GameRoom.unity
+    path: Assets/Scenes/GameRoom.unity
     guid: 9eab0b9382c6577459446197210de93a
   m_configObjects: {}

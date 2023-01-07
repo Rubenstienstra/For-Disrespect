@@ -102,8 +102,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             allPlayers.RemoveAt(allPlayers.Count - 1);
         }
 
-
-        //if (PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
         CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, false);
         
         base.OnPlayerLeftRoom(otherPlayer);
@@ -226,7 +224,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren
     }
     #endregion
-    #region VoidsForUIButtons
+
+    #region voidsForUIButtons
     public void ChangeTotalRounds(int addNumber)
     {
         if(totalRounds > 1 && totalRounds < MaxTotalRounds)
