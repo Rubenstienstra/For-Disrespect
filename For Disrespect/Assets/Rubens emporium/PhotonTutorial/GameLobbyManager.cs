@@ -216,11 +216,11 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     }
     public void EveryoneIsReady()
     {
+        allPlayers[0].GetComponent<PlayerMovement>().AllReadyUpAnimations = camAnimation;
+        allPlayers[1].GetComponent<PlayerMovement>().AllReadyUpAnimations = camAnimation;
+
         allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren
-        foreach (GameObject crPlayer in allPlayers)
-        {
-            DontDestroyOnLoad(crPlayer);
-        }
+
         DontDestroyOnLoad(this.gameObject);
     }
     #endregion

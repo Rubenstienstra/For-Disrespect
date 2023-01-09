@@ -298,13 +298,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     //    if (PhotonNetwork.IsConnected)
     //    {
     //        PhotonNetwork.LeaveRoom();
-    //    }    
+    //    }
     //}
     [PunRPC]
     public void LoadIntoGame()
     {
-        AllReadyUpAnimations = crGameLobbyManager.camAnimation;
         AllReadyUpAnimations.SetBool("GameStart", true);
+
+        DontDestroyOnLoad(this.gameObject);
 
         StartCoroutine(WaitingReadyUpAnimation());
     }
