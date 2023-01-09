@@ -184,6 +184,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public void Start()
     {
         playerMovement = this;
+        AllReadyUpAnimations = GameObject.Find("Main Camera Lobby").GetComponent<Animator>();
         GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
         print("ViewID: "+ photonID.ViewID);
 
@@ -211,7 +212,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
 
         SendMessageUpwards("RecalculatePlacementReadyUpRoom",crGameLobbyManager,SendMessageOptions.DontRequireReceiver);
-        //crGameLobbyManager.RecalculatePlacementReadyUpRoom();
     }
 
     void FixedUpdate()
@@ -311,9 +311,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public IEnumerator WaitingReadyUpAnimation()
     {
-        new WaitForSeconds(waitTimeAnimation);
-
-        AllReadyUpAnimations.SetBool("GameStart", false);
+        yield return new WaitForSeconds(waitTimeAnimation);
+       
         SceneManager.LoadSceneAsync("GameRoom");
 
         yield return new WaitForSeconds(0);
