@@ -65,14 +65,6 @@ public class PlayerNameField : MonoBehaviour
             print(2);
         }
     }
-    public void SetPrivateSettings()
-    {
-        if (gameLauncher != null)
-        {
-            gameLauncher.createPrivacySettings = gameLauncher.privacySettings.isOn;
-            print(gameLauncher.privacySettings.isOn);
-        }
-    }
     public void CreatingRoomUI()
     {
        if(gameLauncher != null)

@@ -23,11 +23,6 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public string sceneName = "Lobby";
 
     public byte createMaxTotalPlayers = 2;
-    public InputField maxTotalPlayers;
-
-
-    public bool createPrivacySettings;
-    public Toggle privacySettings;
 
     public RoomOptions createRoomSettings;
 
@@ -102,10 +97,14 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
     public void JoinRoomButton()
     {
-        PhotonNetwork.JoinRoom(joinRoomName);
-        if (joinRoomName != "")
+        print("JoinButton is pressed");
+        if (isConnectedToMaster && isConnectedToLobby)
         {
-            
+            PhotonNetwork.JoinRoom(joinRoomName);
+        }
+        else
+        {
+            Connect();
         }
     }
     public void SetJoinRoomName()
@@ -122,7 +121,7 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         if(createRoomName != "")
         {
-            PhotonNetwork.CreateRoom(createRoomName, new RoomOptions { IsVisible = createPrivacySettings, MaxPlayers = createMaxTotalPlayers }, TypedLobby.Default);
+            PhotonNetwork.CreateRoom(createRoomName, new RoomOptions { IsVisible = true, MaxPlayers = createMaxTotalPlayers, IsOpen = true }, TypedLobby.Default);
         }
         else
         {
@@ -215,15 +214,10 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
         base.OnCreateRoomFailed(returnCode, message);
     }
-
-    //public override void OnJoinRandomFailed(short returnCode, string message)
-    //{
-    //    print("OnJoinRandomFailed was activated: " + returnCode + message);
-
-    //    //creates new room after he couldn't join one.
-    //    PhotonNetwork.CreateRoom("GameRoom", new RoomOptions { MaxPlayers = maxPlayersInRoom });
-    //    base.OnJoinRandomFailed(returnCode, message);
-    //}
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        base.OnJoinRoomFailed(returnCode, message);
+    }
 
     #endregion
 

@@ -55,9 +55,6 @@ MonoBehaviour:
   createRoomNameInput: {fileID: 0}
   sceneName: Lobby
   createMaxTotalPlayers: 4
-  maxTotalPlayers: {fileID: 0}
-  createPrivacySettings: 0
-  privacySettings: {fileID: 0}
   stringOfAllRooms: []
   buttonPrefab: {fileID: 8254119407552573839, guid: c882e2d45280e7f4f8a91ca6e770eec6,
     type: 3}
@@ -87,5 +84,5 @@ MonoBehaviour:
   defaultSavedName: 
   playerNameInput: {fileID: 0}
   playerTextProNameInput: {fileID: 0}
-  gameLobbyManager: {fileID: 0}
+  playerTextProNameMainMenu: {fileID: 0}
   gameLauncher: {fileID: 3233908200779319906}
