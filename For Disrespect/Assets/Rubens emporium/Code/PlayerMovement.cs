@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     //public bool isHost;
     //public bool isGuest;
     public bool isReady;
-    public float waitTimeAnimation;
+    public float waitTimeAnimation = 2;
 
     public string crPlayerName;
     public static GameObject thisPlayerPrefab;
