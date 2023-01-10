@@ -10,8 +10,6 @@ using TMPro;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 {
-    public static PlayerMovement playerMovement;
-
     public int[] movementWASD;
     public int isTotalWalkingWASD;
     public bool holdingShift;
@@ -33,17 +31,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public float distanceBetweenGround;
 
     public Animator playerAnimations;
-    public Animator AllReadyUpAnimations;
 
-    //public bool isHost;
-    //public bool isGuest;
-    public bool isReady;
-    public float waitTimeAnimation = 2;
-
-    public string crPlayerName;
-    public static GameObject thisPlayerPrefab;
     public GameObject UIPrefab; // Missing
-    public GameObject worldSpaceCanvasPlayerName;
+    public GameObject worldSpaceCanvasPlayerNam;
     public GameObject cameraPlayer; // Missing
 
     public GameObject multiplayerDeletable;
@@ -52,7 +42,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public int playerID;
     public PhotonView photonID;
     public UIPlayer playerUI; // missing
-    public GameLobbyManager crGameLobbyManager; //missing
+    public PlayerManager playerManager;
     public CharacterController characterControl;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)// ?
@@ -63,8 +53,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(isAttacking);
             stream.SendNext(hp);
             stream.SendNext(playerID);
-            stream.SendNext(crPlayerName);
-            stream.SendNext(isReady);
+            stream.SendNext(playerManager.crPlayerName);
+            stream.SendNext(playerManager.isReady);
             //print("sended: ");
         }
         else if(stream.IsReading)
@@ -73,8 +63,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             this.isAttacking = (bool)stream.ReceiveNext();
             this.hp = (float)stream.ReceiveNext();
             this.playerID = (int)stream.ReceiveNext();
-            this.crPlayerName = (string)stream.ReceiveNext();
-            this.isReady = (bool)stream.ReceiveNext();
+            this.playerManager.crPlayerName = (string)stream.ReceiveNext();
+            this.playerManager.isReady = (bool)stream.ReceiveNext();
             print("recieved: ");
         }
     }
@@ -150,68 +140,44 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             }
         }
     }
+    public void OnAttack(InputValue value)
+    {
+        inputAttack = value.Get<float>();
+        if (value.Get<float>() > 0)
+        {
+            if (!isAttacking && photonID.IsMine)
+            {
+                isAttacking = true;
+                Attack();
+            }
+        }
+    }
 
-    public void Awake()
+    public void Attack()
     {
         if (photonID.IsMine)
         {
-            thisPlayerPrefab = gameObject;
-            crPlayerName = PhotonNetwork.NickName;
-
-            worldSpaceCanvasPlayerName.SetActive(false);
-        }
-        else
-        {
-            for (int i = 0; i < multiplayerDeletable.transform.childCount; i++)
+            Physics.Raycast(transform.position, Vector3.down, out rayCastAttackHit, distanceBetweenGround);
+            if (rayCastAttackHit.transform != null)
             {
-                print("Destroyed: " + multiplayerDeletable.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
-                multiplayerDeletable.transform.GetChild(i).gameObject.SetActive(false);
+                print("It has Found: " + rayCastAttackHit);
+                if (rayCastAttackHit.transform.tag == "Player")
+                {
+                    rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
+                    rayCastAttackHit.transform.gameObject.GetComponent<UIPlayer>().OnHealthChange(hp);
+                }
             }
-            //if(crPlayerName != "")
-            //{
-            //      photonID.Owner.NickName;
-            //}
+            isAttacking = false;
         }
-        if (crGameLobbyManager == null)
-        {
-            GameObject GameLobbyManagerGameObject = GameObject.Find("GameManager");
-            crGameLobbyManager = GameLobbyManagerGameObject.GetComponent<GameLobbyManager>();
-        }
-        //DontDestroyOnLoad(gameObject);
-        //PhotonNetwork.AutomaticallySyncScene = true;
+    }
+
+    public void Awake()
+    {
 
     }
     public void Start()
     {
-        playerMovement = this;
-        AllReadyUpAnimations = GameObject.Find("Main Camera Lobby").GetComponent<Animator>();
-        GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
-        print("ViewID: "+ photonID.ViewID);
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            //isHost = true;
-            crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
-            if (photonID.IsMine)
-            {
-               crGameLobbyManager.hostUI.SetActive(true);
-            }
-        }
-        else
-        {
-            //isGuest = true;
-            crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
-            crGameLobbyManager.CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount - 1, true);
-
-            if (photonID.IsMine)
-            {
-                crGameLobbyManager.guestUI.SetActive(true);
-            }
-        }
-        crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
-        crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
-
-        SendMessageUpwards("RecalculatePlacementReadyUpRoom",crGameLobbyManager,SendMessageOptions.DontRequireReceiver);
+        
     }
 
     void FixedUpdate()
@@ -252,71 +218,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
     //endAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, lookAtAngle, ref velocity, timeToTurn); // hiermee berekent je de angle van de speler naar links of rechts toe via de camera
 
-    public void OnAttack(InputValue value)
-    {
-        inputAttack = value.Get<float>();
-        if (value.Get<float>() > 0)
-        {
-            if (!isAttacking && photonID.IsMine)
-            {
-                isAttacking = true;
-                Attack();
-            }
-        }
-    }
-
-    public void Attack()
-    {
-        if (photonID.IsMine)
-        {
-            Physics.Raycast(transform.position, Vector3.down, out rayCastAttackHit, distanceBetweenGround);
-            if(rayCastAttackHit.transform != null)
-            {
-                print("It has Found: " + rayCastAttackHit);
-                if (rayCastAttackHit.transform.tag == "Player")
-                {
-                    rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
-                    rayCastAttackHit.transform.gameObject.GetComponent<UIPlayer>().OnHealthChange(hp);
-                }
-            } 
-            isAttacking = false;
-        }
-    }
-
-    public void GiveEnemyNames()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
-    {
-        GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
-        if (photonID.IsMine && crGameLobbyManager.allPlayers.Count >= 2)
-        {
-            crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().crPlayerName;
-            print("tried giving enemy names");
-        }
-    }
-
-    //public void LeaveRoom()
-    //{
-    //    if (PhotonNetwork.IsConnected)
-    //    {
-    //        PhotonNetwork.LeaveRoom();
-    //    }
-    //}
-    [PunRPC]
-    public void LoadIntoGame()
-    {
-        AllReadyUpAnimations.SetBool("GameStart", true);
-
-        DontDestroyOnLoad(this.gameObject);
-
-        StartCoroutine(WaitingReadyUpAnimation());
-    }
-    public IEnumerator WaitingReadyUpAnimation()
-    {
-        yield return new WaitForSeconds(waitTimeAnimation);
-       
-        SceneManager.LoadSceneAsync("GameRoom");
-
-        yield return new WaitForSeconds(0);
-    }
     void OnLevelWasLoaded(int level)
     {
         print(level);

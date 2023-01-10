@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UIPlayer : MonoBehaviour
 {
     public PlayerMovement playerMovement;
+    public PlayerManager playerManager;
 
     public Text playerName;
     public Slider playerHPBar;
@@ -26,7 +27,7 @@ public class UIPlayer : MonoBehaviour
                 playerName.text = playerMovement.photonID.Owner.NickName.ToString();
                 return;
             }
-            playerName.text = playerMovement.crPlayerName;
+            playerName.text = playerManager.crPlayerName;
         }
     }
     public void OnHealthChange(float hp)

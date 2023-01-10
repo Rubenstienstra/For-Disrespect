@@ -191,6 +191,38 @@ Transform:
   m_Father: {fileID: 3140913997964068559}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &597769028638688242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8872008882344568371}
+  m_Layer: 0
+  m_Name: DestroyableMultiplayerObjectsForMe
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8872008882344568371
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597769028638688242}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.0900822, y: 1.0982664, z: -0.33882594}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2377440133462556800}
+  m_Father: {fileID: 1960451430545438947}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &597950767014068427
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,7 +446,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6069649220769893707}
   m_Layer: 0
-  m_Name: DestroyableMultiplayerGameObjects
+  m_Name: DestroyableMultiplayerObjectsForEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -625,17 +657,17 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1838471723997878224}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.10499954}
+  m_LocalPosition: {x: 0, y: 0, z: 0.2338264}
   m_LocalScale: {x: 0.0015, y: 0.0015, z: 0.0009999999}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5035266493368772473}
-  m_Father: {fileID: 1960451430545438947}
-  m_RootOrder: 2
+  m_Father: {fileID: 8872008882344568371}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.101989746, y: 1.7640381}
+  m_AnchoredPosition: {x: -0.011907548, y: 0.6657717}
   m_SizeDelta: {x: 1081, y: 526}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &58495889662793389
@@ -1010,6 +1042,7 @@ GameObject:
   - component: {fileID: 1960451430545438945}
   - component: {fileID: 1960451430545438944}
   - component: {fileID: 7583660211103564253}
+  - component: {fileID: 6167953233282122908}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1031,7 +1064,7 @@ Transform:
   m_Children:
   - {fileID: 2480632447083471699}
   - {fileID: 6069649220769893707}
-  - {fileID: 2377440133462556800}
+  - {fileID: 8872008882344568371}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1144,19 +1177,15 @@ MonoBehaviour:
   rayCastDistance: 0
   distanceBetweenGround: 10
   playerAnimations: {fileID: 0}
-  AllReadyUpAnimations: {fileID: 0}
-  isReady: 0
-  waitTimeAnimation: 1
-  crPlayerName: 
   UIPrefab: {fileID: 3574377282495681092}
-  worldSpaceCanvasPlayerName: {fileID: 1838471723997878224}
+  worldSpaceCanvasPlayerNam: {fileID: 0}
   cameraPlayer: {fileID: 1960451429685669110}
   multiplayerDeletable: {fileID: 827547506345425076}
   playerToGoPos: {x: 0, y: 0, z: 0}
   playerID: 0
   photonID: {fileID: 1960451430545438946}
   playerUI: {fileID: 8053597446482142089}
-  crGameLobbyManager: {fileID: 0}
+  playerManager: {fileID: 6167953233282122908}
   characterControl: {fileID: 7583660211103564253}
 --- !u!143 &7583660211103564253
 CharacterController:
@@ -1184,6 +1213,29 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &6167953233282122908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960451430545438968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ed6712a074f8cb409fb720c5e45d11a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  multiplayerDeletableMe: {fileID: 597769028638688242}
+  multiplayerDeletableEnemy: {fileID: 827547506345425076}
+  crPlayerName: 
+  crEnemyName: 
+  isReady: 0
+  waitTimeAnimation: 2
+  AllReadyUpAnimations: {fileID: 0}
+  spawnPoints: {fileID: 0}
+  crGameLobbyManager: {fileID: 0}
+  photonID: {fileID: 1960451430545438946}
+  playerMoving: {fileID: 1960451430545438944}
 --- !u!1 &2111075475546500364
 GameObject:
   m_ObjectHideFlags: 0

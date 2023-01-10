@@ -15,7 +15,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject playerSpawnPrefab;
     public GameObject crInstantiatedPlayerPrefab;
     public List<GameObject> allPlayers;
-    public PlayerMovement crInstantietedPlayerMovement;
     public Vector3[] PlayerSpawnLocations;
 
     public GameObject team0ParentForPlayer;
@@ -42,6 +41,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public Animator uiAnimation;
     public Animator camAnimation;
 
+    public PlayerMovement crInstantietedPlayerMovement;
+    public PlayerManager crInstantietedPlayerManager;
+
     // Game lobby manager is Wanneer je in de wacht ruimte zit. Elke speler heeft zijn eigen GameLobbyManager.
     public void Start()
     {
@@ -49,8 +51,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
         if (camAnimation == null)
         {
-            GameObject crCameraGameobject = GameObject.Find("Main Camera");
-            camAnimation = crCameraGameobject.GetComponent<Animator>();
+            camAnimation = GameObject.Find("Main Camera").GetComponent<Animator>();
         }
         hostUIRoomName.text = PhotonNetwork.CurrentRoom.Name;
         guestUIRoomName.text = PhotonNetwork.CurrentRoom.Name;
@@ -77,7 +78,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(newPlayer.NickName + " has joined. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        //if (PhotonNetwork.CurrentRoom.PlayerCount >= PhotonNetwork.CurrentRoom.MaxPlayers)
         CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, true);
         base.OnPlayerEnteredRoom(newPlayer);
     }
@@ -132,7 +132,10 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     
     public void CheckingPlayersInRoom(int totalPlayers, bool enableOrDisable)
     {
-        playerDummyGameObjects[1].SetActive(enableOrDisable);
+        if(SceneManager.GetActiveScene().name == "Lobby")
+        {
+            playerDummyGameObjects[1].SetActive(enableOrDisable);
+        }
     }
 
     public void SpawnPlayer()
@@ -141,7 +144,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         crInstantiatedPlayerPrefab = null;
         crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, new Vector3(10,0,10), Quaternion.identity);
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
-        crInstantietedPlayerMovement.crGameLobbyManager = this;
+        crInstantietedPlayerManager = crInstantiatedPlayerPrefab.GetComponent<PlayerManager>();
+        
         crInstantietedPlayerMovement.allowMoving = false;
         crInstantietedPlayerMovement.UIPrefab.SetActive(false);
         crInstantietedPlayerMovement.cameraPlayer.SetActive(false);
@@ -185,31 +189,31 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public IEnumerator WaitBeforeGivingNames()
     {
         yield return new WaitForSeconds(0.5f);//Het heeft processing tijd nodig.
-        allPlayers[0].GetComponent<PlayerMovement>().GiveEnemyNames();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
+        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNames();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
     }
     #region ReadyUpCode
     public void ReadyUpHostUI(bool readyOrUnready)
     {
-        allPlayers[0].GetComponent<PlayerMovement>().isReady = readyOrUnready;
+        allPlayers[0].GetComponent<PlayerManager>().isReady = readyOrUnready;
 
         if(allPlayers.Count <= 1)
         {
             return;
         }
-        if(allPlayers[0].GetComponent<PlayerMovement>().isReady && allPlayers[1].GetComponent<PlayerMovement>().isReady)
+        if(allPlayers[0].GetComponent<PlayerManager>().isReady && allPlayers[1].GetComponent<PlayerManager>().isReady)
         {
             EveryoneIsReady();
         }
     }
     public void ReadyUpGuestUI(bool readyOrUnready)
     {
-        allPlayers[0].GetComponent<PlayerMovement>().isReady = readyOrUnready;
+        allPlayers[0].GetComponent<PlayerManager>().isReady = readyOrUnready;
 
         if(allPlayers.Count <= 1)
         {
             return;
         }
-        if(allPlayers[0].GetComponent<PlayerMovement>().isReady && allPlayers[1].GetComponent<PlayerMovement>().isReady)
+        if(allPlayers[0].GetComponent<PlayerManager>().isReady && allPlayers[1].GetComponent<PlayerManager>().isReady)
         {
             EveryoneIsReady();
         }
@@ -217,8 +221,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void EveryoneIsReady()
     {
         allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren
-
-        DontDestroyOnLoad(this.gameObject);
     }
     #endregion
 
