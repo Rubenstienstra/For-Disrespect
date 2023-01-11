@@ -16,6 +16,7 @@ public class PlayerManager : MonoBehaviour
 
     public bool isReady;
     public float waitTimeAnimation = 2;
+    public bool isWaitAnimationDone;
 
     public Animator AllReadyUpAnimations;
 
@@ -65,7 +66,7 @@ public class PlayerManager : MonoBehaviour
         {
             for (int i = 0; i < multiplayerDeletableMe.transform.childCount; i++)
             {
-                print("Destroyed: " + multiplayerDeletableMe.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+                print("Disabled: " + multiplayerDeletableMe.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                 multiplayerDeletableMe.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
@@ -73,7 +74,7 @@ public class PlayerManager : MonoBehaviour
         {
             for (int i = 0; i < multiplayerDeletableEnemy.transform.childCount; i++)
             {
-                print("Destroyed: " + multiplayerDeletableEnemy.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+                print("Disabled: " + multiplayerDeletableEnemy.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                 multiplayerDeletableEnemy.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
@@ -95,7 +96,7 @@ public class PlayerManager : MonoBehaviour
             crEnemyName = crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().crPlayerName;
             crWorldSpaceNameLobbyEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
             crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
-            print("tried giving enemy names");
+            print("giving enemy names");
         }
     }
 
@@ -114,43 +115,60 @@ public class PlayerManager : MonoBehaviour
 
     public IEnumerator WaitingReadyUpAnimation()
     {
-        bool a = false;
-        if(!a)
+        if(!isWaitAnimationDone)
         {
-            a = true;
+            isWaitAnimationDone = true;
             yield return new WaitForSeconds(waitTimeAnimation);
+            print("Animation time is: " + isWaitAnimationDone);
         }
 
         if (SceneManager.GetActiveScene().name != "GameRoom" && PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
         {
             PhotonNetwork.LoadLevel("GameRoom");
         }
-        if(PhotonNetwork.LevelLoadingProgress != 1)
+
+        if(PhotonNetwork.LevelLoadingProgress > 0 && PhotonNetwork.LevelLoadingProgress < 1)
         {
+            print("Waiting Again. Progress: " + PhotonNetwork.LevelLoadingProgress);
             yield return new WaitForSeconds(0.25f);
             StartCoroutine(WaitingReadyUpAnimation());
         }
-        ArrivedAtGame();
-        
+        else
+        {
+            ArrivedAtGame();
+        }
         yield return new WaitForSeconds(0);
     }
     public void ArrivedAtGame()
     {
+        print("ArrivedAtGame Activated");
         crGameLobbyManager.transform.GetChild(0).gameObject.SetActive(false);
 
-        if (!spawnPoints)
-        {
-            spawnPoints = GameObject.Find("SpawnPoints");
-        }
+        spawnPoints = GameObject.Find("SpawnPoints");//Can't find spawnpoints if still in destroyOnLoad, Misschien destroyOnLoad when Instantiate.
+        
         if (PhotonNetwork.IsMasterClient)
         {
-            this.gameObject.transform.SetParent(spawnPoints.transform.GetChild(0));
-            SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetSceneByName("GameRoom"));
-            
+            if (spawnPoints)
+            {
+                this.gameObject.transform.SetParent(spawnPoints.transform.GetChild(0));
+            }
+            else
+            {
+                print("SpawnPoints issn't found");
+            }
+            //SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetSceneByName("GameRoom"));
         }
         else
         {
-            this.gameObject.transform.SetParent(spawnPoints.transform.GetChild(1));
+            if (spawnPoints)
+            {
+                this.gameObject.transform.SetParent(spawnPoints.transform.GetChild(1));
+            }
+            else
+            {
+                print("SpawnPoints issn't found");
+            }
+            //SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetSceneByName("GameRoom"));
         }
     }
 

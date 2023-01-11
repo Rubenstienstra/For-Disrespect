@@ -1231,6 +1231,7 @@ MonoBehaviour:
   crEnemyName: 
   isReady: 0
   waitTimeAnimation: 2
+  isWaitAnimationDone: 0
   AllReadyUpAnimations: {fileID: 0}
   spawnPoints: {fileID: 0}
   crGameLobbyManager: {fileID: 0}

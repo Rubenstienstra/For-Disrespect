@@ -218,8 +218,4 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
     //endAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, lookAtAngle, ref velocity, timeToTurn); // hiermee berekent je de angle van de speler naar links of rechts toe via de camera
 
-    void OnLevelWasLoaded(int level)
-    {
-        print(level);
-    }
 }
