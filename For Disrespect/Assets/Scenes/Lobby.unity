@@ -2435,7 +2435,7 @@ GameObject:
   - component: {fileID: 1249812216}
   - component: {fileID: 1249812215}
   m_Layer: 0
-  m_Name: WORLDSPACECANVAS NameEnemy
+  m_Name: WORLDSPACECANVAS NameLobbyEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
