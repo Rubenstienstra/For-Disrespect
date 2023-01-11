@@ -1233,7 +1233,9 @@ MonoBehaviour:
   waitTimeAnimation: 2
   isWaitAnimationDone: 0
   AllReadyUpAnimations: {fileID: 0}
-  spawnPoints: {fileID: 0}
+  playerFightSpawnLocation:
+  - {x: -5, y: 0, z: 0}
+  - {x: 5, y: 0, z: 0}
   crGameLobbyManager: {fileID: 0}
   photonID: {fileID: 1960451430545438946}
   playerMoving: {fileID: 1960451430545438944}

@@ -150,9 +150,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         crInstantietedPlayerMovement.UIPrefab.SetActive(false);
         crInstantietedPlayerMovement.cameraPlayer.SetActive(false);
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
-
-        //CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount, true);
-       
     }
     #region Unused Code
     public void RecalculatePlacementReadyUpRoom()// heb ik niet nodig als de max 2 spelers zijn.

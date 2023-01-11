@@ -20,7 +20,7 @@ public class PlayerManager : MonoBehaviour
 
     public Animator AllReadyUpAnimations;
 
-    public GameObject spawnPoints;
+    public Vector3[] playerFightSpawnLocation;
 
     public GameLobbyManager crGameLobbyManager;
     public PhotonView photonID;
@@ -144,33 +144,20 @@ public class PlayerManager : MonoBehaviour
         print("ArrivedAtGame Activated");
         crGameLobbyManager.transform.GetChild(0).gameObject.SetActive(false);
 
-        spawnPoints = GameObject.Find("SpawnPoints");//Can't find spawnpoints if still in destroyOnLoad, Misschien destroyOnLoad when Instantiate.
+        
         
         if (PhotonNetwork.IsMasterClient)
         {
-            if (spawnPoints)
-            {
-                this.gameObject.transform.SetParent(spawnPoints.transform.GetChild(0));
-            }
-            else
-            {
-                print("SpawnPoints issn't found");
-            }
-            //SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetSceneByName("GameRoom"));
+            this.transform.position = playerFightSpawnLocation[0];
         }
         else
         {
-            if (spawnPoints)
-            {
-                this.gameObject.transform.SetParent(spawnPoints.transform.GetChild(1));
-            }
-            else
-            {
-                print("SpawnPoints issn't found");
-            }
-            //SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetSceneByName("GameRoom"));
+            this.transform.position = playerFightSpawnLocation[1];
         }
     }
+    //spawnPoints = GameObject.Find("SpawnPoints");//Can't find spawnpoints if still in destroyOnLoad, Misschien destroyOnLoad when Instantiate.
+    //this.gameObject.transform.SetParent(spawnPoints.transform.GetChild(0));
+    //SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetSceneByName("GameRoom"));
 
     //public void LeaveRoom()
     //{
