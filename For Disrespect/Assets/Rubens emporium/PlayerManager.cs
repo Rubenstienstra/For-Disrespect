@@ -5,9 +5,12 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using Cinemachine;
 
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
+    public Camera playerCamera;
+
     public GameObject multiplayerDeletableMe;
     public GameObject multiplayerDeletableEnemy;
 
@@ -39,7 +42,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            //isHost = true;
             crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
             if (photonID.IsMine)
             {
@@ -48,7 +50,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            //isGuest = true;
             crGameLobbyManager.uiAnimation = crGameLobbyManager.guestUI.GetComponent<Animator>();
             crGameLobbyManager.CheckingPlayersInRoom(PhotonNetwork.CurrentRoom.PlayerCount - 1, true);
 
@@ -142,17 +143,18 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void ArrivedAtGame()
     {
         print("ArrivedAtGame Activated");
+        isReadyToFight = true;
         crGameLobbyManager.transform.GetChild(0).gameObject.SetActive(false);
         
         
         if (PhotonNetwork.IsMasterClient)//Setting player position up
         {
-            this.transform.position = crGameLobbyManager.playerFightSpawnLocation[0];
+            crGameLobbyManager.allPlayers[0].transform.position = crGameLobbyManager.playerFightSpawnLocation[0];
             crGameLobbyManager.allPlayers[1].transform.position = crGameLobbyManager.playerFightSpawnLocation[1];
         }
         else
         {
-            this.transform.position = crGameLobbyManager.playerFightSpawnLocation[1];
+            crGameLobbyManager.allPlayers[0].transform.position = crGameLobbyManager.playerFightSpawnLocation[1];
             crGameLobbyManager.allPlayers[1].transform.position = crGameLobbyManager.playerFightSpawnLocation[0];
         }
 
@@ -164,6 +166,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void GameStarted()
     {
+        if(GameObject.Find("Main Camera GameRoom"))
+        {
+            GameObject.Find("Main Camera GameRoom").SetActive(false);
+        }
+        else
+        {
+            print("Couldn't find camera");
+        }
+        playerCamera.gameObject.SetActive(true);
         playerMoving.allowMoving = true;
     }
     #endregion

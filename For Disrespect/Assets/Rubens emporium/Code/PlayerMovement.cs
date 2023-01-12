@@ -30,16 +30,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public RaycastHit hitSlope;
     public float distanceBetweenGround;
 
-    public GameObject UIPrefab; // Missing
+    public GameObject UIPrefab;
     public GameObject worldSpaceCanvasPlayerNam;
-    public GameObject cameraPlayer; // Missing
 
     public GameObject multiplayerDeletable;
     public Vector3 playerToGoPos;
 
     public int playerID;
     public PhotonView photonID;
-    public UIPlayer playerUI; // missing
+    public UIPlayer playerUI;
     public PlayerManager playerManager;
     public CharacterController characterControl;
 
@@ -48,6 +47,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position); //playerToGoPos = Vector3.Lerp(transform.position, playerOldPos, 0.1f);
+            stream.SendNext(allowMoving);
             stream.SendNext(isAttacking);
             stream.SendNext(hp);
             stream.SendNext(playerID);
@@ -59,6 +59,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         else if(stream.IsReading)
         {
             this.playerToGoPos = (Vector3)stream.ReceiveNext();
+            this.allowMoving = (bool)stream.ReceiveNext();
             this.isAttacking = (bool)stream.ReceiveNext();
             this.hp = (float)stream.ReceiveNext();
             this.playerID = (int)stream.ReceiveNext();

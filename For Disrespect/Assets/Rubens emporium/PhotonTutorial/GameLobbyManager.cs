@@ -146,9 +146,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerManager = crInstantiatedPlayerPrefab.GetComponent<PlayerManager>();
         
+        crInstantietedPlayerManager.playerCamera.gameObject.SetActive(false);
         crInstantietedPlayerMovement.allowMoving = false;
         crInstantietedPlayerMovement.UIPrefab.SetActive(false);
-        crInstantietedPlayerMovement.cameraPlayer.SetActive(false);
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
     }
     #region Unused Code
