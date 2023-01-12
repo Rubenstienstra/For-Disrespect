@@ -15,7 +15,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject playerSpawnPrefab;
     public GameObject crInstantiatedPlayerPrefab;
     public List<GameObject> allPlayers;
-    public Vector3[] PlayerSpawnLocations;
+    public Vector3[] playerFightSpawnLocation;
 
     public GameObject team0ParentForPlayer;
     public GameObject team1ParentForPlayer;
@@ -191,26 +191,27 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     #region ReadyUpCode
     public void ReadyUpHostUI(bool readyOrUnready)
     {
-        allPlayers[0].GetComponent<PlayerManager>().isReady = readyOrUnready;
+        allPlayers[0].GetComponent<PlayerManager>().isReadyLobby = readyOrUnready;
 
         if(allPlayers.Count <= 1)
         {
             return;
         }
-        if(allPlayers[0].GetComponent<PlayerManager>().isReady && allPlayers[1].GetComponent<PlayerManager>().isReady)
+        if(allPlayers[0].GetComponent<PlayerManager>().isReadyLobby && allPlayers[1].GetComponent<PlayerManager>().isReadyLobby)
         {
             EveryoneIsReady();
         }
     }
     public void ReadyUpGuestUI(bool readyOrUnready)
     {
-        allPlayers[0].GetComponent<PlayerManager>().isReady = readyOrUnready;
+        allPlayers[0].GetComponent<PlayerManager>().isReadyLobby = readyOrUnready;
+        print("Player is: " + readyOrUnready);
 
         if(allPlayers.Count <= 1)
         {
             return;
         }
-        if(allPlayers[0].GetComponent<PlayerManager>().isReady && allPlayers[1].GetComponent<PlayerManager>().isReady)
+        if(allPlayers[0].GetComponent<PlayerManager>().isReadyLobby && allPlayers[1].GetComponent<PlayerManager>().isReadyLobby)
         {
             EveryoneIsReady();
         }

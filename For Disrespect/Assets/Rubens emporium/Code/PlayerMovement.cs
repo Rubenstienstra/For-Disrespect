@@ -30,8 +30,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public RaycastHit hitSlope;
     public float distanceBetweenGround;
 
-    public Animator playerAnimations;
-
     public GameObject UIPrefab; // Missing
     public GameObject worldSpaceCanvasPlayerNam;
     public GameObject cameraPlayer; // Missing
@@ -45,7 +43,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public PlayerManager playerManager;
     public CharacterController characterControl;
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)// ?
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)// Can only have 1 OnPhotonSerializeView!
     {
         if (stream.IsWriting)
         {
@@ -53,9 +51,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(isAttacking);
             stream.SendNext(hp);
             stream.SendNext(playerID);
+
             stream.SendNext(playerManager.crPlayerName);
-            stream.SendNext(playerManager.isReady);
-            //print("sended: ");
+            stream.SendNext(playerManager.isReadyLobby);
+            stream.SendNext(playerManager.isReadyToFight);
         }
         else if(stream.IsReading)
         {
@@ -63,9 +62,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             this.isAttacking = (bool)stream.ReceiveNext();
             this.hp = (float)stream.ReceiveNext();
             this.playerID = (int)stream.ReceiveNext();
-            this.playerManager.crPlayerName = (string)stream.ReceiveNext();
-            this.playerManager.isReady = (bool)stream.ReceiveNext();
-            print("recieved: ");
+
+            playerManager.crPlayerName = (string)stream.ReceiveNext();
+            playerManager.isReadyLobby = (bool)stream.ReceiveNext();
+            playerManager.isReadyToFight = (bool)stream.ReceiveNext();
+            print("recieved stream");
         }
     }
     public void OnForward(InputValue value)

@@ -6,7 +6,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviourPunCallbacks
 {
     public GameObject multiplayerDeletableMe;
     public GameObject multiplayerDeletableEnemy;
@@ -14,17 +14,17 @@ public class PlayerManager : MonoBehaviour
     public string crPlayerName;
     public string crEnemyName;
 
-    public bool isReady;
+    public bool isReadyLobby;
     public float waitTimeAnimation = 2;
     public bool isWaitAnimationDone;
+    public bool isReadyToFight;
 
     public Animator AllReadyUpAnimations;
-
-    public Vector3[] playerFightSpawnLocation;
 
     public GameLobbyManager crGameLobbyManager;
     public PhotonView photonID;
     public PlayerMovement playerMoving;
+
 
     public void Awake()
     {
@@ -99,7 +99,7 @@ public class PlayerManager : MonoBehaviour
             print("giving enemy names");
         }
     }
-
+    #region From Lobby To Game
     [PunRPC]
     public void LoadIntoGame()
     {
@@ -143,18 +143,30 @@ public class PlayerManager : MonoBehaviour
     {
         print("ArrivedAtGame Activated");
         crGameLobbyManager.transform.GetChild(0).gameObject.SetActive(false);
-
         
         
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)//Setting player position up
         {
-            this.transform.position = playerFightSpawnLocation[0];
+            this.transform.position = crGameLobbyManager.playerFightSpawnLocation[0];
+            crGameLobbyManager.allPlayers[1].transform.position = crGameLobbyManager.playerFightSpawnLocation[1];
         }
         else
         {
-            this.transform.position = playerFightSpawnLocation[1];
+            this.transform.position = crGameLobbyManager.playerFightSpawnLocation[1];
+            crGameLobbyManager.allPlayers[1].transform.position = crGameLobbyManager.playerFightSpawnLocation[0];
+        }
+
+        if (crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().isReadyToFight && isReadyToFight)
+        {
+            photonID.RPC("GameStarted", RpcTarget.All);
         }
     }
+    [PunRPC]
+    public void GameStarted()
+    {
+        playerMoving.allowMoving = true;
+    }
+    #endregion
     //spawnPoints = GameObject.Find("SpawnPoints");//Can't find spawnpoints if still in destroyOnLoad, Misschien destroyOnLoad when Instantiate.
     //this.gameObject.transform.SetParent(spawnPoints.transform.GetChild(0));
     //SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetSceneByName("GameRoom"));
