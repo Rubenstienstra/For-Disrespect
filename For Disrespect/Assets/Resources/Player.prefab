@@ -635,10 +635,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 1960451429685669108}
+  playerModels:
+  - {fileID: 7847269727554404753}
+  - {fileID: 8444724444511396458}
   multiplayerDeletableMe: {fileID: 597769028638688242}
   multiplayerDeletableEnemy: {fileID: 827547506345425076}
   crPlayerName: 
   crEnemyName: 
+  isHost: 0
+  isGuest: 0
   isReadyLobby: 0
   waitTimeAnimation: 2
   isWaitAnimationDone: 0
@@ -1212,16 +1217,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3295242482185996196, guid: c4bec6415a542a84fb6df4afcd9839e2,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3777859875424396383, guid: c4bec6415a542a84fb6df4afcd9839e2,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7841747782021383287, guid: c4bec6415a542a84fb6df4afcd9839e2,
         type: 3}
       propertyPath: m_Name
@@ -1235,6 +1230,18 @@ PrefabInstance:
 --- !u!4 &6474235210123617646 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 95603811001778336, guid: c4bec6415a542a84fb6df4afcd9839e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6380120420000064974}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7847269727554404753 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3777859875424396383, guid: c4bec6415a542a84fb6df4afcd9839e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6380120420000064974}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8444724444511396458 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3295242482185996196, guid: c4bec6415a542a84fb6df4afcd9839e2,
     type: 3}
   m_PrefabInstance: {fileID: 6380120420000064974}
   m_PrefabAsset: {fileID: 0}

@@ -53,6 +53,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(playerID);
 
             stream.SendNext(playerManager.crPlayerName);
+            stream.SendNext(playerManager.isHost);
+            stream.SendNext(playerManager.isGuest);
             stream.SendNext(playerManager.isReadyLobby);
             stream.SendNext(playerManager.isReadyToFight);
         }
@@ -65,6 +67,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             this.playerID = (int)stream.ReceiveNext();
 
             playerManager.crPlayerName = (string)stream.ReceiveNext();
+            playerManager.isHost = (bool)stream.ReceiveNext();
+            playerManager.isGuest = (bool)stream.ReceiveNext();
             playerManager.isReadyLobby = (bool)stream.ReceiveNext();
             playerManager.isReadyToFight = (bool)stream.ReceiveNext();
             print("recieved stream");
