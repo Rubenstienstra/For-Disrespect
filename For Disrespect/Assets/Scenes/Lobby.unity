@@ -356,7 +356,7 @@ PrefabInstance:
     - target: {fileID: 135126560985615493, guid: 132838f1700974a4cb25785a509a5dd9,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 768919579852592703, guid: 132838f1700974a4cb25785a509a5dd9,
         type: 3}
@@ -418,6 +418,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 132838f1700974a4cb25785a509a5dd9, type: 3}
+--- !u!1 &147036455 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 135126560985615493, guid: 132838f1700974a4cb25785a509a5dd9,
+    type: 3}
+  m_PrefabInstance: {fileID: 147036454}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &174903209
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -445,12 +451,12 @@ PrefabInstance:
         type: 3}
       propertyPath: playerDummyGameObjects.Array.data[0]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 892763981}
     - target: {fileID: 2410681214851170737, guid: 30521e5029ec6d149b588fac0d87c57a,
         type: 3}
       propertyPath: playerDummyGameObjects.Array.data[1]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 147036455}
     - target: {fileID: 2410681214851170738, guid: 30521e5029ec6d149b588fac0d87c57a,
         type: 3}
       propertyPath: m_RootOrder
@@ -879,6 +885,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 132838f1700974a4cb25785a509a5dd9, type: 3}
+--- !u!1 &892763981 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 135126560985615493, guid: 132838f1700974a4cb25785a509a5dd9,
+    type: 3}
+  m_PrefabInstance: {fileID: 892763980}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1192345003
 GameObject:
   m_ObjectHideFlags: 0
