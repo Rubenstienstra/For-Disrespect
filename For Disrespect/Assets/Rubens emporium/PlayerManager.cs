@@ -10,12 +10,16 @@ using Cinemachine;
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
     public Camera playerCamera;
+    public GameObject[] playerModels;
 
     public GameObject multiplayerDeletableMe;
     public GameObject multiplayerDeletableEnemy;
 
     public string crPlayerName;
     public string crEnemyName;
+
+    public bool isHost;
+    public bool isGuest;
 
     public bool isReadyLobby;
     public float waitTimeAnimation = 2;
@@ -43,9 +47,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             crGameLobbyManager.uiAnimation = crGameLobbyManager.hostUI.GetComponent<Animator>();
+
             if (photonID.IsMine)
             {
                 crGameLobbyManager.hostUI.SetActive(true);
+                isHost = true;
             }
         }
         else
@@ -56,12 +62,22 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             if (photonID.IsMine)
             {
                 crGameLobbyManager.guestUI.SetActive(true);
+                isGuest = true;
             }
         }
         crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
         crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
 
-        SendMessageUpwards("RecalculatePlacementReadyUpRoom", crGameLobbyManager, SendMessageOptions.DontRequireReceiver);
+        if (isHost)
+        {
+            playerModels[0].SetActive(true);
+            playerModels[1].SetActive(false);
+        }
+        else if (isGuest)
+        {
+            playerModels[1].SetActive(true);
+            playerModels[0].SetActive(false);
+        }
 
         if (photonID.IsMine)// Disables GameObjects for yourzelf
         {
@@ -81,13 +97,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void GiveEnemyNames()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
+    public void GiveEnemyNamesAndModels()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
         GameObject crWorldSpaceNameLobbyEnemy = GameObject.Find("WORLDSPACECANVAS NameLobbyEnemy");
         GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
@@ -160,10 +170,21 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
         if (crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().isReadyToFight && isReadyToFight)
         {
-            photonID.RPC("GameStarted", RpcTarget.All);
+            photonID.RPC("CountDownGame", RpcTarget.All);
+            print("Activated CountDowngame");
         }
     }
     [PunRPC]
+    public IEnumerator CountDownGame()
+    {
+
+        yield return new WaitForSecondsRealtime(1);//2 seconds left
+
+        yield return new WaitForSecondsRealtime(1);//1 seconds left
+
+        yield return new WaitForSecondsRealtime(1);//0 seconds left
+        GameStarted();
+    }
     public void GameStarted()
     {
         if(GameObject.Find("Main Camera GameRoom"))

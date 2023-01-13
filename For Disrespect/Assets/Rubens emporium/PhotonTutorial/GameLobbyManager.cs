@@ -186,7 +186,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public IEnumerator WaitBeforeGivingNames()
     {
         yield return new WaitForSeconds(0.5f);//Het heeft processing tijd nodig.
-        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNames();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
+        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndModels();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
     }
     #region ReadyUpCode
     public void ReadyUpHostUI(bool readyOrUnready)
