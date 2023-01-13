@@ -100,7 +100,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void GiveEnemyNamesAndModels()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
         GameObject crWorldSpaceNameLobbyEnemy = GameObject.Find("WORLDSPACECANVAS NameLobbyEnemy");
-        GameObject crWorldSpaceNameEnemy = GameObject.Find("WORLDSPACECANVAS NameEnemy");
+        GameObject crWorldSpaceNameEnemy = GameObject.Find("HPbarEnemy");
 
         if (photonID.IsMine && crGameLobbyManager.allPlayers.Count >= 2)
         {
