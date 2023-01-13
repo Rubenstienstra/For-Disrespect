@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 768919579852592703}
   - component: {fileID: 2348356702964378664}
   m_Layer: 0
-  m_Name: FDCharacterAnimations
+  m_Name: Player2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
