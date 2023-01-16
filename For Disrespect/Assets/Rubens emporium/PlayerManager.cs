@@ -9,8 +9,11 @@ using Cinemachine;
 
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
-    public Camera playerCamera;
+    public Camera playerCamera;// Can not be moved
+    public Transform playerMovableCamera;
     public GameObject[] playerModels;
+
+    public Vector2 crScreenSize;
 
     public GameObject multiplayerDeletableMe;
     public GameObject multiplayerDeletableEnemy;
@@ -79,17 +82,20 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             playerModels[0].SetActive(false);
         }
 
-        if (photonID.IsMine)// Disables GameObjects for yourzelf
+        if (photonID.IsMine)
         {
-            for (int i = 0; i < multiplayerDeletableMe.transform.childCount; i++)
+            for (int i = 0; i < multiplayerDeletableMe.transform.childCount; i++)// Disables GameObjects for yourzelf
             {
                 print("Disabled: " + multiplayerDeletableMe.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                 multiplayerDeletableMe.transform.GetChild(i).gameObject.SetActive(false);
             }
+            crScreenSize.x = Display.main.systemWidth;
+            crScreenSize.y = Display.main.systemHeight;
+
         }
-        else//Disables GameObjects for your enemy
+        else
         {
-            for (int i = 0; i < multiplayerDeletableEnemy.transform.childCount; i++)
+            for (int i = 0; i < multiplayerDeletableEnemy.transform.childCount; i++)//Disables GameObjects for your enemy
             {
                 print("Disabled: " + multiplayerDeletableEnemy.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                 multiplayerDeletableEnemy.transform.GetChild(i).gameObject.SetActive(false);
@@ -171,23 +177,24 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         if (crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().isReadyToFight && isReadyToFight)
         {
             photonID.RPC("CountDownGame", RpcTarget.All);
-            print("Activated CountDowngame");
+            print("Activated CountDownGame");
         }
     }
     [PunRPC]
     public IEnumerator CountDownGame()
     {
 
-        yield return new WaitForSecondsRealtime(1);//2 seconds left
+        yield return new WaitForSeconds(1);//2 seconds left
 
-        yield return new WaitForSecondsRealtime(1);//1 seconds left
+        yield return new WaitForSeconds(1);//1 seconds left
 
-        yield return new WaitForSecondsRealtime(1);//0 seconds left
+        yield return new WaitForSeconds(1);//0 seconds left
         GameStarted();
     }
     public void GameStarted()
     {
-        if(GameObject.Find("Main Camera GameRoom"))
+        print("GameStarted activated");
+        if (GameObject.Find("Main Camera GameRoom"))
         {
             GameObject.Find("Main Camera GameRoom").SetActive(false);
         }
@@ -197,6 +204,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
         playerCamera.gameObject.SetActive(true);
         playerMoving.allowMoving = true;
+
+        if (!crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving)
+        {
+            print("Other player didn't get: allowMoving");
+            crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving = true;
+        }
     }
     #endregion
     //spawnPoints = GameObject.Find("SpawnPoints");//Can't find spawnpoints if still in destroyOnLoad, Misschien destroyOnLoad when Instantiate.

@@ -79,7 +79,6 @@ GameObject:
   - component: {fileID: 1960451429685669108}
   - component: {fileID: 1960451429685669109}
   - component: {fileID: 1960451429685669106}
-  - component: {fileID: 7194733285747788574}
   - component: {fileID: 6152742566500262494}
   m_Layer: 0
   m_Name: Main Camera
@@ -291,23 +290,6 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
---- !u!114 &7194733285747788574
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960451429685669110}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd08475b23aa548b7b9d28397d430b32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  distance: 7
-  height: 3
-  centerOffset: {x: 0, y: 0, z: 0}
-  followOnStart: 0
-  smoothSpeed: 0.125
 --- !u!114 &6152742566500262494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -481,12 +463,16 @@ MonoBehaviour:
   movementWASD: 00000000000000000000000000000000
   isTotalWalkingWASD: 0
   holdingShift: 0
-  allowMoving: 0
+  allowMoving: 1
   rayCastDistanceAttack: 1
   isAttacking: 0
   inputAttack: 0
   mouseXYInput: {x: 0, y: 0}
-  MaxXYRotation: {x: 40, y: 0}
+  oldMouseXYInput: {x: 0, y: 0}
+  isGoingLeftOrRight: 0000
+  minXRotation: -20
+  maxXRotation: 20
+  rotationXYSpeed: {x: 3, y: 3}
   hp: 10
   movementShiftBuff: 2
   movementSpeedBuff: 2
@@ -496,7 +482,6 @@ MonoBehaviour:
   UIPrefab: {fileID: 3574377282495681092}
   worldSpaceCanvasPlayerNam: {fileID: 0}
   multiplayerDeletable: {fileID: 827547506345425076}
-  playerToGoPos: {x: 0, y: 0, z: 0}
   playerID: 0
   photonID: {fileID: 1960451430545438946}
   playerUI: {fileID: 8053597446482142089}
@@ -515,9 +500,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 1960451429685669108}
+  playerMovableCamera: {fileID: 144011776485002497}
   playerModels:
   - {fileID: 7847269727554404753}
   - {fileID: 8444724444511396458}
+  crScreenSize: {x: 0, y: 0}
   multiplayerDeletableMe: {fileID: 597769028638688242}
   multiplayerDeletableEnemy: {fileID: 827547506345425076}
   crPlayerName: 

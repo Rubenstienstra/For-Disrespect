@@ -21,7 +21,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public float inputAttack;
 
     public Vector2 mouseXYInput;
-    public float MaxXRotation;
+    public Vector2 oldMouseXYInput;
+    public bool[] isGoingLeftOrRight;
+    public float minXRotation;
+    public float maxXRotation;
     public Vector2 rotationXYSpeed;
 
     public float hp = 10;
@@ -150,14 +153,31 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             }
         }
     }
-    public void OnMouseX(InputValue value)
+    public void OnMouseXY(InputValue value)
     {
-        mouseXYInput.x = value.Get<float>();
-    }
-    public void OnMouseY(InputValue value)
-    {
-        mouseXYInput.y = value.Get<float>();
-    }
+        if (allowMoving)
+        {
+            mouseXYInput = value.Get<Vector2>();
+
+            if (mouseXYInput.x < oldMouseXYInput.x)// Mouse gaat naar Left
+            {
+                    transform.Rotate(0, 1 * rotationXYSpeed.x * Time.deltaTime, 0);
+                    isGoingLeftOrRight[0] = true;
+                    isGoingLeftOrRight[1] = false;
+            }
+            else if (mouseXYInput.x > oldMouseXYInput.x)// Mouse gaat naar Right
+            {
+                    transform.Rotate(0, -1 * rotationXYSpeed.x * Time.deltaTime, 0);
+                    isGoingLeftOrRight[0] = false;
+                    isGoingLeftOrRight[1] = true;
+            }
+            oldMouseXYInput = mouseXYInput;
+        }
+            //if (transform.rotation.x > minXRotation && transform.rotation.x < maxXRotation)
+            //{
+
+            //}
+        }
     public void OnAttack(InputValue value)
     {
         inputAttack = value.Get<float>();
@@ -188,28 +208,23 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             isAttacking = false;
         }
     }
-
-    public void Awake()
-    {
-
-    }
     public void Start()
     {
-        
+        minXRotation += playerManager.playerMovableCamera.rotation.x;
+        maxXRotation += playerManager.playerMovableCamera.rotation.x;
     }
 
     void FixedUpdate()
     {
         if (photonID.IsMine && allowMoving)
         {
-
             #region MOVEMENT
 
             Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
             distanceBetweenGround = hitSlope.distance;
-            if(hitSlope.distance < 0)
+            if (hitSlope.distance < 0)
             {
-                characterControl.Move(new Vector3(0,-1,0) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+                characterControl.Move(new Vector3(0, -1, 0) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
             }
             if (hitSlope.distance >= 0.001f)
             {
@@ -226,25 +241,17 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 {
                     isTotalWalkingWASD++;
                 }
+
+                isTotalWalkingWASD = 0; //resets the number
+
+                #endregion
+
+                #region MOUSE ROTATION
+
+                #endregion
             }
-            isTotalWalkingWASD = 0; //resets the number
-
-            #endregion
-
-            #region MOUSE ROTATION
-
-            transform.Rotate(0, mouseXYInput.y, 0);
-
-            if (transform.rotation.x > -MaxXRotation && transform.rotation.x < MaxXRotation)
-            {
-                //playerManager.playerCamera.transform.rotation.x = mouseXYInput.x * rotationXYSpeed.x;
-                //playerManager.playerCamera.transform.rotation.eulerAngles.x = mouseXYInput * rotationXYSpeed.x;
-            }
-
-            #endregion
         }
+        //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
+        //endAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, lookAtAngle, ref velocity, timeToTurn); // hiermee berekent je de angle van de speler naar links of rechts toe via de camera
     }
-    //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
-    //endAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, lookAtAngle, ref velocity, timeToTurn); // hiermee berekent je de angle van de speler naar links of rechts toe via de camera
-
 }
