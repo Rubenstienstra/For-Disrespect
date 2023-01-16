@@ -19,6 +19,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public float rayCastDistanceAttack;
     public bool isAttacking;
     public float inputAttack;
+    public Vector2 mouseXYInput;
+    public Vector2 MaxXYRotation;
     public float hp = 10;
 
     public float movementShiftBuff;
@@ -146,6 +148,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             }
         }
     }
+    public void OnMouseX(InputValue value)
+    {
+        mouseXYInput.x = value.Get<float>();
+    }
+    public void OnMouseY(InputValue value)
+    {
+        mouseXYInput.y = value.Get<float>();
+    }
     public void OnAttack(InputValue value)
     {
         inputAttack = value.Get<float>();
@@ -190,12 +200,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (photonID.IsMine && allowMoving)
         {
-            if (hp <= 0)
-            {
-                GameLobbyManager.gameLobbyInfo.LeaveRoom();
-            }
 
-            //NOMRAL MOVEMENT
+            #region MOVEMENT
+
             Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
             distanceBetweenGround = hitSlope.distance;
             if(hitSlope.distance < 0)
@@ -219,7 +226,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 }
             }
             isTotalWalkingWASD = 0; //resets the number
-        } 
+
+            #endregion
+
+            #region MOUSE ROTATION
+
+            transform.Rotate(mouseXYInput.x,mouseXYInput.y,0);
+
+            #endregion
+        }
     }
     //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
     //endAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, lookAtAngle, ref velocity, timeToTurn); // hiermee berekent je de angle van de speler naar links of rechts toe via de camera
