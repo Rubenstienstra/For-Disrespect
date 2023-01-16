@@ -486,7 +486,8 @@ MonoBehaviour:
   isAttacking: 0
   inputAttack: 0
   mouseXYInput: {x: 0, y: 0}
-  MaxXYRotation: {x: 40, y: 0}
+  MaxXRotation: 0
+  rotationXYSpeed: {x: 0, y: 0}
   hp: 10
   movementShiftBuff: 2
   movementSpeedBuff: 2
@@ -496,7 +497,6 @@ MonoBehaviour:
   UIPrefab: {fileID: 3574377282495681092}
   worldSpaceCanvasPlayerNam: {fileID: 0}
   multiplayerDeletable: {fileID: 827547506345425076}
-  playerToGoPos: {x: 0, y: 0, z: 0}
   playerID: 0
   photonID: {fileID: 1960451430545438946}
   playerUI: {fileID: 8053597446482142089}
