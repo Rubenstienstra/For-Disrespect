@@ -19,8 +19,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public float rayCastDistanceAttack;
     public bool isAttacking;
     public float inputAttack;
+
     public Vector2 mouseXYInput;
-    public Vector2 MaxXYRotation;
+    public float MaxXRotation;
+    public Vector2 rotationXYSpeed;
+
     public float hp = 10;
 
     public float movementShiftBuff;
@@ -36,7 +39,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public GameObject worldSpaceCanvasPlayerNam;
 
     public GameObject multiplayerDeletable;
-    public Vector3 playerToGoPos;
 
     public int playerID;
     public PhotonView photonID;
@@ -48,7 +50,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(transform.position); //playerToGoPos = Vector3.Lerp(transform.position, playerOldPos, 0.1f);
+            stream.SendNext(transform.position);
             stream.SendNext(allowMoving);
             stream.SendNext(isAttacking);
             stream.SendNext(hp);
@@ -62,7 +64,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         }
         else if(stream.IsReading)
         {
-            this.playerToGoPos = (Vector3)stream.ReceiveNext();
+            this.transform.position = (Vector3)stream.ReceiveNext();
             this.allowMoving = (bool)stream.ReceiveNext();
             this.isAttacking = (bool)stream.ReceiveNext();
             this.hp = (float)stream.ReceiveNext();
@@ -231,7 +233,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
             #region MOUSE ROTATION
 
-            transform.Rotate(mouseXYInput.x,mouseXYInput.y,0);
+            transform.Rotate(0, mouseXYInput.y, 0);
+
+            if (transform.rotation.x > -MaxXRotation && transform.rotation.x < MaxXRotation)
+            {
+                //playerManager.playerCamera.transform.rotation.x = mouseXYInput.x * rotationXYSpeed.x;
+                //playerManager.playerCamera.transform.rotation.eulerAngles.x = mouseXYInput * rotationXYSpeed.x;
+            }
 
             #endregion
         }
