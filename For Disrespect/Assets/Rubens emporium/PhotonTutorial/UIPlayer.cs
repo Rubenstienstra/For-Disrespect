@@ -12,6 +12,7 @@ public class UIPlayer : MonoBehaviour
     public Image playerFallBehindHPBar;
     public Image playerHPBar;
 
+    public GameObject EnemyBar;
     public Image enemyStaminaBar;
     public Image enemyFallBehindHPBar;
     public Image enemyHPBar;

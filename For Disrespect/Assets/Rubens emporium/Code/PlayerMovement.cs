@@ -183,7 +183,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (photonID.IsMine)
         {
-            Physics.Raycast(transform.position, Vector3.forward, out rayCastAttackHit);
+            Physics.Raycast(transform.position, transform.forward, out rayCastAttackHit, rayCastDistance);
+            Debug.DrawRay(transform.position, transform.forward, Color.red, 5);
             if (rayCastAttackHit.transform != null)
             {
                 print("It has Found: " + rayCastAttackHit.collider.gameObject.name);

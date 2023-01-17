@@ -476,7 +476,7 @@ MonoBehaviour:
   movementShiftBuff: 2
   movementSpeedBuff: 2
   rayCastPos: {x: 0, y: 0, z: 0}
-  rayCastDistance: 0
+  rayCastDistance: 1
   distanceBetweenGround: 10
   UIPrefab: {fileID: 3574377282495681092}
   worldSpaceCanvasPlayerNam: {fileID: 0}
@@ -515,13 +515,13 @@ MonoBehaviour:
   isWaitAnimationDone: 0
   isReadyToFight: 0
   worldSpaceEnemyUIBar: {fileID: 0}
-  damage: 0
-  hp: 0
+  damage: 5
+  hp: 100
   AllReadyUpAnimations: {fileID: 0}
   crGameLobbyManager: {fileID: 0}
   photonID: {fileID: 1960451430545438946}
   playerMoving: {fileID: 1960451430545438944}
-  playerUI: {fileID: 0}
+  playerUI: {fileID: 8053597446482142089}
 --- !u!143 &7583660211103564253
 CharacterController:
   m_ObjectHideFlags: 0

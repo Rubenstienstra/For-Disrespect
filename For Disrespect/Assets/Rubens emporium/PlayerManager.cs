@@ -108,6 +108,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             }
         }
     }
+    public void Update()
+    {
+        if (worldSpaceEnemyUIBar)
+        {
+            worldSpaceEnemyUIBar.transform.LookAt(playerMovableCamera.transform);
+        }
+    }
 
     public void GiveEnemyNamesAndModels()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
@@ -125,8 +132,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void SuccesfullyDealtDamage(RaycastHit enemyHit)
     {
+        print("you've dealt damage: " + damage);
         enemyHit.collider.gameObject.GetComponent<PlayerManager>().hp -= damage;
-        playerUI.OnHealthChange(enemyHit.collider.gameObject.GetComponent<PlayerManager>().hp);
 
         photonID.RPC("OnReceiveDamage", RpcTarget.Others);
     }
@@ -163,13 +170,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             PhotonNetwork.LoadLevel("GameRoom");
         }
 
-        if(PhotonNetwork.LevelLoadingProgress > 0 && PhotonNetwork.LevelLoadingProgress < 1)
+        if(PhotonNetwork.LevelLoadingProgress > 0 && PhotonNetwork.LevelLoadingProgress < 1)// Als je nog niet klaar bent met laden.
         {
             print("Waiting Again. Progress: " + PhotonNetwork.LevelLoadingProgress);
             yield return new WaitForSeconds(0.25f);
             StartCoroutine(WaitingReadyUpAnimation());
         }
-        else
+        else //als je klaar bent met laden.
         {
             ArrivedAtGame();
         }
