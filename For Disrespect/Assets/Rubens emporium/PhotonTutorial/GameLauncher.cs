@@ -98,7 +98,7 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public void JoinRoomButton()
     {
         print("JoinButton is pressed");
-        if (isConnectedToMaster && isConnectedToLobby)
+        if (isConnectedToMaster && isConnectedToLobby && joinRoomName != "")
         {
             PhotonNetwork.JoinRoom(joinRoomName);
         }

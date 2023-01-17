@@ -64,9 +64,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         }
         
     }
-    #region Photon calls
-
-    #endregion
 
     #region Automatic voids
     public override void OnLeftRoom()
@@ -148,7 +145,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerManager = crInstantiatedPlayerPrefab.GetComponent<PlayerManager>();
         
-        crInstantietedPlayerManager.playerCamera.gameObject.SetActive(false);
         crInstantietedPlayerMovement.allowMoving = false;
         crInstantietedPlayerMovement.UIPrefab.SetActive(false);
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
@@ -220,7 +216,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     }
     public void EveryoneIsReady()
     {
-        allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren
+        print("STEP 00");
+        allPlayers[1].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren. Moet voor alle spelers geactiveerd worden.
+        allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All);
     }
     #endregion
 

@@ -75,10 +75,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             playerManager.isGuest = (bool)stream.ReceiveNext();
             playerManager.isReadyLobby = (bool)stream.ReceiveNext();
             playerManager.isReadyToFight = (bool)stream.ReceiveNext();
-            this.playerManager.hp = (int)stream.ReceiveNext();
+            playerManager.hp = (int)stream.ReceiveNext();
             print("recieved stream");
         }
     }
+    #region InputActions
     public void OnForward(InputValue value)
     {
         if (photonID.IsMine)
@@ -178,13 +179,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             }
         }
     }
+    #endregion
 
     public void Attack()
     {
         if (photonID.IsMine)
         {
             Physics.Raycast(transform.position, transform.forward, out rayCastAttackHit, rayCastDistance);
-            Debug.DrawRay(transform.position, transform.forward, Color.red, 5);
+            Debug.DrawRay(transform.position, Vector3.forward, Color.red);
             if (rayCastAttackHit.transform != null)
             {
                 print("It has Found: " + rayCastAttackHit.collider.gameObject.name);
@@ -234,9 +236,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
                 #endregion
 
-                #region MOUSE ROTATION
-
-                #endregion
+                if (playerManager.worldSpaceEnemyUIBar)
+                {
+                   playerManager.worldSpaceEnemyUIBar.transform.LookAt(playerManager.playerMovableCamera.transform);
+                }
             }
         }
         //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt

@@ -86,7 +86,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1960451429685669107
 Transform:
   m_ObjectHideFlags: 0
@@ -463,7 +463,7 @@ MonoBehaviour:
   movementWASD: 00000000000000000000000000000000
   isTotalWalkingWASD: 0
   holdingShift: 0
-  allowMoving: 1
+  allowMoving: 0
   rayCastDistanceAttack: 1
   isAttacking: 0
   inputAttack: 0

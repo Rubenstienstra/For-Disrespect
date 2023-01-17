@@ -108,13 +108,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             }
         }
     }
-    public void Update()
-    {
-        if (worldSpaceEnemyUIBar)
-        {
-            worldSpaceEnemyUIBar.transform.LookAt(playerMovableCamera.transform);
-        }
-    }
 
     public void GiveEnemyNamesAndModels()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
@@ -147,6 +140,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void LoadIntoGame()
     {
+        print("STEP 0" + PhotonNetwork.NickName);
         AllReadyUpAnimations.SetBool("GameStart", true);
 
         DontDestroyOnLoad(crGameLobbyManager);
@@ -164,13 +158,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(waitTimeAnimation);
             print("Animation time is: " + isWaitAnimationDone);
         }
+        print("STEP 1" + PhotonNetwork.NickName);
 
         if (SceneManager.GetActiveScene().name != "GameRoom" && PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
         {
             PhotonNetwork.LoadLevel("GameRoom");
         }
+        print("STEP 2" + PhotonNetwork.NickName);
 
-        if(PhotonNetwork.LevelLoadingProgress > 0 && PhotonNetwork.LevelLoadingProgress < 1)// Als je nog niet klaar bent met laden.
+        if (PhotonNetwork.LevelLoadingProgress > 0 && PhotonNetwork.LevelLoadingProgress < 1)// Als je nog niet klaar bent met laden.
         {
             print("Waiting Again. Progress: " + PhotonNetwork.LevelLoadingProgress);
             yield return new WaitForSeconds(0.25f);
@@ -178,7 +174,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
         else //als je klaar bent met laden.
         {
+            print("Waiting Done! Progress: " + PhotonNetwork.LevelLoadingProgress);
             ArrivedAtGame();
+            print("STEP 3" + PhotonNetwork.NickName);
         }
         yield return new WaitForSeconds(0);
     }
@@ -187,8 +185,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         print("ArrivedAtGame Activated");
         isReadyToFight = true;
         crGameLobbyManager.transform.GetChild(0).gameObject.SetActive(false);
-        
-        
+        print("STEP 4" + PhotonNetwork.NickName);
+
+
         if (PhotonNetwork.IsMasterClient)//Setting player position up
         {
             crGameLobbyManager.allPlayers[0].transform.position = crGameLobbyManager.playerFightSpawnLocation[0];
@@ -205,6 +204,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             photonID.RPC("CountDownGame", RpcTarget.All);
             print("Activated CountDownGame");
         }
+        print("STEP 5" + PhotonNetwork.NickName);
     }
     [PunRPC]
     public IEnumerator CountDownGame()
@@ -219,6 +219,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     public void GameStarted()
     {
+        print("STEP 6" + PhotonNetwork.NickName);
         print("GameStarted activated");
         if (GameObject.Find("Main Camera GameRoom"))
         {
@@ -236,6 +237,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             print("Other player didn't get: allowMoving");
             crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving = true;
         }
+        print("STEP 7" + PhotonNetwork.NickName);
     }
     #endregion
 
