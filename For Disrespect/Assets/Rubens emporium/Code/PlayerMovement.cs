@@ -27,8 +27,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public float maxXRotation;
     public Vector2 rotationXYSpeed;
 
-    public float hp = 10;
-
     public float movementShiftBuff;
     private float crShiftBuff = 1;
     public float movementSpeedBuff;
@@ -56,7 +54,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(transform.position);
             stream.SendNext(allowMoving);
             stream.SendNext(isAttacking);
-            stream.SendNext(hp);
             stream.SendNext(playerID);
 
             stream.SendNext(playerManager.crPlayerName);
@@ -64,13 +61,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(playerManager.isGuest);
             stream.SendNext(playerManager.isReadyLobby);
             stream.SendNext(playerManager.isReadyToFight);
+            stream.SendNext(playerManager.hp);
         }
         else if(stream.IsReading)
         {
             this.transform.position = (Vector3)stream.ReceiveNext();
             this.allowMoving = (bool)stream.ReceiveNext();
             this.isAttacking = (bool)stream.ReceiveNext();
-            this.hp = (float)stream.ReceiveNext();
             this.playerID = (int)stream.ReceiveNext();
 
             playerManager.crPlayerName = (string)stream.ReceiveNext();
@@ -78,6 +75,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             playerManager.isGuest = (bool)stream.ReceiveNext();
             playerManager.isReadyLobby = (bool)stream.ReceiveNext();
             playerManager.isReadyToFight = (bool)stream.ReceiveNext();
+            this.playerManager.hp = (int)stream.ReceiveNext();
             print("recieved stream");
         }
     }
@@ -198,11 +196,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             Physics.Raycast(transform.position, Vector3.down, out rayCastAttackHit, distanceBetweenGround);
             if (rayCastAttackHit.transform != null)
             {
-                print("It has Found: " + rayCastAttackHit);
+                print("It has Found: " + rayCastAttackHit.collider.gameObject.name);
                 if (rayCastAttackHit.transform.tag == "Player")
                 {
-                    rayCastAttackHit.transform.gameObject.GetComponent<PlayerMovement>().hp--;
-                    rayCastAttackHit.transform.gameObject.GetComponent<UIPlayer>().OnHealthChange(hp);
+                    playerManager.SuccesfullyDealtDamage(rayCastAttackHit);
                 }
             }
             isAttacking = false;

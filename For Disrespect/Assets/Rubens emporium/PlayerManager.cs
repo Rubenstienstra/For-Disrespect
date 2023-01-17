@@ -29,11 +29,16 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public bool isWaitAnimationDone;
     public bool isReadyToFight;
 
+    public GameObject worldSpaceEnemyUIBar;
+
+    public int hp;
+
     public Animator AllReadyUpAnimations;
 
     public GameLobbyManager crGameLobbyManager;
     public PhotonView photonID;
     public PlayerMovement playerMoving;
+    public UIPlayer playerUI;
 
 
     public void Awake()
@@ -106,15 +111,26 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void GiveEnemyNamesAndModels()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
         GameObject crWorldSpaceNameLobbyEnemy = GameObject.Find("WORLDSPACECANVAS NameLobbyEnemy");
-        GameObject crWorldSpaceNameEnemy = GameObject.Find("HPbarEnemy");
+        worldSpaceEnemyUIBar = GameObject.Find("HPbarEnemy");
 
         if (photonID.IsMine && crGameLobbyManager.allPlayers.Count >= 2)
         {
             crEnemyName = crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().crPlayerName;
             crWorldSpaceNameLobbyEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
-            crWorldSpaceNameEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
+            worldSpaceEnemyUIBar.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
             print("giving enemy names");
         }
+    }
+    public void SuccesfullyDealtDamage(RaycastHit enemyHit)
+    {
+        playerUI.OnHealthChange(enemyHit.collider.gameObject.GetComponent<PlayerManager>().hp);
+
+        photonID.RPC("OnReceiveDamage", RpcTarget.Others);
+    }
+    [PunRPC]
+    public void OnReceiveDamage()
+    {
+
     }
     #region From Lobby To Game
     [PunRPC]
@@ -212,15 +228,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
     }
     #endregion
-    //spawnPoints = GameObject.Find("SpawnPoints");//Can't find spawnpoints if still in destroyOnLoad, Misschien destroyOnLoad when Instantiate.
-    //this.gameObject.transform.SetParent(spawnPoints.transform.GetChild(0));
-    //SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetSceneByName("GameRoom"));
 
-    //public void LeaveRoom()
-    //{
-    //    if (PhotonNetwork.IsConnected)
-    //    {
-    //        PhotonNetwork.LeaveRoom();
-    //    }
-    //}
+
 }

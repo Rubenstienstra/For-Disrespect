@@ -9,7 +9,11 @@ public class UIPlayer : MonoBehaviour
     public PlayerManager playerManager;
 
     public Text playerName;
-    public Slider playerHPBar;
+
+    public Image staminaBar;
+    public Image playerHPBar;
+    public Image fallBehindHPBar;
+
     public GameObject playerGameObject;
     public Transform parentComponent;
 
@@ -34,8 +38,12 @@ public class UIPlayer : MonoBehaviour
     {
         if(playerHPBar != null)
         {
-            playerHPBar.value = hp;
+            playerHPBar.fillAmount = hp/100;
             print("Player Total HP: " + hp);
         }
+    }
+    public void OnStaminaChange(float stamina)
+    {
+
     }
 }

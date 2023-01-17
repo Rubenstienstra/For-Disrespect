@@ -32,6 +32,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject hostUISettings;
     public TMP_Text hostUIRoomName;
 
+
+
     public GameObject guestUI;
     public GameObject guestUISettings;
     public TMP_Text guestUIRoomName;
