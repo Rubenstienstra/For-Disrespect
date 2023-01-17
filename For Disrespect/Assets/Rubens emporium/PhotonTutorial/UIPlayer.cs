@@ -8,11 +8,17 @@ public class UIPlayer : MonoBehaviour
     public PlayerMovement playerMovement;
     public PlayerManager playerManager;
 
-    public Text playerName;
-
-    public Image staminaBar;
+    public Image playerStaminaBar;
+    public Image playerFallBehindHPBar;
     public Image playerHPBar;
-    public Image fallBehindHPBar;
+
+    public Image enemyStaminaBar;
+    public Image enemyFallBehindHPBar;
+    public Image enemyHPBar;
+
+    public float timeToWaitHPBar = 1;
+    public bool isAlreadyWaiting;
+    public bool isSecondInQueue;
 
     public GameObject playerGameObject;
     public Transform parentComponent;
@@ -23,26 +29,43 @@ public class UIPlayer : MonoBehaviour
         {
             //gameObject.SetActive(false);
         }
-
-        if (playerName != null && playerMovement != null)//Canvas 
-        {
-            if (playerMovement.photonID.IsMine)
-            {
-                playerName.text = playerMovement.photonID.Owner.NickName.ToString();
-                return;
-            }
-            playerName.text = playerManager.crPlayerName;
-        }
     }
     public void OnHealthChange(float hp)
     {
         if(playerHPBar != null)
         {
-            playerHPBar.fillAmount = hp/100;
+            playerHPBar.fillAmount = hp / 100;
             print("Player Total HP: " + hp);
+            StartCoroutine(FallBehindHPWaiting(hp));
         }
     }
+    public IEnumerator FallBehindHPWaiting(float hp)
+    {
+        if (isAlreadyWaiting)
+        {
+            isSecondInQueue = true;
+        }
+        isAlreadyWaiting = true;
+
+        yield return new WaitForSeconds(timeToWaitHPBar);
+
+        if (!isSecondInQueue)
+        {
+            playerFallBehindHPBar.fillAmount = hp / 100;
+            isAlreadyWaiting = false;
+            isSecondInQueue = false;
+        }
+        print("Is the IEnumarator secondInQueue: " + isSecondInQueue + "and waiting: " + isAlreadyWaiting);
+
+        StopCoroutine(FallBehindHPWaiting(hp));
+
+        yield return new WaitForSeconds(0);
+    }
     public void OnStaminaChange(float stamina)
+    {
+
+    }
+    public void OnEnemyHealthChange()
     {
 
     }

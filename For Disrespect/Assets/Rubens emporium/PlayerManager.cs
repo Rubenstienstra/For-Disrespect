@@ -31,6 +31,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public GameObject worldSpaceEnemyUIBar;
 
+    public int damage;
     public int hp;
 
     public Animator AllReadyUpAnimations;
@@ -121,8 +122,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             print("giving enemy names");
         }
     }
+
     public void SuccesfullyDealtDamage(RaycastHit enemyHit)
     {
+        enemyHit.collider.gameObject.GetComponent<PlayerManager>().hp -= damage;
         playerUI.OnHealthChange(enemyHit.collider.gameObject.GetComponent<PlayerManager>().hp);
 
         photonID.RPC("OnReceiveDamage", RpcTarget.Others);
@@ -130,15 +133,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void OnReceiveDamage()
     {
-
+        playerUI.OnHealthChange(hp);
     }
+
     #region From Lobby To Game
     [PunRPC]
     public void LoadIntoGame()
     {
         AllReadyUpAnimations.SetBool("GameStart", true);
 
-        //DontDestroyOnLoad(this.gameObject);
         DontDestroyOnLoad(crGameLobbyManager);
         DontDestroyOnLoad(crGameLobbyManager.allPlayers[0]);
         DontDestroyOnLoad(crGameLobbyManager.allPlayers[1]);

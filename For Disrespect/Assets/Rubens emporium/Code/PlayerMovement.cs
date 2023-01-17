@@ -153,38 +153,28 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnMouseXY(InputValue value)
     {
-        if (allowMoving)
+        if (allowMoving && photonID.IsMine)
         {
             mouseXYInput = value.Get<Vector2>();
 
-            if (mouseXYInput.x < oldMouseXYInput.x)// Mouse gaat naar Left
+            if (transform.rotation.x > minXRotation && transform.rotation.x < maxXRotation)
             {
-                    transform.Rotate(0, 1 * rotationXYSpeed.x * Time.deltaTime, 0);
-                    isGoingLeftOrRight[0] = true;
-                    isGoingLeftOrRight[1] = false;
+                transform.Rotate(0, mouseXYInput.x * rotationXYSpeed.x * Time.deltaTime, 0);
             }
-            else if (mouseXYInput.x > oldMouseXYInput.x)// Mouse gaat naar Right
-            {
-                    transform.Rotate(0, -1 * rotationXYSpeed.x * Time.deltaTime, 0);
-                    isGoingLeftOrRight[0] = false;
-                    isGoingLeftOrRight[1] = true;
-            }
-            oldMouseXYInput = mouseXYInput;
         }
-            //if (transform.rotation.x > minXRotation && transform.rotation.x < maxXRotation)
-            //{
-
-            //}
-        }
+    }
     public void OnAttack(InputValue value)
     {
-        inputAttack = value.Get<float>();
-        if (value.Get<float>() > 0)
+        if (photonID.IsMine)
         {
-            if (!isAttacking && photonID.IsMine)
+            inputAttack = value.Get<float>();
+            if (value.Get<float>() > 0)
             {
-                isAttacking = true;
-                Attack();
+                if (!isAttacking)
+                {
+                    isAttacking = true;
+                    Attack();
+                }
             }
         }
     }
@@ -193,7 +183,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (photonID.IsMine)
         {
-            Physics.Raycast(transform.position, Vector3.down, out rayCastAttackHit, distanceBetweenGround);
+            Physics.Raycast(transform.position, Vector3.forward, out rayCastAttackHit);
             if (rayCastAttackHit.transform != null)
             {
                 print("It has Found: " + rayCastAttackHit.collider.gameObject.name);
