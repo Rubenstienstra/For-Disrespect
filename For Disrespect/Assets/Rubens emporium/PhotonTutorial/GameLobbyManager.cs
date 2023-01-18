@@ -217,8 +217,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void EveryoneIsReady()
     {
         print("STEP 00");
-        allPlayers[1].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren. Moet voor alle spelers geactiveerd worden.
-        allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All);
+        allPlayers[1].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren. De RPC kan niet voor andere worden geladen, omdat je naar een andere scene toe gaat en daardoor verlies je connections met de andere spelers.
+        allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Het resultaat hiervan is dat alle bools, floats, ints niet meer worden ingeladen voor de speler zelf en ook niet voor de andere.
     }
     #endregion
 
