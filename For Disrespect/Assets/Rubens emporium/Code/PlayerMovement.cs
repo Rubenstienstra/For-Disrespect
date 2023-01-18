@@ -23,8 +23,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public bool hasOpenedESC;
 
     public Vector2 mouseXYInput;
-    public float minXRotation;
-    public float maxXRotation;
     public Vector2 rotationXYSpeed;
 
     public float movementShiftBuff;
@@ -69,6 +67,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             this.allowMoving = (bool)stream.ReceiveNext();
             this.isAttacking = (bool)stream.ReceiveNext();
             this.playerID = (int)stream.ReceiveNext();
+            this.isBlocking = (bool)stream.ReceiveNext();
 
             playerManager.crPlayerName = (string)stream.ReceiveNext();
             playerManager.isHost = (bool)stream.ReceiveNext();
@@ -178,10 +177,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             mouseXYInput = value.Get<Vector2>();
 
-            if (transform.rotation.x > minXRotation && transform.rotation.x < maxXRotation)
-            {
-                transform.Rotate(0, mouseXYInput.x * rotationXYSpeed.x * Time.deltaTime, 0);
-            }
+            transform.Rotate(0, mouseXYInput.x * rotationXYSpeed.x * Time.deltaTime, 0);
         }
     }
     public void OnAttack(InputValue value)
@@ -237,8 +233,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void Start()
     {
-        minXRotation += playerManager.playerMovableCamera.rotation.x;
-        maxXRotation += playerManager.playerMovableCamera.rotation.x;
+
     }
 
     void FixedUpdate()
