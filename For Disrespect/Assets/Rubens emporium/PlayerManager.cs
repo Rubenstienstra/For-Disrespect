@@ -37,7 +37,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public int staminaCostAttack;
     public int staminaCostBlock;
 
-    public GameObject[] playersInAttackRange;
+    public List<GameObject> playersInAttackRange;
 
     public Animator AllReadyUpAnimations;
     public Animator playerAnimations;
@@ -255,11 +255,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void OnTriggerEnter(Collider other)
     {
-        
+        if (other.gameObject.tag == "Player")
+        {
+            playersInAttackRange.Add(other.gameObject);
+        }
     }
     public void OnTriggerExit(Collider other)
     {
-        
+        if(other.gameObject.tag == "Player")
+        {
+            playersInAttackRange.RemoveAt(playersInAttackRange.Count);
+        }
     }
 
 }
