@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public int isTotalWalkingWASD;
     public bool holdingShift;
     public bool allowMoving;
+    public Vector3 characterMovementInput;
 
     public RaycastHit rayCastAttackHit;
     public float rayCastDistanceAttack;
@@ -100,7 +101,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             if (value.Get<float>() == 1)
             {
-                movementWASD[1] = 1;
+                movementWASD[1] = -1;
             }
             else
             {
@@ -210,6 +211,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             #region MOVEMENT
 
+            characterMovementInput = transform.forward * (-movementWASD[1] + movementWASD[3] * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+            characterMovementInput = transform.right * (-movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime;
+            characterMovementInput = Physics.gravity;
+
             Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
             distanceBetweenGround = hitSlope.distance;
             if (hitSlope.distance < 0)
@@ -224,6 +229,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
             }
+            //characterControl.Move((-movementWASD[2] + movementWASD[0]) * transform.forward * movementShiftBuff * movementSpeedBuff * Time.deltaTime);
+
 
             for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
             {

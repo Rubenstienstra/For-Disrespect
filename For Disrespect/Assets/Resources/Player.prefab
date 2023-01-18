@@ -465,6 +465,7 @@ MonoBehaviour:
   isTotalWalkingWASD: 0
   holdingShift: 0
   allowMoving: 0
+  characterMovementInput: {x: 0, y: 0, z: 0}
   rayCastDistanceAttack: 1
   isAttacking: 0
   inputAttack: 0
