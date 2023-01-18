@@ -35,11 +35,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public int hp;
 
     public Animator AllReadyUpAnimations;
+    public Animator playerAnimations;
+
+    public GameObject UIPrefab;
+    public GameObject playerESCMenu;
 
     public GameLobbyManager crGameLobbyManager;
     public PhotonView photonID;
     public PlayerMovement playerMoving;
-    public UIPlayer playerUI;
+    public UIPlayer UIPlayer;
 
 
     public void Awake()
@@ -80,11 +84,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         if (isHost)
         {
             playerModels[0].SetActive(true);
+            playerAnimations = playerModels[0].GetComponent<Animator>();
             playerModels[1].SetActive(false);
         }
         else if (isGuest)
         {
             playerModels[1].SetActive(true);
+            playerAnimations = playerModels[1].GetComponent<Animator>();
             playerModels[0].SetActive(false);
         }
 
@@ -123,7 +129,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void SuccesfullyDealtDamage(RaycastHit enemyHit)
+    public void SuccesfullyDealtDamage(RaycastHit enemyHit)//player 0 did damage to player 1
     {
         print("you've dealt damage: " + damage);
         enemyHit.collider.gameObject.GetComponent<PlayerManager>().hp -= damage;
@@ -131,9 +137,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         photonID.RPC("OnReceiveDamage", RpcTarget.Others);
     }
     [PunRPC]
-    public void OnReceiveDamage()
+    public void OnReceiveDamage()// Only player 1 gets this
     {
-        playerUI.OnHealthChange(hp);
+        UIPlayer.OnHealthChange(hp);
+        playerAnimations.SetTrigger("Get Hit");
     }
 
     #region From Lobby To Game

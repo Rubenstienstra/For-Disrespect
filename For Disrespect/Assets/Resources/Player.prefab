@@ -461,26 +461,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5587abb4fa4565043b57411736550469, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementWASD: 00000000000000000000000000000000
+  movementWASD:
+  - 0
+  - 0
+  - 0
+  - 0
   isTotalWalkingWASD: 0
   holdingShift: 0
   allowMoving: 0
-  characterMovementInput: {x: 0, y: 0, z: 0}
   rayCastDistanceAttack: 1
   isAttacking: 0
   inputAttack: 0
   mouseXYInput: {x: 0, y: 0}
-  oldMouseXYInput: {x: 0, y: 0}
-  isGoingLeftOrRight: 0000
   minXRotation: -20
   maxXRotation: 20
   rotationXYSpeed: {x: 3, y: 3}
   movementShiftBuff: 2
-  movementSpeedBuff: 2
+  movementSpeedBuff: 1
   rayCastPos: {x: 0, y: 0, z: 0}
   rayCastDistance: 1
   distanceBetweenGround: 10
-  UIPrefab: {fileID: 3574377282495681092}
   worldSpaceCanvasPlayerNam: {fileID: 0}
   multiplayerDeletable: {fileID: 827547506345425076}
   playerID: 0
@@ -520,10 +520,12 @@ MonoBehaviour:
   damage: 5
   hp: 100
   AllReadyUpAnimations: {fileID: 0}
+  playerAnimations: {fileID: 0}
+  UIPrefab: {fileID: 3574377282495681092}
   crGameLobbyManager: {fileID: 0}
   photonID: {fileID: 1960451430545438946}
   playerMoving: {fileID: 1960451430545438944}
-  playerUI: {fileID: 8053597446482142089}
+  UIPlayer: {fileID: 8053597446482142089}
 --- !u!143 &7583660211103564253
 CharacterController:
   m_ObjectHideFlags: 0

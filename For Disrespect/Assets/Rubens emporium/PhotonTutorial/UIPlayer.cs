@@ -33,6 +33,11 @@ public class UIPlayer : MonoBehaviour
     }
     public void OnHealthChange(float hp)
     {
+        if(hp <= 0)
+        {
+            playerManager.playerAnimations.SetTrigger("Dead");
+            print("Player Has Died");
+        }
         if(playerHPBar != null)
         {
             playerHPBar.fillAmount = hp / 100;

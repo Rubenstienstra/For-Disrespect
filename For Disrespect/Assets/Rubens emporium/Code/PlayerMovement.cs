@@ -10,11 +10,10 @@ using TMPro;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 {
-    public int[] movementWASD;
+    public float[] movementWASD;
     public int isTotalWalkingWASD;
     public bool holdingShift;
     public bool allowMoving;
-    public Vector3 characterMovementInput;
 
     public RaycastHit rayCastAttackHit;
     public float rayCastDistanceAttack;
@@ -22,8 +21,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public float inputAttack;
 
     public Vector2 mouseXYInput;
-    public Vector2 oldMouseXYInput;
-    public bool[] isGoingLeftOrRight;
     public float minXRotation;
     public float maxXRotation;
     public Vector2 rotationXYSpeed;
@@ -37,7 +34,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public RaycastHit hitSlope;
     public float distanceBetweenGround;
 
-    public GameObject UIPrefab;
     public GameObject worldSpaceCanvasPlayerNam;
 
     public GameObject multiplayerDeletable;
@@ -81,18 +77,23 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         }
     }
     #region InputActions
+    public void OnEsc(InputValue value)
+    {
+        playerManager.playerESCMenu.SetActive(value.Get<bool>());
+    }
     public void OnForward(InputValue value)
     {
         if (photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
-                movementWASD[0] = 1;
+                movementWASD[0] = value.Get<float>();
             }
             else
             {
                 movementWASD[0] = 0;
             }
+            playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
         }
     }
     public void OnLeft(InputValue value)
@@ -101,12 +102,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             if (value.Get<float>() == 1)
             {
-                movementWASD[1] = -1;
+                movementWASD[1] = value.Get<float>();
             }
             else
             {
                 movementWASD[1] = 0;
             }
+            playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
         }
     }
     public void OnDown(InputValue value)
@@ -115,12 +117,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             if (value.Get<float>() == 1)
             {
-                movementWASD[2] = 1;
+                movementWASD[2] = value.Get<float>();
             }
             else
             {
                 movementWASD[2] = 0;
             }
+            playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
         }
     }
     public void OnRight(InputValue value)
@@ -129,12 +132,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             if (value.Get<float>() == 1)
             {
-                movementWASD[3] = 1;
+                movementWASD[3] = value.Get<float>();
             }
             else
             {
                 movementWASD[3] = 0;
             }
+            playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
         }
     }
     public void OnShift(InputValue value)
@@ -151,6 +155,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 holdingShift = false;
                 crShiftBuff = 1;
             }
+            playerManager.playerAnimations.SetFloat("Running", value.Get<float>());
         }
     }
     public void OnMouseXY(InputValue value)
@@ -211,25 +216,23 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             #region MOVEMENT
 
-            characterMovementInput = transform.forward * (-movementWASD[1] + movementWASD[3] * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            characterMovementInput = transform.right * (-movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime;
-            characterMovementInput = Physics.gravity;
-
             Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
             distanceBetweenGround = hitSlope.distance;
+
             if (hitSlope.distance < 0)
             {
                 characterControl.Move(new Vector3(0, -1, 0) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
             }
             if (hitSlope.distance >= 0.001f)
             {
-                characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+                transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
             }
             else
             {
-                characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+                transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
             }
-            //characterControl.Move((-movementWASD[2] + movementWASD[0]) * transform.forward * movementShiftBuff * movementSpeedBuff * Time.deltaTime);
+
+            //characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
 
 
             for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving

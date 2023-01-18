@@ -144,9 +144,10 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, new Vector3(10,0,10), Quaternion.identity);
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerManager = crInstantiatedPlayerPrefab.GetComponent<PlayerManager>();
-        
+
+        crInstantietedPlayerManager.UIPrefab.SetActive(false);
+
         crInstantietedPlayerMovement.allowMoving = false;
-        crInstantietedPlayerMovement.UIPrefab.SetActive(false);
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
     }
     #region Unused Code
@@ -217,8 +218,9 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void EveryoneIsReady()
     {
         print("STEP 00");
-        allPlayers[1].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren. De RPC kan niet voor andere worden geladen, omdat je naar een andere scene toe gaat en daardoor verlies je connections met de andere spelers.
-        allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Het resultaat hiervan is dat alle bools, floats, ints niet meer worden ingeladen voor de speler zelf en ook niet voor de andere.
+        allPlayers[0].GetComponent<PlayerManager>().LoadIntoGame();
+        allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.Others); //Dit moet op het einde gebeuren. De RPC kan niet voor andere worden geladen, omdat je naar een andere scene toe gaat en daardoor verlies je connections met de andere spelers.
+        allPlayers[1].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Het resultaat hiervan is dat alle bools, floats, ints niet meer worden ingeladen voor de speler zelf en ook niet voor de andere.
     }
     #endregion
 
