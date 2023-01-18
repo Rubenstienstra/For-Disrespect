@@ -33,6 +33,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public int damage;
     public int hp;
+    public int stamina;
+    public int staminaCostAttack;
+    public int staminaCostBlock;
+
+    public GameObject[] playersInAttackRange;
 
     public Animator AllReadyUpAnimations;
     public Animator playerAnimations;
@@ -248,5 +253,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    public void OnTriggerEnter(Collider other)
+    {
+        
+    }
+    public void OnTriggerExit(Collider other)
+    {
+        
+    }
 
 }

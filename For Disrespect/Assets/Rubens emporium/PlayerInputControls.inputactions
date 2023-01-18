@@ -51,19 +51,28 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Attack",
+                    "name": "MouseXY",
                     "type": "Value",
-                    "id": "aca18d58-9464-49e2-98ce-423e5efc3337",
-                    "expectedControlType": "",
+                    "id": "6fcf3d32-649e-43a7-a39a-e1f393095d58",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
                 },
                 {
-                    "name": "MouseXY",
-                    "type": "Value",
-                    "id": "6fcf3d32-649e-43a7-a39a-e1f393095d58",
-                    "expectedControlType": "Vector2",
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "aca18d58-9464-49e2-98ce-423e5efc3337",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Block",
+                    "type": "Button",
+                    "id": "57b43ef8-1bba-405b-9f76-fd98535cc0fd",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -136,6 +145,17 @@
                 },
                 {
                     "name": "",
+                    "id": "2982c9d2-f8e7-4c66-aee2-7c9da2259001",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseXY",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "d8276a88-d402-4424-a4e5-989cf73b0277",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -147,12 +167,12 @@
                 },
                 {
                     "name": "",
-                    "id": "2982c9d2-f8e7-4c66-aee2-7c9da2259001",
-                    "path": "<Mouse>/delta",
+                    "id": "5c8f80e7-6454-4f16-b0ed-8b4befa4cc5b",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseXY",
+                    "action": "Block",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

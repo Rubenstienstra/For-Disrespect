@@ -18,7 +18,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public RaycastHit rayCastAttackHit;
     public float rayCastDistanceAttack;
     public bool isAttacking;
-    public float inputAttack;
+    public bool isBlocking; //Blocking is niet een bool. het is een trigger van wanneer je wordt geraakt.
+
+    public bool hasOpenedESC;
 
     public Vector2 mouseXYInput;
     public float minXRotation;
@@ -52,6 +54,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(allowMoving);
             stream.SendNext(isAttacking);
             stream.SendNext(playerID);
+            stream.SendNext(isBlocking);
 
             stream.SendNext(playerManager.crPlayerName);
             stream.SendNext(playerManager.isHost);
@@ -79,7 +82,18 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     #region InputActions
     public void OnEsc(InputValue value)
     {
-        playerManager.playerESCMenu.SetActive(value.Get<bool>());
+        if (photonID.IsMine)
+        {
+            if(!hasOpenedESC)
+            {
+                hasOpenedESC = true;
+                playerManager.playerESCMenu.SetActive(true);
+                return;
+            }
+            hasOpenedESC = false;
+            playerManager.playerESCMenu.SetActive(false);
+            return;
+        }
     }
     public void OnForward(InputValue value)
     {
@@ -174,14 +188,31 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (photonID.IsMine)
         {
-            inputAttack = value.Get<float>();
-            if (value.Get<float>() > 0)
+            if (value.Get<float>() == 1)
             {
-                if (!isAttacking)
+                if (!isAttacking && !isBlocking)
                 {
                     isAttacking = true;
+                    playerManager.stamina -= playerManager.staminaCostAttack;
                     Attack();
                 }
+            }
+        }
+    }
+    public void OnBlock(InputValue value)
+    {
+        if (photonID.IsMine)
+        {
+            if (value.Get<float>() == 1)
+            {
+                if (!isBlocking && !isAttacking)
+                {
+                    isBlocking = true;
+                }
+            }
+            else
+            {
+                isBlocking = false;
             }
         }
     }
