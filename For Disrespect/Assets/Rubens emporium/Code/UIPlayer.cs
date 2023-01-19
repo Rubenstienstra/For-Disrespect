@@ -8,6 +8,8 @@ public class UIPlayer : MonoBehaviour
     public PlayerMovement playerMovement;
     public PlayerManager playerManager;
 
+    public Animator roundCountdownStartAnimation;
+
     public Image playerStaminaBar;
     public Image playerFallBehindHPBar;
     public Image playerHPBar;

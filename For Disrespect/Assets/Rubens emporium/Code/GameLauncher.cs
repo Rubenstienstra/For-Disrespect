@@ -31,38 +31,33 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public GameObject buttonPrefab;
     public GameObject crInstantiatedButtonPrefab;
 
-
     public GameObject loadingText;
     public GameObject mainMenuWindow;
     public GameObject choosingLobbyOrCreate;
     public GameObject creatingLobby; // is in different scene
 
-    public Transform contentToParent;
-    public RoomListing roomListing;
-
     public string crServerAdress;
     public int crPort;
     public string crAppID;
 
+    public GameObject mainMenuLobbyMusic;
 
-    #region MonoBehaviour CallBacks
 
     private void Awake()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
     }
+
     private void Start()
     {
         if (PhotonNetwork.IsConnected)
         {
             mainMenuWindow.SetActive(false);
         }
+        DontDestroyOnLoad(mainMenuLobbyMusic);
     }
 
-    #endregion
-
     #region Public Methods
-
 
     public void Connect()
     {

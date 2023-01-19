@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-using Cinemachine;
 
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
@@ -31,11 +30,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public GameObject worldSpaceEnemyUIBar;
 
-    public int damage;
-    public int hp;
-    public int stamina;
-    public int staminaCostAttack;
-    public int staminaCostBlock;
+    public int damage = 5;
+    public int hp = 100;
+    public float stamina = 100;
+    public float staminaRegenRate = 1;
+    public float staminaCostAttack;
+    public float staminaCostBlock;
 
     public List<GameObject> playersInAttackRange;
 
@@ -48,7 +48,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public GameLobbyManager crGameLobbyManager;
     public PhotonView photonID;
     public PlayerMovement playerMoving;
-    public UIPlayer UIPlayer;
+    public UIPlayer playerUI;
 
 
     public void Awake()
@@ -133,19 +133,31 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             print("giving enemy names");
         }
     }
-
-    public void SuccesfullyDealtDamage(RaycastHit enemyHit)//player 0 did damage to player 1
+    public void DealtBlockedDamage(GameObject enemyPlayer)
     {
-        print("you've dealt damage: " + damage);
-        enemyHit.collider.gameObject.GetComponent<PlayerManager>().hp -= damage;
+        print("you've blocked: " + damage + " damage.");
+
+        photonID.RPC("OnReceiveShieldedDamage", RpcTarget.Others);
+    }
+
+    public void SuccesfullyDealtDamage(GameObject enemyPlayer)//player 0 did damage to player 1
+    {
+        print("you've dealt: " + damage + " damage.");
+        enemyPlayer.GetComponent<PlayerManager>().hp -= damage;
 
         photonID.RPC("OnReceiveDamage", RpcTarget.Others);
     }
     [PunRPC]
     public void OnReceiveDamage()// Only player 1 gets this
     {
-        UIPlayer.OnHealthChange(hp);
+        playerUI.OnHealthChange(hp);
         playerAnimations.SetTrigger("Get Hit");
+    }
+
+    [PunRPC]
+    public void OnReceiveShieldedDamage()
+    {
+        playerAnimations.SetTrigger("Block");
     }
 
     #region From Lobby To Game
@@ -172,9 +184,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
         print("STEP 1" + PhotonNetwork.NickName);
 
-        if (SceneManager.GetActiveScene().name != "GameRoom" && PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
+        if (SceneManager.GetActiveScene().name != "BattlefieldCom" && PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
         {
-            PhotonNetwork.LoadLevel("GameRoom");
+            PhotonNetwork.LoadLevel("BattlefieldCom");
         }
         print("STEP 2" + PhotonNetwork.NickName);
 
@@ -221,7 +233,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public IEnumerator CountDownGame()
     {
-
+        playerUI.roundCountdownStartAnimation.SetTrigger("RoundCounter");
         yield return new WaitForSeconds(1);//2 seconds left
 
         yield return new WaitForSeconds(1);//1 seconds left
@@ -253,6 +265,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    #region OnTriggerEnter/Exit voids
     public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
@@ -267,5 +280,5 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             playersInAttackRange.RemoveAt(playersInAttackRange.Count);
         }
     }
-
+    #endregion 
 }

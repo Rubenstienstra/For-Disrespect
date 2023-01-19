@@ -60,6 +60,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(playerManager.isReadyLobby);
             stream.SendNext(playerManager.isReadyToFight);
             stream.SendNext(playerManager.hp);
+            stream.SendNext(playerManager.stamina);
         }
         else if(stream.IsReading)
         {
@@ -75,6 +76,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             playerManager.isReadyLobby = (bool)stream.ReceiveNext();
             playerManager.isReadyToFight = (bool)stream.ReceiveNext();
             playerManager.hp = (int)stream.ReceiveNext();
+            playerManager.stamina = (float)stream.ReceiveNext();
             print("recieved stream");
         }
     }
@@ -161,19 +163,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             if (value.Get<float>() == 1)
             {
                 holdingShift = true;
+                playerManager.playerAnimations.SetBool("Running", true);
+
                 crShiftBuff = movementShiftBuff;
             }
             else
             {
                 holdingShift = false;
+                playerManager.playerAnimations.SetBool("Running", true);
+
                 crShiftBuff = 1;
             }
-            playerManager.playerAnimations.SetFloat("Running", value.Get<float>());
         }
     }
     public void OnMouseXY(InputValue value)
     {
-        if (allowMoving && photonID.IsMine)
+        if (allowMoving && photonID.IsMine && !hasOpenedESC)
         {
             mouseXYInput = value.Get<Vector2>();
 
@@ -186,7 +191,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             if (value.Get<float>() == 1)
             {
-                if (!isAttacking && !isBlocking)
+                if (!isAttacking && !isBlocking && !hasOpenedESC)
                 {
                     isAttacking = true;
                     playerManager.stamina -= playerManager.staminaCostAttack;
@@ -201,7 +206,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             if (value.Get<float>() == 1)
             {
-                if (!isBlocking && !isAttacking)
+                if (!isBlocking && !isAttacking && !hasOpenedESC)
                 {
                     isBlocking = true;
                 }
@@ -218,14 +223,18 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (photonID.IsMine)
         {
-            Physics.Raycast(transform.position, transform.forward, out rayCastAttackHit, rayCastDistance);
-            Debug.DrawRay(transform.position, Vector3.forward, Color.red);
-            if (rayCastAttackHit.transform != null)
+            for (int i = 0; i < playerManager.playersInAttackRange.Count; i++)
             {
-                print("It has Found: " + rayCastAttackHit.collider.gameObject.name);
-                if (rayCastAttackHit.transform.tag == "Player")
+                if(playerManager.playersInAttackRange[i].name == "Player (Clone)")
                 {
-                    playerManager.SuccesfullyDealtDamage(rayCastAttackHit);
+                    if (playerManager.playersInAttackRange[i].gameObject.GetComponent<PlayerMovement>().isBlocking)
+                    {
+                        playerManager.DealtBlockedDamage(playerManager.playersInAttackRange[i]);
+                    }
+                    else
+                    {
+                        playerManager.SuccesfullyDealtDamage(playerManager.playersInAttackRange[i]);
+                    }
                 }
             }
             isAttacking = false;
@@ -276,6 +285,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 {
                    playerManager.worldSpaceEnemyUIBar.transform.LookAt(playerManager.playerMovableCamera.transform);
                 }
+            }
+            if(playerManager.stamina <= 100)
+            {
+                playerManager.stamina += Time.deltaTime;
             }
         }
         //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt

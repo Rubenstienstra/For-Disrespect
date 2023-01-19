@@ -79,7 +79,6 @@ GameObject:
   - component: {fileID: 1960451429685669108}
   - component: {fileID: 1960451429685669109}
   - component: {fileID: 1960451429685669106}
-  - component: {fileID: 7194733285747788574}
   - component: {fileID: 6152742566500262494}
   m_Layer: 0
   m_Name: Main Camera
@@ -291,23 +290,6 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
---- !u!114 &7194733285747788574
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960451429685669110}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd08475b23aa548b7b9d28397d430b32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  distance: 7
-  height: 3
-  centerOffset: {x: 0, y: 0, z: 0}
-  followOnStart: 0
-  smoothSpeed: 0.125
 --- !u!114 &6152742566500262494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -536,6 +518,7 @@ MonoBehaviour:
   damage: 5
   hp: 100
   stamina: 100
+  staminaRegenRate: 1
   staminaCostAttack: 20
   staminaCostBlock: 30
   playersInAttackRange: []
@@ -546,7 +529,7 @@ MonoBehaviour:
   crGameLobbyManager: {fileID: 0}
   photonID: {fileID: 1960451430545438946}
   playerMoving: {fileID: 1960451430545438944}
-  UIPlayer: {fileID: 8053597446482142089}
+  playerUI: {fileID: 8053597446482142089}
 --- !u!143 &7583660211103564253
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1145,6 +1128,11 @@ PrefabInstance:
       propertyPath: playerFallBehindHPBar
       value: 
       objectReference: {fileID: 2217544517044547045}
+    - target: {fileID: 4204781948252312204, guid: 75d2a8d6a68239444826319d16ae2e80,
+        type: 3}
+      propertyPath: roundCountdownStartAnimation
+      value: 
+      objectReference: {fileID: 5772516302135514102}
     - target: {fileID: 5392192456925280979, guid: 75d2a8d6a68239444826319d16ae2e80,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1255,6 +1243,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 7959112228888069907, guid: 75d2a8d6a68239444826319d16ae2e80,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 3426473307824205508, guid: 75d2a8d6a68239444826319d16ae2e80, type: 3}
@@ -1271,6 +1264,12 @@ RectTransform:
 --- !u!1 &3574377282495681092 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7207166645639570241, guid: 75d2a8d6a68239444826319d16ae2e80,
+    type: 3}
+  m_PrefabInstance: {fileID: 6169442010831941893}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &5772516302135514102 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 396978864316883699, guid: 75d2a8d6a68239444826319d16ae2e80,
     type: 3}
   m_PrefabInstance: {fileID: 6169442010831941893}
   m_PrefabAsset: {fileID: 0}
@@ -1354,7 +1353,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterAnimations
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7966298904773045292, guid: c4bec6415a542a84fb6df4afcd9839e2, type: 3}
+    - {fileID: 63342205915123695, guid: c4bec6415a542a84fb6df4afcd9839e2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
