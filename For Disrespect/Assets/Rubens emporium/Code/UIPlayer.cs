@@ -33,6 +33,13 @@ public class UIPlayer : MonoBehaviour
             //gameObject.SetActive(false);
         }
     }
+    public void FixedUpdate()
+    {
+        if (playerMovement.allowMoving)
+        {
+            playerStaminaBar.fillAmount = playerManager.stamina / 100;
+        }
+    }
     public void OnHealthChange(float hp)
     {
         if(hp <= 0)
@@ -68,10 +75,6 @@ public class UIPlayer : MonoBehaviour
         StopCoroutine(FallBehindHPWaiting(hp));
 
         yield return new WaitForSeconds(0);
-    }
-    public void OnStaminaChange(float stamina)
-    {
-
     }
     public void OnEnemyHealthChange()
     {

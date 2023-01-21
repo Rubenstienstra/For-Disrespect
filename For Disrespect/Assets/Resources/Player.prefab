@@ -525,7 +525,7 @@ MonoBehaviour:
   AllReadyUpAnimations: {fileID: 0}
   playerAnimations: {fileID: 0}
   UIPrefab: {fileID: 3574377282495681092}
-  playerESCMenu: {fileID: 0}
+  playerESCMenu: {fileID: 187878851952371776}
   crGameLobbyManager: {fileID: 0}
   photonID: {fileID: 1960451430545438946}
   playerMoving: {fileID: 1960451430545438944}
@@ -1255,6 +1255,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75d2a8d6a68239444826319d16ae2e80, type: 3}
+--- !u!1 &187878851952371776 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6270479630334925125, guid: 75d2a8d6a68239444826319d16ae2e80,
+    type: 3}
+  m_PrefabInstance: {fileID: 6169442010831941893}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &2254800012314676182 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5392192456925280979, guid: 75d2a8d6a68239444826319d16ae2e80,

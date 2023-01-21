@@ -187,7 +187,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnAttack(InputValue value)
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine && !hasOpenedESC && playerManager.stamina >= playerManager.staminaCostAttack)
         {
             if (value.Get<float>() == 1)
             {
@@ -196,6 +196,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                     isAttacking = true;
                     playerManager.stamina -= playerManager.staminaCostAttack;
                     Attack();
+                    playerManager.playerAnimations.SetTrigger("Attack");
                 }
             }
         }
@@ -254,11 +255,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
             distanceBetweenGround = hitSlope.distance;
 
-            if (hitSlope.distance < 0)
-            {
-                characterControl.Move(new Vector3(0, -1, 0) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            }
-            if (hitSlope.distance >= 0.001f)
+            //if (hitSlope.distance < 0)
+            //{
+            //    characterControl.Move(new Vector3(0, -1, 0) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+            //}
+            if (distanceBetweenGround <= 0.001f)
             {
                 transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
             }
@@ -286,9 +287,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                    playerManager.worldSpaceEnemyUIBar.transform.LookAt(playerManager.playerMovableCamera.transform);
                 }
             }
-            if(playerManager.stamina <= 100)
+            if(playerManager.stamina < 100)
             {
-                playerManager.stamina += Time.deltaTime;
+                playerManager.stamina += Time.deltaTime * playerManager.staminaRegenRate;
+                if(playerManager.stamina > 100)
+                {
+                    playerManager.stamina = 100;
+                }
             }
         }
         //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt

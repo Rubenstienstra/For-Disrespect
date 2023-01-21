@@ -34,8 +34,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public int hp = 100;
     public float stamina = 100;
     public float staminaRegenRate = 1;
-    public float staminaCostAttack;
-    public float staminaCostBlock;
+    public float staminaCostAttack = 20;
+    public float staminaCostBlock = 30;
 
     public List<GameObject> playersInAttackRange;
 
