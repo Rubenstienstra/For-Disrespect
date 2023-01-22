@@ -85,7 +85,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (photonID.IsMine)
         {
-            if(!hasOpenedESC)
+            if(!hasOpenedESC && SceneManager.GetActiveScene().name != "Lobby")
             {
                 hasOpenedESC = true;
                 playerManager.playerESCMenu.SetActive(true);
@@ -255,10 +255,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
             distanceBetweenGround = hitSlope.distance;
 
-            //if (hitSlope.distance < 0)
-            //{
-            //    characterControl.Move(new Vector3(0, -1, 0) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            //}
             if (distanceBetweenGround <= 0.001f)
             {
                 transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);

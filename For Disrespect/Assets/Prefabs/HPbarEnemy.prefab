@@ -148,12 +148,12 @@ GameObject:
   - component: {fileID: 5736130056971928338}
   - component: {fileID: 5621602818791456354}
   m_Layer: 5
-  m_Name: Image
+  m_Name: EnemyImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2362770254502412063
 RectTransform:
   m_ObjectHideFlags: 0
@@ -244,11 +244,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5905977339735393795}
-  - {fileID: 7658447199448788095}
   - {fileID: 7658447199390363046}
   - {fileID: 7658447198394195836}
   - {fileID: 7658447198814674703}
   - {fileID: 7658447198516762023}
+  - {fileID: 7658447199448788095}
   - {fileID: 2362770254502412063}
   m_Father: {fileID: 0}
   m_RootOrder: -1
@@ -332,7 +332,7 @@ GameObject:
   - component: {fileID: 7658447198394195826}
   - component: {fileID: 7658447198394195837}
   m_Layer: 5
-  m_Name: HPBehindFall
+  m_Name: EnemyHPBehindFall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -408,7 +408,7 @@ GameObject:
   - component: {fileID: 7658447198516762021}
   - component: {fileID: 7658447198516762020}
   m_Layer: 5
-  m_Name: Holder
+  m_Name: EnemyHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -484,7 +484,7 @@ GameObject:
   - component: {fileID: 7658447198814674701}
   - component: {fileID: 7658447198814674700}
   m_Layer: 5
-  m_Name: HP
+  m_Name: EnemyHP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -560,7 +560,7 @@ GameObject:
   - component: {fileID: 7658447199390363044}
   - component: {fileID: 7658447199390363047}
   m_Layer: 5
-  m_Name: Stamina
+  m_Name: EnemyStamina
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -641,7 +641,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7658447199448788095
 RectTransform:
   m_ObjectHideFlags: 0

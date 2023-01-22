@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Photon.Pun;
+
 public class UIPlayer : MonoBehaviour
 {
     public PlayerMovement playerMovement;
@@ -14,7 +16,6 @@ public class UIPlayer : MonoBehaviour
     public Image playerFallBehindHPBar;
     public Image playerHPBar;
 
-    public GameObject EnemyBar;
     public Image enemyStaminaBar;
     public Image enemyFallBehindHPBar;
     public Image enemyHPBar;
@@ -35,9 +36,17 @@ public class UIPlayer : MonoBehaviour
     }
     public void FixedUpdate()
     {
-        if (playerMovement.allowMoving)
+        if (PhotonNetwork.CountOfPlayers >= 2 && playerManager.isReadyToFight)
         {
-            playerStaminaBar.fillAmount = playerManager.stamina / 100;
+            if(enemyStaminaBar)//playerStaminaBar heb je altijd.
+            {
+                playerStaminaBar.fillAmount = playerManager.stamina / 100;
+                enemyStaminaBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().stamina / 100;
+            }
+            else
+            {
+               enemyStaminaBar = GameObject.Find("EnemyStamina").GetComponent<Image>();
+            }
         }
     }
     public void OnHealthChange(float hp)

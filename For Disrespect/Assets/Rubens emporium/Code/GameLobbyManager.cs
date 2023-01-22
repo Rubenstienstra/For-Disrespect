@@ -32,7 +32,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject hostUISettings;
     public TMP_Text hostUIRoomName;
 
-
+    public GameObject worldSpaceEnemyUIBar;
 
     public GameObject guestUI;
     public GameObject guestUISettings;
@@ -149,8 +149,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerManager = crInstantiatedPlayerPrefab.GetComponent<PlayerManager>();
 
-        crInstantietedPlayerManager.UIPrefab.SetActive(false);
-
         crInstantietedPlayerMovement.allowMoving = false;
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
     }
@@ -190,6 +188,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         yield return new WaitForSeconds(0.5f);//Het heeft processing tijd nodig.
         allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndModels();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
+        yield return new WaitForSeconds(0.5f);//Voor als het de eerste keer niet heeft gepakt.
+        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndModels();
     }
     #region ReadyUpCode
     public void ReadyUpHostUI(bool readyOrUnready)

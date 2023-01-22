@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
@@ -23,12 +24,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public bool isHost;
     public bool isGuest;
 
+    public GameObject worldSpaceEnemyUIBar;
+
     public bool isReadyLobby;
     public float waitTimeAnimation = 2;
     public bool isWaitAnimationDone;
     public bool isReadyToFight;
-
-    public GameObject worldSpaceEnemyUIBar;
 
     public int damage = 5;
     public int hp = 100;
@@ -123,14 +124,21 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void GiveEnemyNamesAndModels()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
         GameObject crWorldSpaceNameLobbyEnemy = GameObject.Find("WORLDSPACECANVAS NameLobbyEnemy");
-        worldSpaceEnemyUIBar = GameObject.Find("HPbarEnemy");
 
         if (photonID.IsMine && crGameLobbyManager.allPlayers.Count >= 2)
         {
-            crEnemyName = crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().crPlayerName;
-            crWorldSpaceNameLobbyEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
-            worldSpaceEnemyUIBar.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
-            print("giving enemy names");
+            if (GameObject.Find("HPbarEnemy") && GameObject.Find("EnemyStamina").GetComponent<Image>() && GameObject.Find("EnemyHPBehindFall").GetComponent<Image>() && GameObject.Find("EnemyHP").GetComponent<Image>())
+            {
+                worldSpaceEnemyUIBar = GameObject.Find("HPbarEnemy");
+                playerUI.enemyStaminaBar = GameObject.Find("EnemyStamina").GetComponent<Image>();
+                playerUI.enemyFallBehindHPBar = GameObject.Find("EnemyHPBehindFall").GetComponent<Image>();
+                playerUI.enemyHPBar = GameObject.Find("EnemyHP").GetComponent<Image>();
+
+                crEnemyName = crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().crPlayerName;
+                crWorldSpaceNameLobbyEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
+                worldSpaceEnemyUIBar.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
+                print("giving enemy names");
+            }
         }
     }
     public void DealtBlockedDamage(GameObject enemyPlayer)
@@ -182,6 +190,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(waitTimeAnimation);
             print("Animation time is: " + isWaitAnimationDone);
         }
+        UIPrefab.transform.GetChild(2).gameObject.SetActive(true);
         print("STEP 1" + PhotonNetwork.NickName);
 
         if (SceneManager.GetActiveScene().name != "BattlefieldCom" && PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
@@ -207,6 +216,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void ArrivedAtGame()
     {
         print("ArrivedAtGame Activated");
+
+        if(SceneManager.GetActiveScene().name != "BattlefieldCom")
+        {
+            print("Player is still in scene: " + SceneManager.GetActiveScene().name);
+            PhotonNetwork.LoadLevel("BattlefieldCom");
+        }
+        UIPrefab.transform.GetChild(2).gameObject.SetActive(false);
         isReadyToFight = true;
         crGameLobbyManager.transform.GetChild(0).gameObject.SetActive(false);
         print("STEP 4" + PhotonNetwork.NickName);
