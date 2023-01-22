@@ -43,27 +43,27 @@ public class UIPlayer : MonoBehaviour
                 playerStaminaBar.fillAmount = playerManager.stamina / 100;
                 enemyStaminaBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().stamina / 100;
             }
-            else
+            else if(GameObject.Find("EnemyStamina"))
             {
                enemyStaminaBar = GameObject.Find("EnemyStamina").GetComponent<Image>();
             }
         }
     }
-    public void OnHealthChange(float hp)
+    public void OnHealthChange(Image hpBar, Image fallBehindhpBar)// works for enemy RPC and yourzelf player.
     {
-        if(hp <= 0)
+        if (playerManager.hp <= 0)
         {
             playerManager.playerAnimations.SetTrigger("Dead");
             print("Player Has Died");
         }
-        if(playerHPBar != null)
+        if (playerHPBar != null)
         {
-            playerHPBar.fillAmount = hp / 100;
-            print("Player Total HP: " + hp);
-            StartCoroutine(FallBehindHPWaiting(hp));
+            hpBar.fillAmount = playerManager.hp / 100;
+            print("Player Total HP: " + playerManager.hp);
+            StartCoroutine(FallBehindHPWaiting(fallBehindhpBar));
         }
     }
-    public IEnumerator FallBehindHPWaiting(float hp)
+    public IEnumerator FallBehindHPWaiting(Image fallBehindhpBar)
     {
         if (isAlreadyWaiting)
         {
@@ -75,13 +75,13 @@ public class UIPlayer : MonoBehaviour
 
         if (!isSecondInQueue)
         {
-            playerFallBehindHPBar.fillAmount = hp / 100;
+            fallBehindhpBar.fillAmount = playerManager.hp / 100;
             isAlreadyWaiting = false;
             isSecondInQueue = false;
         }
         print("Is the IEnumarator secondInQueue: " + isSecondInQueue + "and waiting: " + isAlreadyWaiting);
 
-        StopCoroutine(FallBehindHPWaiting(hp));
+        StopCoroutine(FallBehindHPWaiting(fallBehindhpBar));
 
         yield return new WaitForSeconds(0);
     }

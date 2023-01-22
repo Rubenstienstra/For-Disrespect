@@ -226,13 +226,17 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             for (int i = 0; i < playerManager.playersInAttackRange.Count; i++)
             {
-                if (playerManager.playersInAttackRange[i].gameObject.GetComponent<PlayerMovement>().isBlocking)
+                if (isAttacking)
                 {
-                    playerManager.DealtBlockedDamage(playerManager.playersInAttackRange[i]);
-                }
-                else
-                {
-                    playerManager.SuccesfullyDealtDamage(playerManager.playersInAttackRange[i]);
+                    if (playerManager.playersInAttackRange[i].gameObject.GetComponent<PlayerMovement>().isBlocking)
+                    {
+                        playerManager.DealtBlockedDamage(playerManager.playersInAttackRange[i]);
+                    }
+                    else
+                    {
+                        playerManager.SuccesfullyDealtDamage(playerManager.playersInAttackRange[i]);
+                        isAttacking = false;
+                    }
                 }
             }
             isAttacking = false;

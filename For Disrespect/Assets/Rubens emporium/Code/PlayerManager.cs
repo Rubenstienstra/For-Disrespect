@@ -151,14 +151,16 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void SuccesfullyDealtDamage(GameObject enemyPlayer)//player 0 did damage to player 1
     {
         print("you've dealt: " + damage + " damage.");
-        enemyPlayer.GetComponent<PlayerManager>().hp -= damage;
-
+        crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
+        
+        playerUI.OnHealthChange(playerUI.enemyHPBar, playerUI.enemyFallBehindHPBar);
         photonID.RPC("OnReceiveDamage", RpcTarget.Others);
     }
     [PunRPC]
     public void OnReceiveDamage()// Only player 1 gets this
     {
-        playerUI.OnHealthChange(hp);
+        playerUI.OnHealthChange(playerUI.playerHPBar, playerUI.playerFallBehindHPBar);
+        
         playerAnimations.SetTrigger("Get Hit");
     }
 
@@ -259,25 +261,28 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     public void GameStarted()
     {
-        print("STEP 6" + PhotonNetwork.NickName);
-        print("GameStarted activated");
-        if (GameObject.Find("Main Camera GameRoom"))
+        if (photonID.IsMine)
         {
-            GameObject.Find("Main Camera GameRoom").SetActive(false);
-        }
-        else
-        {
-            print("Couldn't find camera");
-        }
-        playerCamera.gameObject.SetActive(true);
-        playerMoving.allowMoving = true;
+            print("STEP 6" + PhotonNetwork.NickName);
+            print("GameStarted activated");
+            if (GameObject.Find("Main Camera GameRoom"))
+            {
+                GameObject.Find("Main Camera GameRoom").SetActive(false);
+            }
+            else
+            {
+                print("Couldn't find camera");
+            }
+            playerCamera.gameObject.SetActive(true);
+            playerMoving.allowMoving = true;
 
-        if (!crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving)
-        {
-            print("Other player didn't get: allowMoving");
-            crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving = true;
+            if (!crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving)
+            {
+                print("Other player didn't get: allowMoving");
+                crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving = true;
+            }
+            print("STEP 7" + PhotonNetwork.NickName);
         }
-        print("STEP 7" + PhotonNetwork.NickName);
     }
     #endregion
 
