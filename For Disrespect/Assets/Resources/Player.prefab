@@ -77,7 +77,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1960451429685669107}
   - component: {fileID: 1960451429685669108}
-  - component: {fileID: 1960451429685669109}
   - component: {fileID: 1960451429685669106}
   - component: {fileID: 6152742566500262494}
   m_Layer: 0
@@ -153,14 +152,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &1960451429685669109
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960451429685669110}
-  m_Enabled: 0
 --- !u!114 &1960451429685669106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,12 +326,14 @@ GameObject:
   - component: {fileID: 1960451430545438947}
   - component: {fileID: 1960451430545438951}
   - component: {fileID: 1960451430545438946}
+  - component: {fileID: 3117030077126055134}
   - component: {fileID: 3018205111750608989}
   - component: {fileID: 1960451430545438945}
   - component: {fileID: 1960451430545438944}
   - component: {fileID: 6167953233282122908}
   - component: {fileID: 8191422609457070027}
   - component: {fileID: 7583660211103564253}
+  - component: {fileID: 4490061051173417081}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -397,12 +390,13 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: 3117030077126055134}
   - {fileID: 3018205111750608989}
   - {fileID: 1960451430545438944}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &3018205111750608989
+--- !u!114 &3117030077126055134
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -410,6 +404,39 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1960451430545438968}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8efc6b1d64977384eb3405357896c656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PositionModel:
+    SynchronizeEnabled: 1
+    TeleportEnabled: 1
+    TeleportIfDistanceGreaterThan: 3
+    InterpolateOption: 4
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 1
+    ExtrapolateOption: 0
+    ExtrapolateSpeed: 1
+    ExtrapolateIncludingRoundTripTime: 1
+    ExtrapolateNumberOfStoredPositions: 1
+  m_RotationModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 2
+    InterpolateRotateTowardsSpeed: 180
+    InterpolateLerpSpeed: 5
+  m_ScaleModel:
+    SynchronizeEnabled: 0
+    InterpolateOption: 0
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 0
+--- !u!114 &3018205111750608989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960451430545438968}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
@@ -504,7 +531,6 @@ MonoBehaviour:
   playerModels:
   - {fileID: 7847269727554404753}
   - {fileID: 8444724444511396458}
-  crScreenSize: {x: 0, y: 0}
   multiplayerDeletableMe: {fileID: 597769028638688242}
   multiplayerDeletableEnemy: {fileID: 827547506345425076}
   crPlayerName: 
@@ -522,6 +548,8 @@ MonoBehaviour:
   staminaRegenRate: 2
   staminaCostAttack: 20
   staminaCostBlock: 30
+  playerAttackCollider: {fileID: 4490061051173417081}
+  characterCon: {fileID: 7583660211103564253}
   playersInAttackRange: []
   AllReadyUpAnimations: {fileID: 0}
   playerAnimations: {fileID: 0}
@@ -583,6 +611,27 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!65 &4490061051173417081
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960451430545438968}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.75, y: 1, z: 0.75}
+  m_Center: {x: 0, y: 1, z: 0.75}
 --- !u!1 &6299710738963442403
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,8 +13,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public Transform playerMovableCamera;
     public GameObject[] playerModels;
 
-    public Vector2 crScreenSize;
-
     public GameObject multiplayerDeletableMe;
     public GameObject multiplayerDeletableEnemy;
 
@@ -38,6 +36,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public float staminaCostAttack = 20;
     public float staminaCostBlock = 30;
 
+    public BoxCollider playerAttackCollider;
+    public CharacterController characterCon;
     public List<GameObject> playersInAttackRange;
 
     public Animator AllReadyUpAnimations;
@@ -107,9 +107,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                 print("Disabled: " + multiplayerDeletableMe.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                 multiplayerDeletableMe.transform.GetChild(i).gameObject.SetActive(false);
             }
-            crScreenSize.x = Display.main.systemWidth;
-            crScreenSize.y = Display.main.systemHeight;
-
         }
         else
         {
@@ -287,16 +284,21 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     #region OnTriggerEnter/Exit voids
     public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" && isReadyToFight)
         {
             playersInAttackRange.Add(other.gameObject);
+            print(other.gameObject.name + "is in attack range");
         }
     }
     public void OnTriggerExit(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.tag == "Player" && isReadyToFight)
         {
-            playersInAttackRange.RemoveAt(playersInAttackRange.Count);
+            if(playersInAttackRange.Count > 0)
+            {
+                playersInAttackRange.RemoveAt(playersInAttackRange.Count - 1);
+            }
+            print(other.gameObject.name + "is out of attack range");
         }
     }
     #endregion 

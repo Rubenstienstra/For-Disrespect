@@ -88,18 +88,22 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print(otherPlayer.NickName + " has leaved. Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        if (guestUI.activeInHierarchy)
+        if(SceneManager.GetActiveScene().name == "Lobby")//Als een player mid match leaved hoeft dit niet af te gaan.
         {
-            guestUI.SetActive(false);
-            hostUI.SetActive(true);
-        }
-        else if(guestUISettings.activeInHierarchy)
-        {
-            guestUISettings.SetActive(false);
-            hostUISettings.SetActive(true);
+            if (guestUI.activeInHierarchy)
+            {
+                guestUI.SetActive(false);
+                hostUI.SetActive(true);
+            }
+            else if (guestUISettings.activeInHierarchy)
+            {
+                guestUISettings.SetActive(false);
+                hostUISettings.SetActive(true);
+            }
+
+            worldSpaceNameEnemy.text = "";
         }
 
-        worldSpaceNameEnemy.text = "";
         if (allPlayers.Count >= 1)
         {
             allPlayers.RemoveAt(allPlayers.Count - 1);
