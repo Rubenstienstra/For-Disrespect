@@ -123,8 +123,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void GiveEnemyNamesAndModels()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
-        GameObject crWorldSpaceNameLobbyEnemy = GameObject.Find("WORLDSPACECANVAS NameLobbyEnemy");
-
         if (photonID.IsMine && crGameLobbyManager.allPlayers.Count >= 2)
         {
             if (GameObject.Find("HPbarEnemy") && GameObject.Find("EnemyStamina").GetComponent<Image>() && GameObject.Find("EnemyHPBehindFall").GetComponent<Image>() && GameObject.Find("EnemyHP").GetComponent<Image>())
@@ -135,9 +133,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                 playerUI.enemyHPBar = GameObject.Find("EnemyHP").GetComponent<Image>();
 
                 crEnemyName = crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().crPlayerName;
-                crWorldSpaceNameLobbyEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
                 worldSpaceEnemyUIBar.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
                 print("giving enemy names");
+            }
+            if (GameObject.Find("WORLDSPACECANVAS NameLobbyEnemy"))
+            {
+                GameObject crWorldSpaceNameLobbyEnemy = GameObject.Find("WORLDSPACECANVAS NameLobbyEnemy");
+
+                crWorldSpaceNameLobbyEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
             }
         }
     }
