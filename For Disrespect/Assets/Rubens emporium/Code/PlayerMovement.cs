@@ -234,7 +234,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                     }
                     else
                     {
-                        playerManager.SuccesfullyDealtDamage(playerManager.playersInAttackRange[i]);
+                        playerManager.SuccesfullyDealtDamage();
                         isAttacking = false;
                     }
                 }

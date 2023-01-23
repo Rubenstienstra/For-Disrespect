@@ -41,6 +41,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public List<GameObject> playersInAttackRange;
 
     public Animator AllReadyUpAnimations;
+    public Animator hostReadyUpAnimation;
+    public Animator guestReadyUpAnimation;
     public Animator playerAnimations;
 
     public GameObject UIPrefab;
@@ -148,7 +150,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         photonID.RPC("OnReceiveShieldedDamage", RpcTarget.Others);
     }
 
-    public void SuccesfullyDealtDamage(GameObject enemyPlayer)//player 0 did damage to player 1
+    public void SuccesfullyDealtDamage()//player 0 did damage to player 1
     {
         print("you've dealt: " + damage + " damage.");
         crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
@@ -160,7 +162,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void OnReceiveDamage()// Only player 1 gets this
     {
         playerUI.OnHealthChange(playerUI.playerHPBar, playerUI.playerFallBehindHPBar);
-        
         playerAnimations.SetTrigger("Get Hit");
     }
 
@@ -176,6 +177,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         print("STEP 0" + PhotonNetwork.NickName);
         AllReadyUpAnimations.SetBool("GameStart", true);
+        if (isHost)
+        {
+            crGameLobbyManager.hostUI.GetComponent<Animator>().SetBool("GameStart", true);
+        }
+        else
+        {
+            crGameLobbyManager.guestUI.GetComponent<Animator>().SetBool("GameStart", true);
+        }
 
         DontDestroyOnLoad(crGameLobbyManager);
         DontDestroyOnLoad(crGameLobbyManager.allPlayers[0]);
@@ -201,19 +210,27 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
         print("STEP 2" + PhotonNetwork.NickName);
 
-        if (PhotonNetwork.LevelLoadingProgress > 0 && PhotonNetwork.LevelLoadingProgress < 1)// Als je nog niet klaar bent met laden.
-        {
-            print("Waiting Again. Progress: " + PhotonNetwork.LevelLoadingProgress);
-            yield return new WaitForSeconds(0.25f);
-            StartCoroutine(WaitingReadyUpAnimation());
-        }
-        else //als je klaar bent met laden.
-        {
-            print("Waiting Done! Progress: " + PhotonNetwork.LevelLoadingProgress);
-            ArrivedAtGame();
-            print("STEP 3" + PhotonNetwork.NickName);
-        }
+        //if (PhotonNetwork.LevelLoadingProgress > 0 && PhotonNetwork.LevelLoadingProgress < 1)// Als je nog niet klaar bent met laden.
+        //{
+        //    print("Waiting Again. Progress: " + PhotonNetwork.LevelLoadingProgress);
+        //    yield return new WaitForSeconds(0.25f);
+        //    StartCoroutine(WaitingReadyUpAnimation());
+        //}
+        //else //als je klaar bent met laden.
+        //{
+        //    print("Waiting Done! Progress: " + PhotonNetwork.LevelLoadingProgress);
+        //    ArrivedAtGame();
+        //    print("STEP 3" + PhotonNetwork.NickName);
+        //}
         yield return new WaitForSeconds(0);
+    }
+    public void OnLevelWasLoaded(int level)
+    {
+        if (SceneManager.GetActiveScene().name == "BattlefieldCom")
+        {
+            ArrivedAtGame();
+            print("Level Loaded!");
+        }
     }
     public void ArrivedAtGame()
     {
