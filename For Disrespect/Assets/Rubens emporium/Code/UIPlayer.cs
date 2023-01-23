@@ -59,11 +59,11 @@ public class UIPlayer : MonoBehaviour
         if (playerHPBar != null)
         {
             hpBar.fillAmount = playerManager.hp / 100;
-            print("Player Total HP: " + playerManager.hp);
+            print("Current Enemy VS Your health: " + playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp + " " + playerManager.hp);
             StartCoroutine(FallBehindHPWaiting(fallBehindhpBar));
         }
     }
-    public IEnumerator FallBehindHPWaiting(Image fallBehindhpBar)
+    public IEnumerator FallBehindHPWaiting(Image fallBehindhpBar)// works for enemy RPC and yourzelf player.
     {
         if (isAlreadyWaiting)
         {
@@ -84,9 +84,5 @@ public class UIPlayer : MonoBehaviour
         StopCoroutine(FallBehindHPWaiting(fallBehindhpBar));
 
         yield return new WaitForSeconds(0);
-    }
-    public void OnEnemyHealthChange()
-    {
-
     }
 }

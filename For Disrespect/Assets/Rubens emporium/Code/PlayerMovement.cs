@@ -77,7 +77,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             playerManager.isReadyToFight = (bool)stream.ReceiveNext();
             playerManager.hp = (int)stream.ReceiveNext();
             playerManager.stamina = (float)stream.ReceiveNext();
-            print("recieved stream");
+            //print("recieved stream");
         }
     }
     #region InputActions

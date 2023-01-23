@@ -26,13 +26,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public bool isReadyLobby;
     public float waitTimeAnimation = 2;
-    public bool isWaitAnimationDone;
+    public bool alreadyLoadedLevel;
     public bool isReadyToFight;
 
-    public int damage = 5;
+    public int damage = 10;
     public int hp = 100;
     public float stamina = 100;
-    public float staminaRegenRate = 1;
+    public float staminaRegenRate = 2;
     public float staminaCostAttack = 20;
     public float staminaCostBlock = 30;
 
@@ -41,8 +41,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public List<GameObject> playersInAttackRange;
 
     public Animator AllReadyUpAnimations;
-    public Animator hostReadyUpAnimation;
-    public Animator guestReadyUpAnimation;
     public Animator playerAnimations;
 
     public GameObject UIPrefab;
@@ -107,6 +105,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             for (int i = 0; i < multiplayerDeletableMe.transform.childCount; i++)// Disables GameObjects for yourzelf
             {
                 print("Disabled: " + multiplayerDeletableMe.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+                if (multiplayerDeletableMe.transform.GetChild(i).gameObject.GetComponent<AudioListener>())
+                {
+                    multiplayerDeletableMe.transform.GetChild(i).gameObject.GetComponent<AudioListener>().enabled = !enabled;
+                }
                 multiplayerDeletableMe.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
@@ -115,6 +117,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             for (int i = 0; i < multiplayerDeletableEnemy.transform.childCount; i++)//Disables GameObjects for your enemy
             {
                 print("Disabled: " + multiplayerDeletableEnemy.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+                if (multiplayerDeletableEnemy.transform.GetChild(i).gameObject.GetComponent<AudioListener>())
+                {
+                    multiplayerDeletableEnemy.transform.GetChild(i).gameObject.GetComponent<AudioListener>().enabled = !enabled;
+                }
                 multiplayerDeletableEnemy.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
@@ -195,33 +201,20 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public IEnumerator WaitingReadyUpAnimation()
     {
-        if(!isWaitAnimationDone)
-        {
-            isWaitAnimationDone = true;
-            yield return new WaitForSeconds(waitTimeAnimation);
-            print("Animation time is: " + isWaitAnimationDone);
-        }
+        yield return new WaitForSeconds(waitTimeAnimation);
+
         UIPrefab.transform.GetChild(2).gameObject.SetActive(true);
         print("STEP 1" + PhotonNetwork.NickName);
 
-        if (SceneManager.GetActiveScene().name != "BattlefieldCom" && PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
+        if (PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
         {
-            PhotonNetwork.LoadLevel("BattlefieldCom");
+            if (!alreadyLoadedLevel)
+            {
+                alreadyLoadedLevel = true;
+                PhotonNetwork.LoadLevel("BattlefieldCom");
+            }
         }
-        print("STEP 2" + PhotonNetwork.NickName);
 
-        //if (PhotonNetwork.LevelLoadingProgress > 0 && PhotonNetwork.LevelLoadingProgress < 1)// Als je nog niet klaar bent met laden.
-        //{
-        //    print("Waiting Again. Progress: " + PhotonNetwork.LevelLoadingProgress);
-        //    yield return new WaitForSeconds(0.25f);
-        //    StartCoroutine(WaitingReadyUpAnimation());
-        //}
-        //else //als je klaar bent met laden.
-        //{
-        //    print("Waiting Done! Progress: " + PhotonNetwork.LevelLoadingProgress);
-        //    ArrivedAtGame();
-        //    print("STEP 3" + PhotonNetwork.NickName);
-        //}
         yield return new WaitForSeconds(0);
     }
     public void OnLevelWasLoaded(int level)
@@ -236,15 +229,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         print("ArrivedAtGame Activated");
 
-        if(SceneManager.GetActiveScene().name != "BattlefieldCom")
-        {
-            print("Player is still in scene: " + SceneManager.GetActiveScene().name);
-            PhotonNetwork.LoadLevel("BattlefieldCom");
-        }
         UIPrefab.transform.GetChild(2).gameObject.SetActive(false);
+        playerCamera.gameObject.SetActive(true);
         isReadyToFight = true;
         crGameLobbyManager.transform.GetChild(0).gameObject.SetActive(false);
-        print("STEP 4" + PhotonNetwork.NickName);
 
 
         if (PhotonNetwork.IsMasterClient)//Setting player position up
@@ -262,8 +250,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             photonID.RPC("CountDownGame", RpcTarget.All);
             print("Activated CountDownGame");
+            return;
         }
-        print("STEP 5" + PhotonNetwork.NickName);
     }
     [PunRPC]
     public IEnumerator CountDownGame()
@@ -280,17 +268,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         if (photonID.IsMine)
         {
-            print("STEP 6" + PhotonNetwork.NickName);
             print("GameStarted activated");
-            if (GameObject.Find("Main Camera GameRoom"))
-            {
-                GameObject.Find("Main Camera GameRoom").SetActive(false);
-            }
-            else
-            {
-                print("Couldn't find camera");
-            }
-            playerCamera.gameObject.SetActive(true);
+
             playerMoving.allowMoving = true;
 
             if (!crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving)

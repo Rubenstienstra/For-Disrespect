@@ -541,7 +541,7 @@ MonoBehaviour:
   worldSpaceEnemyUIBar: {fileID: 0}
   isReadyLobby: 0
   waitTimeAnimation: 2
-  isWaitAnimationDone: 0
+  alreadyLoadedLevel: 0
   isReadyToFight: 0
   damage: 5
   hp: 100
@@ -553,8 +553,6 @@ MonoBehaviour:
   characterCon: {fileID: 7583660211103564253}
   playersInAttackRange: []
   AllReadyUpAnimations: {fileID: 0}
-  hostReadyUpAnimation: {fileID: 0}
-  guestReadyUpAnimation: {fileID: 0}
   playerAnimations: {fileID: 0}
   UIPrefab: {fileID: 3574377282495681092}
   playerESCMenu: {fileID: 187878851952371776}
@@ -674,7 +672,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4776004998595011857}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!1 &6299710738963442403
 GameObject:
   m_ObjectHideFlags: 0
