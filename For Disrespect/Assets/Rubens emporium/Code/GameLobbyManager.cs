@@ -228,9 +228,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         print("STEP 00");
         Destroy(GameObject.Find("MainMenuLobbyMusic"));
 
-        allPlayers[0].GetComponent<PlayerManager>().LoadIntoGame();
-        allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.Others); //Dit moet op het einde gebeuren. De RPC kan niet voor andere worden geladen, omdat je naar een andere scene toe gaat en daardoor verlies je connections met de andere spelers.
-        allPlayers[1].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Het resultaat hiervan is dat alle bools, floats, ints niet meer worden ingeladen voor de speler zelf en ook niet voor de andere.
+        allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren. De RPC kan niet voor andere worden geladen, omdat je naar een andere scene toe gaat en daardoor verlies je connections met de andere spelers.
+        //allPlayers[1].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Het resultaat hiervan is dat alle bools, floats, ints niet meer worden ingeladen voor de speler zelf en ook niet voor de andere.
     }
     #endregion
 

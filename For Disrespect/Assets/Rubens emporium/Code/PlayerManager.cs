@@ -46,6 +46,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public GameObject UIPrefab;
     public GameObject playerESCMenu;
 
+    public string sceneNameToLoad = "BattlefieldCom";
+
     public GameLobbyManager crGameLobbyManager;
     public PhotonView photonID;
     public PlayerMovement playerMoving;
@@ -211,7 +213,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             if (!alreadyLoadedLevel)
             {
                 alreadyLoadedLevel = true;
-                PhotonNetwork.LoadLevel("BattlefieldCom");
+                PhotonNetwork.LoadLevel(sceneNameToLoad);
             }
         }
 
@@ -219,7 +221,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     public void OnLevelWasLoaded(int level)
     {
-        if (SceneManager.GetActiveScene().name == "BattlefieldCom")
+        if (SceneManager.GetActiveScene().name == sceneNameToLoad)
         {
             ArrivedAtGame();
             print("Level Loaded!");

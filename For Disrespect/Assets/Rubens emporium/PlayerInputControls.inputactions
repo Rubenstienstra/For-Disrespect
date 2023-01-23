@@ -47,7 +47,7 @@
                     "id": "6ade3a80-0d3e-49ef-a8b9-fab2e8fdde07",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Hold(duration=0.1,pressPoint=0.2)",
                     "initialStateCheck": true
                 },
                 {
@@ -70,11 +70,11 @@
                 },
                 {
                     "name": "Block",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "57b43ef8-1bba-405b-9f76-fd98535cc0fd",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Hold(duration=0.2,pressPoint=0.3)",
+                    "interactions": "Hold(duration=0.1,pressPoint=0.2)",
                     "initialStateCheck": true
                 },
                 {

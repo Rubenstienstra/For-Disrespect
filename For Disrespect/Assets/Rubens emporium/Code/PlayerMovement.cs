@@ -170,7 +170,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             else
             {
                 holdingShift = false;
-                playerManager.playerAnimations.SetBool("Running", true);
+                playerManager.playerAnimations.SetBool("Running", false);
 
                 crShiftBuff = 1;
             }

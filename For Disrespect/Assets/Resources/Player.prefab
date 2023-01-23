@@ -394,6 +394,8 @@ MonoBehaviour:
   - {fileID: 3117030077126055134}
   - {fileID: 3018205111750608989}
   - {fileID: 1960451430545438944}
+  - {fileID: 597960083734628238}
+  - {fileID: 3338415646359836690}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -556,6 +558,7 @@ MonoBehaviour:
   playerAnimations: {fileID: 0}
   UIPrefab: {fileID: 3574377282495681092}
   playerESCMenu: {fileID: 187878851952371776}
+  sceneNameToLoad: BattlefieldCom
   crGameLobbyManager: {fileID: 0}
   photonID: {fileID: 1960451430545438946}
   playerMoving: {fileID: 1960451430545438944}
@@ -1355,13 +1358,35 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterAnimations
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7966298904773045292, guid: c4bec6415a542a84fb6df4afcd9839e2, type: 3}
-    - {fileID: 63342205915123695, guid: c4bec6415a542a84fb6df4afcd9839e2, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4bec6415a542a84fb6df4afcd9839e2, type: 3}
+--- !u!114 &597960083734628238 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5820581670739010112, guid: c4bec6415a542a84fb6df4afcd9839e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6380120420000064974}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7847269727554404753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3338415646359836690 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8565515401955622364, guid: c4bec6415a542a84fb6df4afcd9839e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6380120420000064974}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8444724444511396458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6474235210123617646 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 95603811001778336, guid: c4bec6415a542a84fb6df4afcd9839e2,
