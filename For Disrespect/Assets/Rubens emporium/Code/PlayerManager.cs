@@ -229,7 +229,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     public void ArrivedAtGame()
     {
-        print("ArrivedAtGame Activated");
+        Destroy(GameObject.Find("MainMenuLobbyMusic"));
+        UIPrefab.SetActive(true);
 
         UIPrefab.transform.GetChild(2).gameObject.SetActive(false);
         playerCamera.gameObject.SetActive(true);

@@ -85,20 +85,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (photonID.IsMine)
         {
-            if(!hasOpenedESC && SceneManager.GetActiveScene().name != "Lobby")
+            if(!hasOpenedESC && SceneManager.GetActiveScene().name == playerManager.sceneNameToLoad)
             {
                 hasOpenedESC = true;
+                allowMoving = false;
                 playerManager.playerESCMenu.SetActive(true);
                 return;
             }
             hasOpenedESC = false;
+            allowMoving = true;
             playerManager.playerESCMenu.SetActive(false);
             return;
         }
     }
     public void OnForward(InputValue value)
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine && allowMoving)
         {
             if (value.Get<float>() == 1)
             {
@@ -113,7 +115,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnLeft(InputValue value)
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine && allowMoving)
         {
             if (value.Get<float>() == 1)
             {
@@ -128,7 +130,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnDown(InputValue value)
     {
-        if(photonID.IsMine)
+        if(photonID.IsMine && allowMoving)
         {
             if (value.Get<float>() == 1)
             {
@@ -143,7 +145,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnRight(InputValue value)
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine && allowMoving)
         {
             if (value.Get<float>() == 1)
             {
@@ -158,7 +160,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnShift(InputValue value)
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine && allowMoving)
         {
             if (value.Get<float>() == 1)
             {
@@ -178,7 +180,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnMouseXY(InputValue value)
     {
-        if (allowMoving && photonID.IsMine && !hasOpenedESC)
+        if (photonID.IsMine && allowMoving &&!hasOpenedESC)
         {
             mouseXYInput = value.Get<Vector2>();
 
@@ -187,30 +189,25 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnAttack(InputValue value)
     {
-        if (photonID.IsMine && !hasOpenedESC && playerManager.stamina >= playerManager.staminaCostAttack)
+        if (photonID.IsMine && !hasOpenedESC && playerManager.stamina >= playerManager.staminaCostAttack && allowMoving)
         {
             if (value.Get<float>() == 1)
             {
-                if (!isAttacking && !isBlocking && !hasOpenedESC)
-                {
-                    isAttacking = true;
-                    playerManager.stamina -= playerManager.staminaCostAttack;
-                    Attack();
-                    playerManager.playerAnimations.SetTrigger("Attack");
-                }
+                isAttacking = true;
+                allowMoving = false;
+                playerManager.stamina -= playerManager.staminaCostAttack;
+                Attack();
+                playerManager.playerAnimations.SetTrigger("Attack");
             }
         }
     }
     public void OnBlock(InputValue value)
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine && !isAttacking && !hasOpenedESC && allowMoving)
         {
             if (value.Get<float>() == 1)
             {
-                if (!isBlocking && !isAttacking && !hasOpenedESC)
-                {
-                    isBlocking = true;
-                }
+                isBlocking = true;
             }
             else
             {
@@ -220,7 +217,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     #endregion
 
-    public void Attack()
+    public IEnumerator Attack()
     {
         if (photonID.IsMine)
         {
@@ -239,8 +236,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                     }
                 }
             }
+            yield return new WaitForSeconds(0.5f);
+            allowMoving = true;
             isAttacking = false;
         }
+        yield return new WaitForSeconds(0);
     }
     public void Start()
     {
@@ -253,7 +253,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             #region MOVEMENT
 
-            Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat
+            Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat om te checken of gravity aan moet.
             distanceBetweenGround = hitSlope.distance;
 
             if (distanceBetweenGround <= 0.001f)

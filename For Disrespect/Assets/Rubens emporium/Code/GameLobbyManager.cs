@@ -153,6 +153,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerManager = crInstantiatedPlayerPrefab.GetComponent<PlayerManager>();
 
+        crInstantietedPlayerManager.UIPrefab.SetActive(false);
         crInstantietedPlayerMovement.allowMoving = false;
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
     }
@@ -225,8 +226,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     }
     public void EveryoneIsReady()
     {
-        print("STEP 00");
-        Destroy(GameObject.Find("MainMenuLobbyMusic"));
+        print("Everyone readied up!");
 
         allPlayers[0].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Dit moet op het einde gebeuren. De RPC kan niet voor andere worden geladen, omdat je naar een andere scene toe gaat en daardoor verlies je connections met de andere spelers.
         //allPlayers[1].GetComponent<PhotonView>().RPC("LoadIntoGame", RpcTarget.All); //Het resultaat hiervan is dat alle bools, floats, ints niet meer worden ingeladen voor de speler zelf en ook niet voor de andere.
