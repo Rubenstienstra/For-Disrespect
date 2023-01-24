@@ -83,19 +83,16 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     #region InputActions
     public void OnEsc(InputValue value)
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine && playerManager.isReadyToFight)
         {
-            if(!hasOpenedESC && SceneManager.GetActiveScene().name == playerManager.sceneNameToLoad)
+            if(!hasOpenedESC)
             {
-                hasOpenedESC = true;
-                allowMoving = false;
-                playerManager.playerESCMenu.SetActive(true);
+                hasOpenedESC = true; allowMoving = false;
+                playerUI.playerESCMenu.SetActive(true);
+                Cursor.lockState = CursorLockMode.None;
                 return;
             }
-            hasOpenedESC = false;
-            allowMoving = true;
-            playerManager.playerESCMenu.SetActive(false);
-            return;
+            DisableESCMenu();
         }
     }
     public void OnForward(InputValue value)
@@ -242,9 +239,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         }
         yield return new WaitForSeconds(0);
     }
+    public void DisableESCMenu()
+    {
+        hasOpenedESC = false; allowMoving = true;
+        playerUI.playerESCMenu.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+    }
     public void Start()
     {
-
+        
     }
 
     void FixedUpdate()
@@ -279,9 +282,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
                 #endregion
 
-                if (playerManager.worldSpaceEnemyUIBar)
+                if (playerUI.enemyWorldSpaceUI)
                 {
-                   playerManager.worldSpaceEnemyUIBar.transform.LookAt(playerManager.playerMovableCamera.transform);
+                    playerUI.enemyWorldSpaceUI.transform.LookAt(playerManager.playerMovableCamera.transform);
                 }
             }
             if(playerManager.stamina < 100)

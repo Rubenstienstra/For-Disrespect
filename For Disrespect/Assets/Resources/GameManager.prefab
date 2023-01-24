@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2410681214851170736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 0, z: 10}
+  m_LocalPosition: {x: 10, y: -10, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -58,15 +58,10 @@ MonoBehaviour:
   playerDummyGameObjects:
   - {fileID: 0}
   - {fileID: 0}
-  totalRounds: 0
-  MaxTotalRounds: 10
-  lessRoundsButton: {fileID: 0}
-  moreRoundsButton: {fileID: 0}
-  HostTotalRoundsUI: {fileID: 0}
-  GuestTotalRoundsUI: {fileID: 0}
   hostUI: {fileID: 785936291704947584}
   hostUISettings: {fileID: 785936292803611966}
   hostUIRoomName: {fileID: 785936292013706004}
+  worldSpaceEnemyUIBar: {fileID: 0}
   guestUI: {fileID: 785936292009266481}
   guestUISettings: {fileID: 785936291259746917}
   guestUIRoomName: {fileID: 785936291358485321}

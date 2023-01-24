@@ -12,10 +12,17 @@ public class UIPlayer : MonoBehaviour
 
     public Animator roundCountdownStartAnimation;
 
+    public GameObject playerCanvas;
+    public Image playerBloodDamageEffect;
+    public Image playerRoundStartScreen;
+    public GameObject playerESCMenu;
+
+    public GameObject playerWorldSpaceUI;
     public Image playerStaminaBar;
     public Image playerFallBehindHPBar;
     public Image playerHPBar;
 
+    public GameObject enemyWorldSpaceUI;
     public Image enemyStaminaBar;
     public Image enemyFallBehindHPBar;
     public Image enemyHPBar;
@@ -24,15 +31,9 @@ public class UIPlayer : MonoBehaviour
     public bool isAlreadyWaiting;
     public bool isSecondInQueue;
 
-    public GameObject playerGameObject;
-    public Transform parentComponent;
-
     public void Start()
     {
-        if (!playerMovement.photonID.IsMine)
-        {
-            //gameObject.SetActive(false);
-        }
+        
     }
     public void FixedUpdate()
     {
@@ -56,12 +57,10 @@ public class UIPlayer : MonoBehaviour
             playerManager.playerAnimations.SetTrigger("Dead");
             print("Player Has Died");
         }
-        if (playerHPBar != null)
-        {
-            hpBar.fillAmount = playerManager.hp / 100;
-            print("Current Enemy VS Your health: " + playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp + " " + playerManager.hp);
-            StartCoroutine(FallBehindHPWaiting(fallBehindhpBar));
-        }
+        hpBar.fillAmount = playerManager.hp / 100;
+        print("Current Enemy VS Your health: " + playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp + " " + playerManager.hp);
+        StartCoroutine(FallBehindHPWaiting(fallBehindhpBar));
+
     }
     public IEnumerator FallBehindHPWaiting(Image fallBehindhpBar)// works for enemy RPC and yourzelf player.
     {

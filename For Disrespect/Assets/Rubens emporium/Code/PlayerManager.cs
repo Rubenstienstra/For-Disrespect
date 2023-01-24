@@ -22,8 +22,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public bool isHost;
     public bool isGuest;
 
-    public GameObject worldSpaceEnemyUIBar;
-
     public bool isReadyLobby;
     public float waitTimeAnimation = 2;
     public bool alreadyLoadedLevel;
@@ -42,9 +40,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public Animator AllReadyUpAnimations;
     public Animator playerAnimations;
-
-    public GameObject UIPrefab;
-    public GameObject playerESCMenu;
 
     public string sceneNameToLoad = "BattlefieldCom";
 
@@ -93,7 +88,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             playerModels[0].SetActive(true);
             playerAnimations = playerModels[0].GetComponent<Animator>();
-            playerModels[1].SetActive(false);
+            playerModels[1].SetActive(false)                                                                                                                                                                                                                                                    ;
         }
         else if (isGuest)
         {
@@ -128,19 +123,19 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void GiveEnemyNamesAndModels()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
+    public void GiveEnemyNamesAndUI()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
         if (photonID.IsMine && crGameLobbyManager.allPlayers.Count >= 2)
         {
             if (GameObject.Find("HPbarEnemy") && GameObject.Find("EnemyStamina").GetComponent<Image>() && GameObject.Find("EnemyHPBehindFall").GetComponent<Image>() && GameObject.Find("EnemyHP").GetComponent<Image>())
             {
-                worldSpaceEnemyUIBar = GameObject.Find("HPbarEnemy");
+                playerUI.enemyWorldSpaceUI = GameObject.Find("HPbarEnemy");
                 playerUI.enemyStaminaBar = GameObject.Find("EnemyStamina").GetComponent<Image>();
                 playerUI.enemyFallBehindHPBar = GameObject.Find("EnemyHPBehindFall").GetComponent<Image>();
                 playerUI.enemyHPBar = GameObject.Find("EnemyHP").GetComponent<Image>();
 
                 crEnemyName = crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().crPlayerName;
-                worldSpaceEnemyUIBar.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
+                playerUI.enemyWorldSpaceUI.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
                 print("giving enemy names");
             }
             if (GameObject.Find("WORLDSPACECANVAS NameLobbyEnemy"))
@@ -150,7 +145,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                 crWorldSpaceNameLobbyEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
             }
         }
+        
     }
+    #region DoingAndBlockingDamage
     public void DealtBlockedDamage(GameObject enemyPlayer)
     {
         print("you've blocked: " + damage + " damage.");
@@ -164,7 +161,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
         
         playerUI.OnHealthChange(playerUI.enemyHPBar, playerUI.enemyFallBehindHPBar);
-        photonID.RPC("OnReceiveDamage", RpcTarget.Others);
+        photonID.RPC("OnReceiveDamage", RpcTarget.Others, damage);
     }
     [PunRPC]
     public void OnReceiveDamage()// Only player 1 gets this
@@ -174,10 +171,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void OnReceiveShieldedDamage()
+    public void OnReceiveShieldedDamage(int damage)
     {
         playerAnimations.SetTrigger("Block");
+        hp -= damage;
     }
+    #endregion
 
     #region From Lobby To Game
     [PunRPC]
@@ -205,7 +204,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         yield return new WaitForSeconds(waitTimeAnimation);
 
-        UIPrefab.transform.GetChild(2).gameObject.SetActive(true);
+        playerUI.playerRoundStartScreen.gameObject.SetActive(true);
         print("STEP 1" + PhotonNetwork.NickName);
 
         if (PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
@@ -230,11 +229,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void ArrivedAtGame()
     {
         Destroy(GameObject.Find("MainMenuLobbyMusic"));
-        UIPrefab.SetActive(true);
-
-        UIPrefab.transform.GetChild(2).gameObject.SetActive(false);
-        playerCamera.gameObject.SetActive(true);
         isReadyToFight = true;
+        playerUI.playerCanvas.SetActive(true);
+
+        playerUI.playerRoundStartScreen.gameObject.SetActive(false);
+        playerCamera.gameObject.SetActive(true);
         crGameLobbyManager.transform.GetChild(0).gameObject.SetActive(false);
 
 
@@ -274,13 +273,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             print("GameStarted activated");
 
             playerMoving.allowMoving = true;
+            Cursor.lockState = CursorLockMode.Locked;
 
             if (!crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving)
             {
                 print("Other player didn't get: allowMoving");
                 crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving = true;
             }
-            print("STEP 7" + PhotonNetwork.NickName);
         }
     }
     #endregion
@@ -305,5 +304,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             print(other.gameObject.name + "is out of attack range");
         }
     }
-    #endregion 
+    #endregion
+
+    #region UIButtonsVoids
+    public void LeaveRoomButton()//Button Leave room
+    {
+        crGameLobbyManager.LeaveRoom();
+    }
+    #endregion
 }
