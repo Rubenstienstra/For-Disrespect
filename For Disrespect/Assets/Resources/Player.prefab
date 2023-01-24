@@ -544,7 +544,8 @@ MonoBehaviour:
   waitTimeAnimation: 2
   alreadyLoadedLevel: 0
   isReadyToFight: 0
-  damage: 5
+  hasStartedGame: 0
+  damage: 15
   hp: 100
   stamina: 100
   staminaRegenRate: 2
@@ -552,7 +553,7 @@ MonoBehaviour:
   staminaCostBlock: 30
   playerAttackCollider: {fileID: 4490061051173417081}
   characterCon: {fileID: 7583660211103564253}
-  playersInAttackRange: []
+  playerInAttackRange: {fileID: 0}
   AllReadyUpAnimations: {fileID: 0}
   playerAnimations: {fileID: 0}
   sceneNameToLoad: BattlefieldCom
@@ -609,13 +610,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2
-  m_Radius: 0.5
+  m_Height: 1.6
+  m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!65 &4490061051173417081
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -633,10 +634,10 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.75, y: 1, z: 0.75}
-  m_Center: {x: 0, y: 1, z: 0.75}
+  m_Center: {x: 0, y: 1, z: 0.8}
 --- !u!1 &4776004998595011857
 GameObject:
   m_ObjectHideFlags: 0

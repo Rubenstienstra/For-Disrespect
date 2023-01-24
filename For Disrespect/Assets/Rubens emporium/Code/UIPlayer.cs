@@ -37,7 +37,7 @@ public class UIPlayer : MonoBehaviour
     }
     public void FixedUpdate()
     {
-        if (PhotonNetwork.CountOfPlayers >= 2 && playerManager.isReadyToFight)
+        if (PhotonNetwork.CountOfPlayers >= 2 && playerManager.hasStartedGame)
         {
             if(enemyStaminaBar)//playerStaminaBar heb je altijd.
             {
@@ -50,19 +50,27 @@ public class UIPlayer : MonoBehaviour
             }
         }
     }
-    public void OnHealthChange(Image hpBar, Image fallBehindhpBar)// works for enemy RPC and yourzelf player.
+    public void OnHealthChange(Image hpBar, Image fallBehindhpBar, bool isFriendly)// works for enemy RPC and yourzelf player. 
     {
+        if (isFriendly)
+        {
+            hpBar.fillAmount = playerManager.hp / 100;
+        }
+        else
+        {
+            hpBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp / 100;
+        }
         if (playerManager.hp <= 0)
         {
             playerManager.playerAnimations.SetTrigger("Dead");
             print("Player Has Died");
         }
-        hpBar.fillAmount = playerManager.hp / 100;
+        
         print("Current Enemy VS Your health: " + playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp + " " + playerManager.hp);
-        StartCoroutine(FallBehindHPWaiting(fallBehindhpBar));
+        StartCoroutine(FallBehindHPWaiting(fallBehindhpBar, isFriendly));
 
     }
-    public IEnumerator FallBehindHPWaiting(Image fallBehindhpBar)// works for enemy RPC and yourzelf player.
+    public IEnumerator FallBehindHPWaiting(Image fallBehindhpBar, bool isFriendly)// works for enemy RPC and yourzelf player.
     {
         if (isAlreadyWaiting)
         {
@@ -80,7 +88,7 @@ public class UIPlayer : MonoBehaviour
         }
         print("Is the IEnumarator secondInQueue: " + isSecondInQueue + "and waiting: " + isAlreadyWaiting);
 
-        StopCoroutine(FallBehindHPWaiting(fallBehindhpBar));
+        StopCoroutine(FallBehindHPWaiting(fallBehindhpBar, isFriendly));
 
         yield return new WaitForSeconds(0);
     }

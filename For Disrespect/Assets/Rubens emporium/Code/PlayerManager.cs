@@ -26,17 +26,18 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public float waitTimeAnimation = 2;
     public bool alreadyLoadedLevel;
     public bool isReadyToFight;
+    public bool hasStartedGame;
 
-    public int damage = 10;
-    public int hp = 100;
+    public int damage = 15;
+    public float hp = 100;
     public float stamina = 100;
     public float staminaRegenRate = 2;
     public float staminaCostAttack = 20;
-    public float staminaCostBlock = 30;
+    public float staminaCostBlock = 10;
 
     public BoxCollider playerAttackCollider;
     public CharacterController characterCon;
-    public List<GameObject> playersInAttackRange;
+    public GameObject playerInAttackRange;
 
     public Animator AllReadyUpAnimations;
     public Animator playerAnimations;
@@ -160,18 +161,18 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         print("you've dealt: " + damage + " damage.");
         crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
         
-        playerUI.OnHealthChange(playerUI.enemyHPBar, playerUI.enemyFallBehindHPBar);
-        photonID.RPC("OnReceiveDamage", RpcTarget.Others, damage);
+        playerUI.OnHealthChange(playerUI.enemyHPBar, playerUI.enemyFallBehindHPBar, false);
+        photonID.RPC("OnReceiveDamage", RpcTarget.Others);
     }
     [PunRPC]
     public void OnReceiveDamage()// Only player 1 gets this
     {
-        playerUI.OnHealthChange(playerUI.playerHPBar, playerUI.playerFallBehindHPBar);
+        playerUI.OnHealthChange(playerUI.playerHPBar, playerUI.playerFallBehindHPBar, true);
         playerAnimations.SetTrigger("Get Hit");
     }
 
     [PunRPC]
-    public void OnReceiveShieldedDamage(int damage)
+    public void OnReceiveShieldedDamage()
     {
         playerAnimations.SetTrigger("Block");
         hp -= damage;
@@ -272,6 +273,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             print("GameStarted activated");
 
+            hasStartedGame = true;
             playerMoving.allowMoving = true;
             Cursor.lockState = CursorLockMode.Locked;
 
@@ -285,25 +287,36 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region OnTriggerEnter/Exit voids
-    public void OnTriggerEnter(Collider other)
+    public void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "Player" && isReadyToFight)
         {
-            playersInAttackRange.Add(other.gameObject);
-            print(other.gameObject.name + "is in attack range");
-        }
-    }
-    public void OnTriggerExit(Collider other)
-    {
-        if(other.gameObject.tag == "Player" && isReadyToFight)
-        {
-            if(playersInAttackRange.Count > 0)
+            if (!playerInAttackRange)
             {
-                playersInAttackRange.RemoveAt(playersInAttackRange.Count - 1);
+                print(other.gameObject.name + "is in attack range");
             }
-            print(other.gameObject.name + "is out of attack range");
+            playerInAttackRange = (other.gameObject);
         }
     }
+    //public void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.gameObject.tag == "Player" && isReadyToFight)
+    //    {
+    //        playerInAttackRange =(other.gameObject);
+    //        print(other.gameObject.name + "is in attack range");
+    //    }
+    //}
+    //public void OnTriggerExit(Collider other)
+    //{
+    //    if(other.gameObject.tag == "Player" && isReadyToFight)
+    //    {
+    //        if (playerInAttackRange)
+    //        {
+    //            playerInAttackRange = null;
+    //        }
+    //        print(other.gameObject.name + "is out of attack range");
+    //    }
+    //}
     #endregion
 
     #region UIButtonsVoids

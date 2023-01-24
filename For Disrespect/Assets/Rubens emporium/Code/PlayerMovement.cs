@@ -59,7 +59,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(playerManager.isGuest);
             stream.SendNext(playerManager.isReadyLobby);
             stream.SendNext(playerManager.isReadyToFight);
-            stream.SendNext(playerManager.hp);
             stream.SendNext(playerManager.stamina);
         }
         else if(stream.IsReading)
@@ -75,7 +74,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             playerManager.isGuest = (bool)stream.ReceiveNext();
             playerManager.isReadyLobby = (bool)stream.ReceiveNext();
             playerManager.isReadyToFight = (bool)stream.ReceiveNext();
-            playerManager.hp = (int)stream.ReceiveNext();
             playerManager.stamina = (float)stream.ReceiveNext();
             //print("recieved stream");
         }
@@ -83,7 +81,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     #region InputActions
     public void OnEsc(InputValue value)
     {
-        if (photonID.IsMine && playerManager.isReadyToFight)
+        if (photonID.IsMine && playerManager.hasStartedGame)
         {
             if(!hasOpenedESC)
             {
@@ -177,7 +175,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnMouseXY(InputValue value)
     {
-        if (photonID.IsMine && allowMoving &&!hasOpenedESC)
+        if (photonID.IsMine && allowMoving && !hasOpenedESC)
         {
             mouseXYInput = value.Get<Vector2>();
 
@@ -186,14 +184,16 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnAttack(InputValue value)
     {
-        if (photonID.IsMine && !hasOpenedESC && playerManager.stamina >= playerManager.staminaCostAttack && allowMoving)
+        if (photonID.IsMine && playerManager.stamina >= playerManager.staminaCostAttack && allowMoving)
         {
             if (value.Get<float>() == 1)
             {
                 isAttacking = true;
                 allowMoving = false;
+                playerManager.playerAttackCollider.enabled = enabled;
+
                 playerManager.stamina -= playerManager.staminaCostAttack;
-                Attack();
+                StartCoroutine(Attack());
                 playerManager.playerAnimations.SetTrigger("Attack");
             }
         }
@@ -218,24 +218,27 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (photonID.IsMine)
         {
-            for (int i = 0; i < playerManager.playersInAttackRange.Count; i++)
+            yield return new WaitForSeconds(0.5f);//Wait time for collider to trigger form gameobjects around him.
+            if (playerManager.playerInAttackRange)
             {
-                if (isAttacking)
+                if (playerManager.playerInAttackRange.GetComponent<PlayerMovement>().isBlocking)
                 {
-                    if (playerManager.playersInAttackRange[i].gameObject.GetComponent<PlayerMovement>().isBlocking)
-                    {
-                        playerManager.DealtBlockedDamage(playerManager.playersInAttackRange[i]);
-                    }
-                    else
-                    {
-                        playerManager.SuccesfullyDealtDamage();
-                        isAttacking = false;
-                    }
+                    playerManager.DealtBlockedDamage(playerManager.playerInAttackRange);
+                }
+                else
+                {
+                    playerManager.SuccesfullyDealtDamage();
                 }
             }
-            yield return new WaitForSeconds(0.5f);
+            else
+            {
+                print("playerCollider coudn't find GameObjects");
+            }
             allowMoving = true;
             isAttacking = false;
+            playerManager.playerAttackCollider.enabled = !enabled;
+            playerManager.playerInAttackRange = null;
+
         }
         yield return new WaitForSeconds(0);
     }
