@@ -1102,42 +1102,57 @@ PrefabInstance:
     - target: {fileID: 734746582741397221, guid: bcffa4dc005c0db4591aa912edeaacad,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.70455354
+      value: 0.6359416
       objectReference: {fileID: 0}
     - target: {fileID: 734746582741397221, guid: bcffa4dc005c0db4591aa912edeaacad,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.26374325
+      value: 0.52293617
       objectReference: {fileID: 0}
     - target: {fileID: 734746582741397221, guid: bcffa4dc005c0db4591aa912edeaacad,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.6243862
+      value: -0.5323946
       objectReference: {fileID: 0}
     - target: {fileID: 734746582741397221, guid: bcffa4dc005c0db4591aa912edeaacad,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.21020392
+      value: 0.1966524
       objectReference: {fileID: 0}
     - target: {fileID: 734746582741397221, guid: bcffa4dc005c0db4591aa912edeaacad,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 39.356
+      value: 60.987
       objectReference: {fileID: 0}
     - target: {fileID: 734746582741397221, guid: bcffa4dc005c0db4591aa912edeaacad,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -83.975
+      value: -103.571
       objectReference: {fileID: 0}
     - target: {fileID: 734746582741397221, guid: bcffa4dc005c0db4591aa912edeaacad,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -2.458
+      value: -39.224
+      objectReference: {fileID: 0}
+    - target: {fileID: 734746582741397223, guid: bcffa4dc005c0db4591aa912edeaacad,
+        type: 3}
+      propertyPath: m_ShadowResolution.m_Level
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 734746582741397223, guid: bcffa4dc005c0db4591aa912edeaacad,
+        type: 3}
+      propertyPath: m_UseContactShadow.m_Level
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 734746582741397223, guid: bcffa4dc005c0db4591aa912edeaacad,
         type: 3}
       propertyPath: m_UseContactShadow.m_Override
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 734746582741397223, guid: bcffa4dc005c0db4591aa912edeaacad,
+        type: 3}
+      propertyPath: m_UseContactShadow.m_UseOverride
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4364887186667715253, guid: bcffa4dc005c0db4591aa912edeaacad,
         type: 3}
