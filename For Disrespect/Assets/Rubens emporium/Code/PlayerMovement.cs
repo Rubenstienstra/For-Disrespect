@@ -60,6 +60,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(playerManager.isReadyLobby);
             stream.SendNext(playerManager.isReadyToFight);
             stream.SendNext(playerManager.stamina);
+            //stream.SendNext(playerManager.hp);
         }
         else if(stream.IsReading)
         {
@@ -75,7 +76,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             playerManager.isReadyLobby = (bool)stream.ReceiveNext();
             playerManager.isReadyToFight = (bool)stream.ReceiveNext();
             playerManager.stamina = (float)stream.ReceiveNext();
-            //print("recieved stream");
+            //playerManager.hp = (float)stream.ReceiveNext();
         }
     }
     #region InputActions
@@ -242,7 +243,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 }
                 else
                 {
-                    playerManager.SuccesfullyDealtDamage();
+                    playerManager.SuccesfullyDealtDamage(playerManager.playerInAttackRange);
                 }
             }
             else

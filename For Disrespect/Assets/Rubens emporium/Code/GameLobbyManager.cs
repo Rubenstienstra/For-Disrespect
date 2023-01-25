@@ -204,7 +204,8 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         allPlayers[0].GetComponent<PlayerManager>().isReadyLobby = readyOrUnready;
 
-        if(allPlayers.Count <= 1)
+        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndUI();
+        if (allPlayers.Count <= 1)
         {
             return;
         }
@@ -216,9 +217,10 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void ReadyUpGuestUI(bool readyOrUnready)
     {
         allPlayers[0].GetComponent<PlayerManager>().isReadyLobby = readyOrUnready;
-        print("Player is: " + readyOrUnready);
 
-        if(allPlayers.Count <= 1)
+        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndUI();
+
+        if (allPlayers.Count <= 1)
         {
             return;
         }

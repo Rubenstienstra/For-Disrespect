@@ -33,7 +33,23 @@ public class UIPlayer : MonoBehaviour
 
     public void Start()
     {
-        
+        if (GameObject.Find("HPbarEnemy"))
+        {
+            enemyWorldSpaceUI = GameObject.Find("HPbarEnemy");
+        }
+        if (GameObject.Find("EnemyStamina"))
+        {
+            enemyStaminaBar = GameObject.Find("EnemyStamina").GetComponent<Image>();
+        }
+        if (GameObject.Find("EnemyHPBehindFall"))
+        {
+            enemyFallBehindHPBar = GameObject.Find("EnemyHPBehindFall").GetComponent<Image>();
+        }
+        if (GameObject.Find("EnemyHP"))
+        {
+            enemyHPBar = GameObject.Find("EnemyHP").GetComponent<Image>();
+        }
+
     }
     public void FixedUpdate()
     {
@@ -44,22 +60,41 @@ public class UIPlayer : MonoBehaviour
                 playerStaminaBar.fillAmount = playerManager.stamina / 100;
                 enemyStaminaBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().stamina / 100;
             }
-            else if(GameObject.Find("EnemyStamina"))
+            else
             {
-               enemyStaminaBar = GameObject.Find("EnemyStamina").GetComponent<Image>();
+                print("Player has no enemyStaminaBar");
+            }
+
+            if (enemyHPBar)
+            {
+                playerHPBar.fillAmount = playerManager.hp / 100;
+                enemyHPBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp / 100;
+            }
+            else
+            {
+                print("Player has no enemyHPBar");
             }
         }
     }
-    public void OnHealthChange(Image hpBar, Image fallBehindhpBar, bool isFriendly)// works for enemy RPC and yourzelf player. 
+    public void OnPlayerHealthChange()
     {
-        if (isFriendly)
+        print("OnPlayerHealthChange Activated");
+        playerHPBar.fillAmount = playerManager.hp / 100;
+
+        if (playerManager.hp <= 0)
         {
-            hpBar.fillAmount = playerManager.hp / 100;
+            playerManager.playerAnimations.SetTrigger("Dead");
+            print("Player Has Died");
         }
-        else
-        {
-            hpBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp / 100;
-        }
+        StartCoroutine(FallBehindHPWaiting(playerFallBehindHPBar, true));
+    }
+    public void OnEnemyHealthChange(Image hpBar, Image fallBehindhpBar)// works for enemy RPC and yourzelf player. 
+    {
+        print("OnEnemyHealthChange Activated");
+
+        hpBar.fillAmount = playerManager.hp / 100;
+        hpBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp / 100;
+        
         if (playerManager.hp <= 0)
         {
             playerManager.playerAnimations.SetTrigger("Dead");
@@ -67,7 +102,7 @@ public class UIPlayer : MonoBehaviour
         }
         
         print("Current Enemy VS Your health: " + playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp + " " + playerManager.hp);
-        StartCoroutine(FallBehindHPWaiting(fallBehindhpBar, isFriendly));
+        StartCoroutine(FallBehindHPWaiting(fallBehindhpBar, false));
 
     }
     public IEnumerator FallBehindHPWaiting(Image fallBehindhpBar, bool isFriendly)// works for enemy RPC and yourzelf player.

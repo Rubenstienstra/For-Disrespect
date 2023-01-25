@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using Photon.Chat;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine.UI;
@@ -102,7 +103,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             for (int i = 0; i < multiplayerDeletableMe.transform.childCount; i++)// Disables GameObjects for yourzelf
             {
-                print("Disabled: " + multiplayerDeletableMe.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+                //print("Disabled: " + multiplayerDeletableMe.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                 if (multiplayerDeletableMe.transform.GetChild(i).gameObject.GetComponent<AudioListener>())
                 {
                     multiplayerDeletableMe.transform.GetChild(i).gameObject.GetComponent<AudioListener>().enabled = !enabled;
@@ -114,7 +115,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             for (int i = 0; i < multiplayerDeletableEnemy.transform.childCount; i++)//Disables GameObjects for your enemy
             {
-                print("Disabled: " + multiplayerDeletableEnemy.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+                //print("Disabled: " + multiplayerDeletableEnemy.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                 if (multiplayerDeletableEnemy.transform.GetChild(i).gameObject.GetComponent<AudioListener>())
                 {
                     multiplayerDeletableEnemy.transform.GetChild(i).gameObject.GetComponent<AudioListener>().enabled = !enabled;
@@ -122,6 +123,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                 multiplayerDeletableEnemy.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
+        print("Disabled all Gameobjects");
     }
 
     public void GiveEnemyNamesAndUI()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
@@ -145,6 +147,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
                 crWorldSpaceNameLobbyEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
             }
+            print("Player has found: HPbarEnemy = " + playerUI.enemyWorldSpaceUI + ", EnemyStamina = " + playerUI.enemyStaminaBar + ", EnemyHPBehindFall = " + playerUI.enemyFallBehindHPBar + ", EnemyHP = " + playerUI.enemyHPBar);
         }
         
     }
@@ -153,29 +156,36 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         print("you've blocked: " + damage + " damage.");
 
-        photonID.RPC("OnReceiveShieldedDamage", RpcTarget.Others);
+        photonID.RPC("OnReceiveShieldedDamage", RpcTarget.All, playerMoving.playerID);
     }
 
-    public void SuccesfullyDealtDamage()//player 0 did damage to player 1
+    public void SuccesfullyDealtDamage(GameObject enemyPlayer)//player 0 did damage to player 1
     {
         print("you've dealt: " + damage + " damage.");
         crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
-        
-        playerUI.OnHealthChange(playerUI.enemyHPBar, playerUI.enemyFallBehindHPBar, false);
-        photonID.RPC("OnReceiveDamage", RpcTarget.Others);
+
+        photonID.RPC("OnReceiveDamage", RpcTarget.All, PhotonNetwork.LocalPlayer);
     }
     [PunRPC]
-    public void OnReceiveDamage()// Only player 1 gets this
+    public void OnReceiveDamage(Player playerWhoSended)// Only player 1 gets this
     {
-        playerUI.OnHealthChange(playerUI.playerHPBar, playerUI.playerFallBehindHPBar, true);
-        playerAnimations.SetTrigger("Get Hit");
+        if(playerWhoSended != PhotonNetwork.LocalPlayer)
+        {
+            hp -= damage;
+            //playerUI.OnPlayerHealthChange();
+            playerAnimations.SetTrigger("Get Hit");
+            print("Got hit by enemy!");
+        }
     }
 
     [PunRPC]
-    public void OnReceiveShieldedDamage()
+    public void OnReceiveShieldedDamage(int playerIntWhoSended)
     {
-        playerAnimations.SetTrigger("Block");
-        hp -= damage;
+        if(playerMoving.playerID != playerIntWhoSended)
+        {
+            playerAnimations.SetTrigger("Block");
+            print("You blocked the enemy attack!");
+        }
     }
     #endregion
 
@@ -304,6 +314,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
 
     }
+
     #region UIButtonsVoids
     public void LeaveRoomButton()//Button Leave room
     {
