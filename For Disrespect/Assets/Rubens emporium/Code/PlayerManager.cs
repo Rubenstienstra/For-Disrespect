@@ -298,27 +298,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             playerInAttackRange = (other.gameObject);
         }
     }
-    //public void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.gameObject.tag == "Player" && isReadyToFight)
-    //    {
-    //        playerInAttackRange =(other.gameObject);
-    //        print(other.gameObject.name + "is in attack range");
-    //    }
-    //}
-    //public void OnTriggerExit(Collider other)
-    //{
-    //    if(other.gameObject.tag == "Player" && isReadyToFight)
-    //    {
-    //        if (playerInAttackRange)
-    //        {
-    //            playerInAttackRange = null;
-    //        }
-    //        print(other.gameObject.name + "is out of attack range");
-    //    }
-    //}
     #endregion
 
+    public void OnWin()
+    {
+
+    }
     #region UIButtonsVoids
     public void LeaveRoomButton()//Button Leave room
     {

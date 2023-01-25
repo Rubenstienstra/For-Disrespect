@@ -255,42 +255,45 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     void FixedUpdate()
     {
-        if (photonID.IsMine && allowMoving)
+        if (photonID.IsMine && playerManager.isReadyToFight)
         {
+
             #region MOVEMENT
-
-            Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat om te checken of gravity aan moet.
-            distanceBetweenGround = hitSlope.distance;
-
-            if (distanceBetweenGround <= 0.001f)
+            if (!isAttacking && allowMoving)
             {
-                transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            }
-            else
-            {
-                transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            }
+                Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat om te checken of gravity aan moet.
+                distanceBetweenGround = hitSlope.distance;
 
-            //characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-
-
-            for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
-            {
-                if (movementWASD[i] > 0)
+                if (distanceBetweenGround <= 0.001f)
                 {
-                    isTotalWalkingWASD++;
+                    transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+                }
+                else
+                {
+                    transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
                 }
 
-                isTotalWalkingWASD = 0; //resets the number
+                //characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
 
-                #endregion
-
-                if (playerUI.enemyWorldSpaceUI)
+                for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
                 {
-                    playerUI.enemyWorldSpaceUI.transform.LookAt(playerManager.playerMovableCamera.transform);
+                    if (movementWASD[i] > 0)
+                    {
+                        isTotalWalkingWASD++;
+                    }
+
+                    isTotalWalkingWASD = 0; //resets the number
+
                 }
             }
-            if(playerManager.stamina < 100)
+            #endregion
+
+            if (playerUI.enemyWorldSpaceUI)
+            {
+                playerUI.enemyWorldSpaceUI.transform.LookAt(playerManager.playerMovableCamera.transform);
+            }
+
+            if (playerManager.stamina < 100)
             {
                 playerManager.stamina += Time.deltaTime * playerManager.staminaRegenRate;
                 if(playerManager.stamina > 100)

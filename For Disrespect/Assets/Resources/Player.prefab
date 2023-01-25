@@ -1415,11 +1415,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterAnimations
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5820581670739010112, guid: c4bec6415a542a84fb6df4afcd9839e2, type: 3}
-    - {fileID: 8565515401955622364, guid: c4bec6415a542a84fb6df4afcd9839e2, type: 3}
-    - {fileID: 1520737370956268786, guid: c4bec6415a542a84fb6df4afcd9839e2, type: 3}
-    - {fileID: 922134609228261129, guid: c4bec6415a542a84fb6df4afcd9839e2, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
