@@ -95,7 +95,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnForward(InputValue value)
     {
-        if (photonID.IsMine && allowMoving)
+        if (photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
@@ -105,12 +105,16 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[0] = 0;
             }
-            playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
+
+            if (allowMoving)
+            {
+                playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
+            }
         }
     }
     public void OnLeft(InputValue value)
     {
-        if (photonID.IsMine && allowMoving)
+        if (photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
@@ -120,12 +124,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[1] = 0;
             }
-            playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+            if (allowMoving)
+            {
+                playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+            }
         }
     }
     public void OnDown(InputValue value)
     {
-        if(photonID.IsMine && allowMoving)
+        if(photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
@@ -135,12 +142,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[2] = 0;
             }
-            playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
+            if (allowMoving)
+            {
+                playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
+            }
         }
     }
     public void OnRight(InputValue value)
     {
-        if (photonID.IsMine && allowMoving)
+        if (photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
@@ -150,26 +160,31 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[3] = 0;
             }
-            playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+            if (allowMoving)
+            {
+                playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+            }
         }
     }
     public void OnShift(InputValue value)
     {
-        if (photonID.IsMine && allowMoving)
+        if (photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
                 holdingShift = true;
-                playerManager.playerAnimations.SetBool("Running", true);
 
                 crShiftBuff = movementShiftBuff;
             }
             else
             {
                 holdingShift = false;
-                playerManager.playerAnimations.SetBool("Running", false);
 
                 crShiftBuff = 1;
+            }
+            if (allowMoving)
+            {
+                playerManager.playerAnimations.SetBool("Running", holdingShift);
             }
         }
     }
