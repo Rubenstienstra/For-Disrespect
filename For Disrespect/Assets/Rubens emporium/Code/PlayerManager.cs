@@ -177,8 +177,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             return;
         }
-        hp -= damage;
-        playerAnimations.SetTrigger("Get Hit");
+        //hp -= damage;
+        //playerAnimations.SetTrigger("Get Hit");
+
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp -= damage;
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Get Hit");
 
         //crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
         //crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Get Hit");
