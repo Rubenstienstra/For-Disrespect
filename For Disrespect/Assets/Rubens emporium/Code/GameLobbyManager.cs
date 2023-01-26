@@ -21,12 +21,14 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject team1ParentForPlayer;
     public GameObject[] playerDummyGameObjects;
 
+    #region totalRounds
     private int totalRounds;
     private int MaxTotalRounds = 10;
     private Button lessRoundsButton;
     private Button moreRoundsButton;
     private TMP_Text HostTotalRoundsUI;
     private TMP_Text GuestTotalRoundsUI;
+    #endregion
 
     public GameObject hostUI;
     public GameObject hostUISettings;

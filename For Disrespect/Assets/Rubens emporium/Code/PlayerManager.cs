@@ -37,6 +37,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public float staminaCostAttack = 20;
     public float staminaCostBlock = 10;
 
+    #region PlayerSounds 
+    public AudioSource soundOnHitEnemy; //OnLose en OnWin sounds worden automatisch afgespeeld.
+    public AudioSource soundOnBlockEnemy;
+    public AudioSource soundOnMissEnemy;
+
+    public AudioSource soundLobbyEveryoneReady;
+    #endregion
+
     public BoxCollider playerAttackCollider;
     public CharacterController characterCon;
     public GameObject playerInAttackRange;
@@ -174,6 +182,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void OnReceiveDamage(Player playerWhoSended)// Only player 1 gets this
     {
+        soundOnHitEnemy.Play();
         if (playerWhoSended.UserId == PhotonNetwork.LocalPlayer.UserId)//If the info matches with the attacker don't get the damage.
         {
             return;
@@ -194,6 +203,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void OnReceiveShieldedDamage(Player playerWhoSended)
     {
+        soundOnBlockEnemy.Play();
         if (playerWhoSended.UserId == PhotonNetwork.LocalPlayer.UserId)//If the info matches with the attacker don't get the damage.
         {
             return;
@@ -212,6 +222,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void LoadIntoGame()
     {
         AllReadyUpAnimations.SetBool("GameStart", true);
+        Destroy(GameObject.Find("MainMenuLobbyMusic"));
+        soundLobbyEveryoneReady.Play();
         if (PhotonNetwork.IsMasterClient)
         {
             crGameLobbyManager.hostUI.GetComponent<Animator>().SetBool("GameStart", true);
@@ -255,7 +267,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     public void ArrivedAtGame()
     {
-        Destroy(GameObject.Find("MainMenuLobbyMusic"));
         isReadyToFight = true;
         playerUI.playerCanvas.SetActive(true);
 

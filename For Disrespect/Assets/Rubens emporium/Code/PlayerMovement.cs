@@ -206,7 +206,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         {
             if (value.Get<float>() == 1)
             {
-                isAttacking = true; waitedBeforeAttacking = false;
+                isAttacking = true;
                 allowMoving = false;
                 playerManager.playerAttackCollider.enabled = enabled;
 
@@ -234,8 +234,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     public IEnumerator Attack()
     {
-        if (photonID.IsMine &&!playerManager.theGameEnded)
+        if (photonID.IsMine && waitedBeforeAttacking && !playerManager.theGameEnded)
         {
+            waitedBeforeAttacking = false;
             yield return new WaitForSeconds(0.5f);//Wait time for collider to trigger form gameobjects around him.
             if (playerManager.playerInAttackRange)
             {
@@ -250,6 +251,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             }
             else
             {
+                playerManager.soundOnMissEnemy.Play();
                 print("playerCollider coudn't find GameObjects");
             }
             allowMoving = true;
