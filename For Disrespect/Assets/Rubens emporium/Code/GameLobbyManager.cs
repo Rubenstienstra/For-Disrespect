@@ -21,12 +21,12 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject team1ParentForPlayer;
     public GameObject[] playerDummyGameObjects;
 
-    public int totalRounds;
-    public int MaxTotalRounds;
-    public Button lessRoundsButton;
-    public Button moreRoundsButton;
-    public TMP_Text HostTotalRoundsUI;
-    public TMP_Text GuestTotalRoundsUI;
+    private int totalRounds;
+    private int MaxTotalRounds = 10;
+    private Button lessRoundsButton;
+    private Button moreRoundsButton;
+    private TMP_Text HostTotalRoundsUI;
+    private TMP_Text GuestTotalRoundsUI;
 
     public GameObject hostUI;
     public GameObject hostUISettings;
@@ -62,7 +62,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         {
             SpawnPlayer();
         }
-        
+
     }
 
     #region Automatic voids
@@ -119,8 +119,11 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected)
         {
-            uiAnimation.SetBool("BeforeCombat", false); camAnimation.SetBool("BeforeCombat", false);
-            worldSpaceNameEnemy.text = "";
+            if(SceneManager.GetActiveScene().name == "Lobby")
+            {
+                uiAnimation.SetBool("BeforeCombat", false); camAnimation.SetBool("BeforeCombat", false);
+                worldSpaceNameEnemy.text = "";
+            }
             Destroy(photonView);
             PhotonNetwork.LeaveRoom();
         }
@@ -149,11 +152,11 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     {
         print("Spawned a player in: " + SceneManager.GetActiveScene().name);
         crInstantiatedPlayerPrefab = null;
-        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, new Vector3(10,0,10), Quaternion.identity);
+        crInstantiatedPlayerPrefab = PhotonNetwork.Instantiate(playerSpawnPrefab.name, new Vector3(10,-10,10), Quaternion.identity);
         crInstantietedPlayerMovement = crInstantiatedPlayerPrefab.GetComponent<PlayerMovement>();
         crInstantietedPlayerManager = crInstantiatedPlayerPrefab.GetComponent<PlayerManager>();
 
-        crInstantietedPlayerManager.UIPrefab.SetActive(false);
+        crInstantietedPlayerManager.playerUI.playerCanvas.SetActive(false);
         crInstantietedPlayerMovement.allowMoving = false;
         crInstantietedPlayerMovement.playerID = PhotonNetwork.CurrentRoom.PlayerCount -1; // -1 so player 1 has PlayerID 0.
     }
@@ -192,16 +195,17 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public IEnumerator WaitBeforeGivingNames()
     {
         yield return new WaitForSeconds(0.5f);//Het heeft processing tijd nodig.
-        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndModels();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
+        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndUI();//heeft genoeg aan de eerste spelers[0], speler 0 heeft speler 1 || speler 1 heeft speler 0.
         yield return new WaitForSeconds(0.5f);//Voor als het de eerste keer niet heeft gepakt.
-        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndModels();
+        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndUI();
     }
     #region ReadyUpCode
     public void ReadyUpHostUI(bool readyOrUnready)
     {
         allPlayers[0].GetComponent<PlayerManager>().isReadyLobby = readyOrUnready;
 
-        if(allPlayers.Count <= 1)
+        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndUI();
+        if (allPlayers.Count <= 1)
         {
             return;
         }
@@ -213,9 +217,10 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public void ReadyUpGuestUI(bool readyOrUnready)
     {
         allPlayers[0].GetComponent<PlayerManager>().isReadyLobby = readyOrUnready;
-        print("Player is: " + readyOrUnready);
 
-        if(allPlayers.Count <= 1)
+        allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndUI();
+
+        if (allPlayers.Count <= 1)
         {
             return;
         }

@@ -116,7 +116,7 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         if(createRoomName != "")
         {
-            PhotonNetwork.CreateRoom(createRoomName, new RoomOptions { IsVisible = true, MaxPlayers = createMaxTotalPlayers, IsOpen = true }, TypedLobby.Default);
+            PhotonNetwork.CreateRoom(createRoomName, new RoomOptions { IsVisible = true, MaxPlayers = createMaxTotalPlayers, IsOpen = true, PublishUserId = true }, TypedLobby.Default);
         }
         else
         {

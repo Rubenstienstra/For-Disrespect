@@ -17,9 +17,9 @@ public class MainMenuSettings : MonoBehaviour
         Screen.fullScreen = isFullscreen;
 
     }
-    public void kutGame()
+    public void KutGame()
     {
         Application.Quit();
-        Debug.Log("i guit");
+        Debug.Log("I quit");
     }
 }

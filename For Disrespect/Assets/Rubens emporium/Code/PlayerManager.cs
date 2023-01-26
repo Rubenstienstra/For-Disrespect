@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using Photon.Chat;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine.UI;
@@ -22,32 +23,31 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public bool isHost;
     public bool isGuest;
 
-    public GameObject worldSpaceEnemyUIBar;
-
     public bool isReadyLobby;
     public float waitTimeAnimation = 2;
     public bool alreadyLoadedLevel;
     public bool isReadyToFight;
+    public bool hasStartedGame;
 
-    public int damage = 10;
-    public int hp = 100;
+    public int damage = 15;
+    public float hp = 100;
+    public float syncedHP;
     public float stamina = 100;
-    public float staminaRegenRate = 2;
+    public float staminaRegenRate = 4;
     public float staminaCostAttack = 20;
-    public float staminaCostBlock = 30;
+    public float staminaCostBlock = 10;
 
     public BoxCollider playerAttackCollider;
     public CharacterController characterCon;
-    public List<GameObject> playersInAttackRange;
+    public GameObject playerInAttackRange;
 
     public Animator AllReadyUpAnimations;
     public Animator playerAnimations;
 
-    public GameObject UIPrefab;
-    public GameObject playerESCMenu;
+    public bool theGameEnded;
+    public int waitTimeBeforeKick = 10;
 
     public string sceneNameToLoad = "BattlefieldCom";
-
     public GameLobbyManager crGameLobbyManager;
     public PhotonView photonID;
     public PlayerMovement playerMoving;
@@ -93,7 +93,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             playerModels[0].SetActive(true);
             playerAnimations = playerModels[0].GetComponent<Animator>();
-            playerModels[1].SetActive(false);
+            playerModels[1].SetActive(false)                                                                                                                                                                                                                                                    ;
         }
         else if (isGuest)
         {
@@ -106,7 +106,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             for (int i = 0; i < multiplayerDeletableMe.transform.childCount; i++)// Disables GameObjects for yourzelf
             {
-                print("Disabled: " + multiplayerDeletableMe.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+                //print("Disabled: " + multiplayerDeletableMe.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                 if (multiplayerDeletableMe.transform.GetChild(i).gameObject.GetComponent<AudioListener>())
                 {
                     multiplayerDeletableMe.transform.GetChild(i).gameObject.GetComponent<AudioListener>().enabled = !enabled;
@@ -118,7 +118,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             for (int i = 0; i < multiplayerDeletableEnemy.transform.childCount; i++)//Disables GameObjects for your enemy
             {
-                print("Disabled: " + multiplayerDeletableEnemy.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
+                //print("Disabled: " + multiplayerDeletableEnemy.transform.GetChild(i).gameObject + "current for loop: " + i.ToString());
                 if (multiplayerDeletableEnemy.transform.GetChild(i).gameObject.GetComponent<AudioListener>())
                 {
                     multiplayerDeletableEnemy.transform.GetChild(i).gameObject.GetComponent<AudioListener>().enabled = !enabled;
@@ -126,21 +126,22 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                 multiplayerDeletableEnemy.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
+        print("Disabled all Gameobjects");
     }
 
-    public void GiveEnemyNamesAndModels()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
+    public void GiveEnemyNamesAndUI()// Soms krijgt de speler de vijand zijn naam niet als hij terug joined.
     {
         if (photonID.IsMine && crGameLobbyManager.allPlayers.Count >= 2)
         {
             if (GameObject.Find("HPbarEnemy") && GameObject.Find("EnemyStamina").GetComponent<Image>() && GameObject.Find("EnemyHPBehindFall").GetComponent<Image>() && GameObject.Find("EnemyHP").GetComponent<Image>())
             {
-                worldSpaceEnemyUIBar = GameObject.Find("HPbarEnemy");
+                playerUI.enemyWorldSpaceUI = GameObject.Find("HPbarEnemy");
                 playerUI.enemyStaminaBar = GameObject.Find("EnemyStamina").GetComponent<Image>();
                 playerUI.enemyFallBehindHPBar = GameObject.Find("EnemyHPBehindFall").GetComponent<Image>();
                 playerUI.enemyHPBar = GameObject.Find("EnemyHP").GetComponent<Image>();
 
                 crEnemyName = crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().crPlayerName;
-                worldSpaceEnemyUIBar.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
+                playerUI.enemyWorldSpaceUI.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
                 print("giving enemy names");
             }
             if (GameObject.Find("WORLDSPACECANVAS NameLobbyEnemy"))
@@ -149,43 +150,69 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
                 crWorldSpaceNameLobbyEnemy.transform.GetChild(0).GetComponent<TMP_Text>().text = crEnemyName;
             }
+            print("Player has found: HPbarEnemy = " + playerUI.enemyWorldSpaceUI + ", EnemyStamina = " + playerUI.enemyStaminaBar + ", EnemyHPBehindFall = " + playerUI.enemyFallBehindHPBar + ", EnemyHP = " + playerUI.enemyHPBar);
         }
+        
     }
-    public void DealtBlockedDamage(GameObject enemyPlayer)
+    #region DoingAndBlockingDamage
+    public void DealtBlockedDamage()
     {
         print("you've blocked: " + damage + " damage.");
 
-        photonID.RPC("OnReceiveShieldedDamage", RpcTarget.Others);
+        photonID.RPC("OnReceiveShieldedDamage", RpcTarget.All, PhotonNetwork.LocalPlayer);
     }
 
     public void SuccesfullyDealtDamage()//player 0 did damage to player 1
     {
-        print("you've dealt: " + damage + " damage.");
-        crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
-        
-        playerUI.OnHealthChange(playerUI.enemyHPBar, playerUI.enemyFallBehindHPBar);
-        photonID.RPC("OnReceiveDamage", RpcTarget.Others);
+        if (photonID.IsMine)
+        {
+            print("you've dealt: " + damage + " damage.");
+
+            photonID.RPC("OnReceiveDamage", RpcTarget.All, PhotonNetwork.LocalPlayer); //Sends info on which player should not get attacked.
+        }
     }
     [PunRPC]
-    public void OnReceiveDamage()// Only player 1 gets this
+    public void OnReceiveDamage(Player playerWhoSended)// Only player 1 gets this
     {
-        playerUI.OnHealthChange(playerUI.playerHPBar, playerUI.playerFallBehindHPBar);
-        playerAnimations.SetTrigger("Get Hit");
+        if (playerWhoSended.UserId == PhotonNetwork.LocalPlayer.UserId)//If the info matches with the attacker don't get the damage.
+        {
+            return;
+        }
+
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp -= damage;
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Get Hit");
+
+        print(PhotonNetwork.LocalPlayer.UserId + "Got hit by enemy! Player who sended the attack: " + playerWhoSended.UserId);
+
+        if (crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp <= 0)
+        {
+            photonID.RPC("OnGameEnded", RpcTarget.All);
+        }
+        //playerUI.OnPlayerHealthChange();
     }
 
     [PunRPC]
-    public void OnReceiveShieldedDamage()
+    public void OnReceiveShieldedDamage(Player playerWhoSended)
     {
-        playerAnimations.SetTrigger("Block");
+        if (playerWhoSended.UserId == PhotonNetwork.LocalPlayer.UserId)//If the info matches with the attacker don't get the damage.
+        {
+            return;
+        }
+
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Block");
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().stamina -= staminaCostBlock;
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerMovement>().isBlocking = false;
+
+        print(PhotonNetwork.LocalPlayer.UserId + " Blocked the enemy attack! Player who sended the attack: " + playerWhoSended.UserId);
     }
+    #endregion
 
     #region From Lobby To Game
     [PunRPC]
     public void LoadIntoGame()
     {
-        print("STEP 0" + PhotonNetwork.NickName);
         AllReadyUpAnimations.SetBool("GameStart", true);
-        if (isHost)
+        if (PhotonNetwork.IsMasterClient)
         {
             crGameLobbyManager.hostUI.GetComponent<Animator>().SetBool("GameStart", true);
         }
@@ -205,8 +232,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         yield return new WaitForSeconds(waitTimeAnimation);
 
-        UIPrefab.transform.GetChild(2).gameObject.SetActive(true);
-        print("STEP 1" + PhotonNetwork.NickName);
+        playerUI.playerRoundStartScreen.gameObject.SetActive(true);
 
         if (PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
         {
@@ -230,11 +256,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void ArrivedAtGame()
     {
         Destroy(GameObject.Find("MainMenuLobbyMusic"));
-        UIPrefab.SetActive(true);
-
-        UIPrefab.transform.GetChild(2).gameObject.SetActive(false);
-        playerCamera.gameObject.SetActive(true);
         isReadyToFight = true;
+        playerUI.playerCanvas.SetActive(true);
+
+        playerUI.playerRoundStartScreen.gameObject.SetActive(false);
+        playerCamera.gameObject.SetActive(true);
         crGameLobbyManager.transform.GetChild(0).gameObject.SetActive(false);
 
 
@@ -259,6 +285,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public IEnumerator CountDownGame()
     {
+        playerUI.roundCountdownStartAnimation.gameObject.SetActive(true);
         playerUI.roundCountdownStartAnimation.SetTrigger("RoundCounter");
         yield return new WaitForSeconds(1);//2 seconds left
 
@@ -273,37 +300,85 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             print("GameStarted activated");
 
+            hasStartedGame = true;
             playerMoving.allowMoving = true;
+            Cursor.lockState = CursorLockMode.Locked;
 
             if (!crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving)
             {
                 print("Other player didn't get: allowMoving");
                 crGameLobbyManager.allPlayers[1].GetComponent<PlayerMovement>().allowMoving = true;
             }
-            print("STEP 7" + PhotonNetwork.NickName);
         }
     }
     #endregion
 
-    #region OnTriggerEnter/Exit voids
-    public void OnTriggerEnter(Collider other)
+    #region OnTriggerStay voids
+    public void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "Player" && isReadyToFight)
         {
-            playersInAttackRange.Add(other.gameObject);
-            print(other.gameObject.name + "is in attack range");
-        }
-    }
-    public void OnTriggerExit(Collider other)
-    {
-        if(other.gameObject.tag == "Player" && isReadyToFight)
-        {
-            if(playersInAttackRange.Count > 0)
+            if (!playerInAttackRange)
             {
-                playersInAttackRange.RemoveAt(playersInAttackRange.Count - 1);
+                print(other.gameObject.name + "is in attack range");
             }
-            print(other.gameObject.name + "is out of attack range");
+            playerInAttackRange = (other.gameObject);
         }
     }
-    #endregion 
+    #endregion
+
+    #region OnWinning/Losing
+
+    [PunRPC]
+    public void OnGameEnded()
+    {
+        theGameEnded = true;
+        ResetAnimations();
+        if(crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp <= 0)
+        {
+            OnLose();
+            print("You Lost...");
+            return;
+        }
+        OnWin();
+        print("You've Won!");
+    }
+    public void ResetAnimations()
+    {
+        playerAnimations.SetFloat("Vertical", 0); playerAnimations.SetFloat("Horizontal", 0); playerAnimations.SetBool("Running", false);
+    }
+
+    public void OnWin()
+    {
+        playerUI.winScreen.SetActive(true);
+
+        StartCoroutine(CountDownEndGame());
+    }
+
+    public void OnLose()
+    {
+        playerUI.loseScreen.SetActive(true);
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Dead");
+
+        StartCoroutine(CountDownEndGame());
+    }
+
+    public IEnumerator CountDownEndGame()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        yield return new WaitForSeconds(waitTimeBeforeKick);
+
+        crGameLobbyManager.LeaveRoom();
+
+        yield return new WaitForSeconds(0);
+    }
+
+    #endregion
+
+    #region UIButtonsVoids
+    public void LeaveRoomButton()//Button Leave room
+    {
+        crGameLobbyManager.LeaveRoom();
+    }
+    #endregion
 }

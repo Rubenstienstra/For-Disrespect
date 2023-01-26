@@ -15,9 +15,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public bool holdingShift;
     public bool allowMoving;
 
-    public RaycastHit rayCastAttackHit;
-    public float rayCastDistanceAttack;
     public bool isAttacking;
+    public bool waitedBeforeAttacking;
+    public float waitTimeBeforeAttacking = 1f;
     public bool isBlocking; //Blocking is niet een bool. het is een trigger van wanneer je wordt geraakt.
 
     public bool hasOpenedESC;
@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(transform.position);
+            //stream.SendNext(transform.position);
             stream.SendNext(allowMoving);
             stream.SendNext(isAttacking);
             stream.SendNext(playerID);
@@ -59,12 +59,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(playerManager.isGuest);
             stream.SendNext(playerManager.isReadyLobby);
             stream.SendNext(playerManager.isReadyToFight);
-            stream.SendNext(playerManager.hp);
             stream.SendNext(playerManager.stamina);
+            stream.SendNext(playerManager.syncedHP);
+            //stream.SendNext(playerManager.hp);
         }
         else if(stream.IsReading)
         {
-            this.transform.position = (Vector3)stream.ReceiveNext();
+            //this.transform.position = (Vector3)stream.ReceiveNext();
             this.allowMoving = (bool)stream.ReceiveNext();
             this.isAttacking = (bool)stream.ReceiveNext();
             this.playerID = (int)stream.ReceiveNext();
@@ -75,32 +76,29 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             playerManager.isGuest = (bool)stream.ReceiveNext();
             playerManager.isReadyLobby = (bool)stream.ReceiveNext();
             playerManager.isReadyToFight = (bool)stream.ReceiveNext();
-            playerManager.hp = (int)stream.ReceiveNext();
             playerManager.stamina = (float)stream.ReceiveNext();
-            //print("recieved stream");
+            playerManager.syncedHP = (float)stream.ReceiveNext();
+            //playerManager.hp = (float)stream.ReceiveNext();
         }
     }
     #region InputActions
     public void OnEsc(InputValue value)
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine && playerManager.hasStartedGame && !playerManager.theGameEnded)
         {
-            if(!hasOpenedESC && SceneManager.GetActiveScene().name == playerManager.sceneNameToLoad)
+            if(!hasOpenedESC)
             {
-                hasOpenedESC = true;
-                allowMoving = false;
-                playerManager.playerESCMenu.SetActive(true);
+                hasOpenedESC = true; allowMoving = false;
+                playerUI.playerESCMenu.SetActive(true);
+                Cursor.lockState = CursorLockMode.None;
                 return;
             }
-            hasOpenedESC = false;
-            allowMoving = true;
-            playerManager.playerESCMenu.SetActive(false);
-            return;
+            DisableESCMenu();
         }
     }
     public void OnForward(InputValue value)
     {
-        if (photonID.IsMine && allowMoving)
+        if (photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
@@ -110,12 +108,16 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[0] = 0;
             }
-            playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
+
+            if (allowMoving && !playerManager.theGameEnded)
+            {
+                playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
+            }
         }
     }
     public void OnLeft(InputValue value)
     {
-        if (photonID.IsMine && allowMoving)
+        if (photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
@@ -125,12 +127,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[1] = 0;
             }
-            playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+            if (allowMoving && !playerManager.theGameEnded)
+            {
+                playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+            }
         }
     }
     public void OnDown(InputValue value)
     {
-        if(photonID.IsMine && allowMoving)
+        if(photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
@@ -140,12 +145,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[2] = 0;
             }
-            playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
+            if (allowMoving && !playerManager.theGameEnded)
+            {
+                playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
+            }
         }
     }
     public void OnRight(InputValue value)
     {
-        if (photonID.IsMine && allowMoving)
+        if (photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
@@ -155,32 +163,37 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[3] = 0;
             }
-            playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+            if (allowMoving && !playerManager.theGameEnded)
+            {
+                playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+            }
         }
     }
     public void OnShift(InputValue value)
     {
-        if (photonID.IsMine && allowMoving)
+        if (photonID.IsMine)
         {
             if (value.Get<float>() == 1)
             {
                 holdingShift = true;
-                playerManager.playerAnimations.SetBool("Running", true);
 
                 crShiftBuff = movementShiftBuff;
             }
             else
             {
                 holdingShift = false;
-                playerManager.playerAnimations.SetBool("Running", false);
 
                 crShiftBuff = 1;
+            }
+            if (allowMoving && !playerManager.theGameEnded)
+            {
+                playerManager.playerAnimations.SetBool("Running", holdingShift);
             }
         }
     }
     public void OnMouseXY(InputValue value)
     {
-        if (photonID.IsMine && allowMoving &&!hasOpenedESC)
+        if (photonID.IsMine && allowMoving && !hasOpenedESC && !playerManager.theGameEnded)
         {
             mouseXYInput = value.Get<Vector2>();
 
@@ -189,21 +202,23 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnAttack(InputValue value)
     {
-        if (photonID.IsMine && !hasOpenedESC && playerManager.stamina >= playerManager.staminaCostAttack && allowMoving)
+        if (photonID.IsMine && playerManager.stamina >= playerManager.staminaCostAttack && allowMoving && waitedBeforeAttacking && !playerManager.theGameEnded)
         {
             if (value.Get<float>() == 1)
             {
-                isAttacking = true;
+                isAttacking = true; waitedBeforeAttacking = false;
                 allowMoving = false;
+                playerManager.playerAttackCollider.enabled = enabled;
+
                 playerManager.stamina -= playerManager.staminaCostAttack;
-                Attack();
+                StartCoroutine(Attack());
                 playerManager.playerAnimations.SetTrigger("Attack");
             }
         }
     }
     public void OnBlock(InputValue value)
     {
-        if (photonID.IsMine && !isAttacking && !hasOpenedESC && allowMoving)
+        if (photonID.IsMine && !isAttacking && !hasOpenedESC && allowMoving && !playerManager.theGameEnded)
         {
             if (value.Get<float>() == 1)
             {
@@ -219,81 +234,103 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     public IEnumerator Attack()
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine &&!playerManager.theGameEnded)
         {
-            for (int i = 0; i < playerManager.playersInAttackRange.Count; i++)
+            yield return new WaitForSeconds(0.5f);//Wait time for collider to trigger form gameobjects around him.
+            if (playerManager.playerInAttackRange)
             {
-                if (isAttacking)
+                if (playerManager.playerInAttackRange.GetComponent<PlayerMovement>().isBlocking)
                 {
-                    if (playerManager.playersInAttackRange[i].gameObject.GetComponent<PlayerMovement>().isBlocking)
-                    {
-                        playerManager.DealtBlockedDamage(playerManager.playersInAttackRange[i]);
-                    }
-                    else
-                    {
-                        playerManager.SuccesfullyDealtDamage();
-                        isAttacking = false;
-                    }
+                    playerManager.DealtBlockedDamage();
+                }
+                else
+                {
+                    playerManager.SuccesfullyDealtDamage();
                 }
             }
-            yield return new WaitForSeconds(0.5f);
+            else
+            {
+                print("playerCollider coudn't find GameObjects");
+            }
             allowMoving = true;
             isAttacking = false;
+            playerManager.playerAttackCollider.enabled = !enabled;
+            playerManager.playerInAttackRange = null;
+
+            yield return new WaitForSeconds(waitTimeBeforeAttacking);
+            waitedBeforeAttacking = true;
         }
         yield return new WaitForSeconds(0);
     }
+    public void DisableESCMenu()
+    {
+        hasOpenedESC = false; allowMoving = true;
+        playerUI.playerESCMenu.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+    }
     public void Start()
     {
-
+        
     }
 
     void FixedUpdate()
     {
-        if (photonID.IsMine && allowMoving)
+        if (playerManager.isReadyToFight && !playerManager.theGameEnded)
         {
-            #region MOVEMENT
-
-            Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat om te checken of gravity aan moet.
-            distanceBetweenGround = hitSlope.distance;
-
-            if (distanceBetweenGround <= 0.001f)
+            if (photonID.IsMine)
             {
-                transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            }
-            else
-            {
-                transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-            }
-
-            //characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-
-
-            for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
-            {
-                if (movementWASD[i] > 0)
+                #region MOVEMENT
+                if (!isAttacking && allowMoving)
                 {
-                    isTotalWalkingWASD++;
+                    Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat om te checken of gravity aan moet.
+                    distanceBetweenGround = hitSlope.distance;
+
+                    if (distanceBetweenGround <= 0.001f)
+                    {
+                        transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+                    }
+                    else
+                    {
+                        transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+                    }
+
+                    //characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+
+                    for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
+                    {
+                        if (movementWASD[i] > 0)
+                        {
+                            isTotalWalkingWASD++;
+                        }
+
+                        isTotalWalkingWASD = 0; //resets the number
+
+                    }
                 }
-
-                isTotalWalkingWASD = 0; //resets the number
-
                 #endregion
 
-                if (playerManager.worldSpaceEnemyUIBar)
+                if (playerUI.enemyWorldSpaceUI)
                 {
-                   playerManager.worldSpaceEnemyUIBar.transform.LookAt(playerManager.playerMovableCamera.transform);
+                    playerUI.enemyWorldSpaceUI.transform.LookAt(playerManager.playerMovableCamera.transform);
+                }
+
+                if (playerManager.stamina < 100)
+                {
+                    playerManager.stamina += Time.deltaTime * playerManager.staminaRegenRate;
+                    if (playerManager.stamina > 100)
+                    {
+                        playerManager.stamina = 100;
+                    }
                 }
             }
-            if(playerManager.stamina < 100)
+            if (playerManager.hp < playerManager.syncedHP)// Als jij damage doet in de lobby zal je HP altijd lager zijn dan de syncedHP dus moet de syncedHP Updaten.
             {
-                playerManager.stamina += Time.deltaTime * playerManager.staminaRegenRate;
-                if(playerManager.stamina > 100)
-                {
-                    playerManager.stamina = 100;
-                }
+                playerManager.syncedHP = playerManager.hp;
+            }
+            else if (playerManager.syncedHP < playerManager.hp)// Als jouw HP hoger is dan wat er gesynced is betekent dat je damage hebt gekregen en dat moet je updaten met je eigen HP.
+            {
+                playerManager.hp = playerManager.syncedHP;
             }
         }
-        //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
-        //endAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, lookAtAngle, ref velocity, timeToTurn); // hiermee berekent je de angle van de speler naar links of rechts toe via de camera
     }
 }

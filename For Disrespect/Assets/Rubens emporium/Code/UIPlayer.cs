@@ -12,10 +12,21 @@ public class UIPlayer : MonoBehaviour
 
     public Animator roundCountdownStartAnimation;
 
+    public GameObject loadingScreen;
+    public GameObject winScreen;
+    public GameObject loseScreen;
+
+    public GameObject playerCanvas;
+    public Image playerBloodDamageEffect;
+    public Image playerRoundStartScreen;
+    public GameObject playerESCMenu;
+
+    public GameObject playerWorldSpaceUI;
     public Image playerStaminaBar;
     public Image playerFallBehindHPBar;
     public Image playerHPBar;
 
+    public GameObject enemyWorldSpaceUI;
     public Image enemyStaminaBar;
     public Image enemyFallBehindHPBar;
     public Image enemyHPBar;
@@ -24,46 +35,81 @@ public class UIPlayer : MonoBehaviour
     public bool isAlreadyWaiting;
     public bool isSecondInQueue;
 
-    public GameObject playerGameObject;
-    public Transform parentComponent;
-
     public void Start()
     {
-        if (!playerMovement.photonID.IsMine)
+        if (GameObject.Find("HPbarEnemy"))
         {
-            //gameObject.SetActive(false);
+            enemyWorldSpaceUI = GameObject.Find("HPbarEnemy");
         }
+        if (GameObject.Find("EnemyStamina"))
+        {
+            enemyStaminaBar = GameObject.Find("EnemyStamina").GetComponent<Image>();
+        }
+        if (GameObject.Find("EnemyHPBehindFall"))
+        {
+            enemyFallBehindHPBar = GameObject.Find("EnemyHPBehindFall").GetComponent<Image>();
+        }
+        if (GameObject.Find("EnemyHP"))
+        {
+            enemyHPBar = GameObject.Find("EnemyHP").GetComponent<Image>();
+        }
+
     }
     public void FixedUpdate()
     {
-        if (PhotonNetwork.CountOfPlayers >= 2 && playerManager.isReadyToFight)
+        if (PhotonNetwork.CountOfPlayers >= 2 && playerManager.hasStartedGame)
         {
-            if(enemyStaminaBar)//playerStaminaBar heb je altijd.
+            playerStaminaBar.fillAmount = playerManager.stamina / 100;
+            if (enemyStaminaBar)//playerStaminaBar heb je altijd.
             {
-                playerStaminaBar.fillAmount = playerManager.stamina / 100;
                 enemyStaminaBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().stamina / 100;
             }
-            else if(GameObject.Find("EnemyStamina"))
+            else
             {
-               enemyStaminaBar = GameObject.Find("EnemyStamina").GetComponent<Image>();
+                print("Player has no enemyStaminaBar");
+            }
+
+            playerHPBar.fillAmount = playerManager.hp / 100;
+            if (enemyHPBar)
+            {
+                enemyHPBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp / 100;
+            }
+            else
+            {
+                print("Player has no enemyHPBar");
             }
         }
     }
-    public void OnHealthChange(Image hpBar, Image fallBehindhpBar)// works for enemy RPC and yourzelf player.
+    public void OnPlayerHealthChange()
     {
+        print("OnPlayerHealthChange Activated");
+        playerHPBar.fillAmount = playerManager.hp / 100;
+
         if (playerManager.hp <= 0)
         {
             playerManager.playerAnimations.SetTrigger("Dead");
             print("Player Has Died");
         }
-        if (playerHPBar != null)
-        {
-            hpBar.fillAmount = playerManager.hp / 100;
-            print("Current Enemy VS Your health: " + playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp + " " + playerManager.hp);
-            StartCoroutine(FallBehindHPWaiting(fallBehindhpBar));
-        }
+        StartCoroutine(FallBehindHPWaiting(playerFallBehindHPBar, true));
     }
-    public IEnumerator FallBehindHPWaiting(Image fallBehindhpBar)// works for enemy RPC and yourzelf player.
+    public void OnEnemyHealthChange(Image hpBar, Image fallBehindhpBar)// works for enemy RPC and yourzelf player. 
+    {
+        print("OnEnemyHealthChange Activated");
+
+        hpBar.fillAmount = playerManager.hp / 100;
+        hpBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp / 100;
+        
+        if (playerManager.hp <= 0)
+        {
+            playerManager.playerAnimations.SetTrigger("Dead");
+            print("Player Has Died");
+        }
+        
+        print("Current Enemy VS Your health: " + playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp + " " + playerManager.hp);
+        StartCoroutine(FallBehindHPWaiting(fallBehindhpBar, false));
+
+    }
+    public IEnumerator FallBehindHPWaiting(Image fallBehindhpBar, bool isFriendly)// works for enemy RPC and yourzelf player.
     {
         if (isAlreadyWaiting)
         {
@@ -81,7 +127,7 @@ public class UIPlayer : MonoBehaviour
         }
         print("Is the IEnumarator secondInQueue: " + isSecondInQueue + "and waiting: " + isAlreadyWaiting);
 
-        StopCoroutine(FallBehindHPWaiting(fallBehindhpBar));
+        StopCoroutine(FallBehindHPWaiting(fallBehindhpBar, isFriendly));
 
         yield return new WaitForSeconds(0);
     }
