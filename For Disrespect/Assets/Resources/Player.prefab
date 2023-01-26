@@ -500,8 +500,9 @@ MonoBehaviour:
   isTotalWalkingWASD: 0
   holdingShift: 0
   allowMoving: 0
-  rayCastDistanceAttack: 1
   isAttacking: 0
+  waitedBeforeAttacking: 0
+  waitTimeBeforeAttacking: 1
   isBlocking: 0
   hasOpenedESC: 0
   mouseXYInput: {x: 0, y: 0}
@@ -558,6 +559,8 @@ MonoBehaviour:
   playerInAttackRange: {fileID: 0}
   AllReadyUpAnimations: {fileID: 0}
   playerAnimations: {fileID: 0}
+  theGameEnded: 0
+  waitTimeBeforeKick: 10
   sceneNameToLoad: BattlefieldCom
   crGameLobbyManager: {fileID: 0}
   photonID: {fileID: 1960451430545438946}
@@ -654,7 +657,7 @@ GameObject:
   - component: {fileID: 7221714369358561258}
   - component: {fileID: 2314705044716296571}
   m_Layer: 0
-  m_Name: PlayerListener
+  m_Name: PlayerListener/Sounds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -864,6 +867,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6069649220769893707}
     m_Modifications:
+    - target: {fileID: 959271939052354891, guid: b6d4da27ceb987645a8fbbf36424a12c,
+        type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 959271939433908369, guid: b6d4da27ceb987645a8fbbf36424a12c,
         type: 3}
       propertyPath: m_Name
@@ -973,6 +981,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 959271940220473233, guid: b6d4da27ceb987645a8fbbf36424a12c,
+        type: 3}
+      propertyPath: m_FillAmount
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1417,6 +1430,11 @@ PrefabInstance:
     - target: {fileID: 5392192456925280979, guid: 75d2a8d6a68239444826319d16ae2e80,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5747196654095996944, guid: 75d2a8d6a68239444826319d16ae2e80,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6204095221570663036, guid: 75d2a8d6a68239444826319d16ae2e80,

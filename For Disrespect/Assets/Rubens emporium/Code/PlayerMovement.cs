@@ -15,9 +15,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public bool holdingShift;
     public bool allowMoving;
 
-    public RaycastHit rayCastAttackHit;
-    public float rayCastDistanceAttack;
     public bool isAttacking;
+    public bool waitedBeforeAttacking;
+    public float waitTimeBeforeAttacking = 1f;
     public bool isBlocking; //Blocking is niet een bool. het is een trigger van wanneer je wordt geraakt.
 
     public bool hasOpenedESC;
@@ -202,11 +202,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnAttack(InputValue value)
     {
-        if (photonID.IsMine && playerManager.stamina >= playerManager.staminaCostAttack && allowMoving && !playerManager.theGameEnded)
+        if (photonID.IsMine && playerManager.stamina >= playerManager.staminaCostAttack && allowMoving && waitedBeforeAttacking && !playerManager.theGameEnded)
         {
             if (value.Get<float>() == 1)
             {
-                isAttacking = true;
+                isAttacking = true; waitedBeforeAttacking = false;
                 allowMoving = false;
                 playerManager.playerAttackCollider.enabled = enabled;
 
@@ -234,7 +234,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     public IEnumerator Attack()
     {
-        if (photonID.IsMine && !playerManager.theGameEnded)
+        if (photonID.IsMine &&!playerManager.theGameEnded)
         {
             yield return new WaitForSeconds(0.5f);//Wait time for collider to trigger form gameobjects around him.
             if (playerManager.playerInAttackRange)
@@ -257,6 +257,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             playerManager.playerAttackCollider.enabled = !enabled;
             playerManager.playerInAttackRange = null;
 
+            yield return new WaitForSeconds(waitTimeBeforeAttacking);
+            waitedBeforeAttacking = true;
         }
         yield return new WaitForSeconds(0);
     }

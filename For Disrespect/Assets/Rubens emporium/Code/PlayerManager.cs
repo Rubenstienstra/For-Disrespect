@@ -187,7 +187,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         if (crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp <= 0)
         {
             photonID.RPC("OnGameEnded", RpcTarget.All);
-
         }
         //playerUI.OnPlayerHealthChange();
     }
@@ -212,9 +211,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void LoadIntoGame()
     {
-        print("STEP 0" + PhotonNetwork.NickName);
         AllReadyUpAnimations.SetBool("GameStart", true);
-        if (isHost)
+        if (PhotonNetwork.IsMasterClient)
         {
             crGameLobbyManager.hostUI.GetComponent<Animator>().SetBool("GameStart", true);
         }
@@ -235,7 +233,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(waitTimeAnimation);
 
         playerUI.playerRoundStartScreen.gameObject.SetActive(true);
-        print("STEP 1" + PhotonNetwork.NickName);
 
         if (PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
         {
@@ -337,12 +334,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         theGameEnded = true;
         ResetAnimations();
-        if(hp <= 0)
+        if(crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp <= 0)
         {
             OnLose();
+            print("You Lost...");
             return;
         }
         OnWin();
+        print("You've Won!");
     }
     public void ResetAnimations()
     {
@@ -359,13 +358,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void OnLose()
     {
         playerUI.loseScreen.SetActive(true);
-        playerAnimations.SetTrigger("Dead");
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Dead");
 
         StartCoroutine(CountDownEndGame());
     }
 
     public IEnumerator CountDownEndGame()
     {
+        Cursor.lockState = CursorLockMode.None;
         yield return new WaitForSeconds(waitTimeBeforeKick);
 
         crGameLobbyManager.LeaveRoom();
