@@ -55,9 +55,9 @@ public class UIPlayer : MonoBehaviour
     {
         if (PhotonNetwork.CountOfPlayers >= 2 && playerManager.hasStartedGame)
         {
-            if(enemyStaminaBar)//playerStaminaBar heb je altijd.
+            playerStaminaBar.fillAmount = playerManager.stamina / 100;
+            if (enemyStaminaBar)//playerStaminaBar heb je altijd.
             {
-                playerStaminaBar.fillAmount = playerManager.stamina / 100;
                 enemyStaminaBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().stamina / 100;
             }
             else
@@ -65,9 +65,9 @@ public class UIPlayer : MonoBehaviour
                 print("Player has no enemyStaminaBar");
             }
 
+            playerHPBar.fillAmount = playerManager.hp / 100;
             if (enemyHPBar)
             {
-                playerHPBar.fillAmount = playerManager.hp / 100;
                 enemyHPBar.fillAmount = playerManager.crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp / 100;
             }
             else

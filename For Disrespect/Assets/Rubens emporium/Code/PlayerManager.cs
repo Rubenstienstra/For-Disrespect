@@ -31,6 +31,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public int damage = 15;
     public float hp = 100;
+    public float syncedHP;
     public float stamina = 100;
     public float staminaRegenRate = 2;
     public float staminaCostAttack = 20;
@@ -161,21 +162,29 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void SuccesfullyDealtDamage(GameObject enemyPlayer)//player 0 did damage to player 1
     {
-        print("you've dealt: " + damage + " damage.");
-        crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
+        if (photonID.IsMine)
+        {
+            print("you've dealt: " + damage + " damage.");
+            //crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
 
-        photonID.RPC("OnReceiveDamage", RpcTarget.All, PhotonNetwork.LocalPlayer);
+            photonID.RPC("OnReceiveDamage", RpcTarget.All, PhotonNetwork.LocalPlayer); //Sends info on which player should not get attacked.
+        }
     }
     [PunRPC]
     public void OnReceiveDamage(Player playerWhoSended)// Only player 1 gets this
     {
-        if(playerWhoSended != PhotonNetwork.LocalPlayer)
+        if (playerWhoSended.UserId == PhotonNetwork.LocalPlayer.UserId)//If the info matches with the attacker don't get the damage.
         {
-            hp -= damage;
-            //playerUI.OnPlayerHealthChange();
-            playerAnimations.SetTrigger("Get Hit");
-            print("Got hit by enemy!");
+            return;
         }
+        hp -= damage;
+        playerAnimations.SetTrigger("Get Hit");
+
+        //crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
+        //crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Get Hit");
+        print(PhotonNetwork.LocalPlayer.UserId + "Got hit by enemy! Player who sended the attack: " + playerWhoSended.UserId);
+
+        //playerUI.OnPlayerHealthChange();
     }
 
     [PunRPC]

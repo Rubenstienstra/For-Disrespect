@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(transform.position);
+            //stream.SendNext(transform.position);
             stream.SendNext(allowMoving);
             stream.SendNext(isAttacking);
             stream.SendNext(playerID);
@@ -60,11 +60,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             stream.SendNext(playerManager.isReadyLobby);
             stream.SendNext(playerManager.isReadyToFight);
             stream.SendNext(playerManager.stamina);
+            stream.SendNext(playerManager.syncedHP);
             //stream.SendNext(playerManager.hp);
         }
         else if(stream.IsReading)
         {
-            this.transform.position = (Vector3)stream.ReceiveNext();
+            //this.transform.position = (Vector3)stream.ReceiveNext();
             this.allowMoving = (bool)stream.ReceiveNext();
             this.isAttacking = (bool)stream.ReceiveNext();
             this.playerID = (int)stream.ReceiveNext();
@@ -76,6 +77,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             playerManager.isReadyLobby = (bool)stream.ReceiveNext();
             playerManager.isReadyToFight = (bool)stream.ReceiveNext();
             playerManager.stamina = (float)stream.ReceiveNext();
+            playerManager.syncedHP = (float)stream.ReceiveNext();
             //playerManager.hp = (float)stream.ReceiveNext();
         }
     }
@@ -271,51 +273,62 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     void FixedUpdate()
     {
-        if (photonID.IsMine && playerManager.isReadyToFight)
+        if (playerManager.isReadyToFight)
         {
-
-            #region MOVEMENT
-            if (!isAttacking && allowMoving)
+            if (photonID.IsMine)
             {
-                Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat om te checken of gravity aan moet.
-                distanceBetweenGround = hitSlope.distance;
 
-                if (distanceBetweenGround <= 0.001f)
+                #region MOVEMENT
+                if (!isAttacking && allowMoving)
                 {
-                    transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-                }
-                else
-                {
-                    transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-                }
+                    Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat om te checken of gravity aan moet.
+                    distanceBetweenGround = hitSlope.distance;
 
-                //characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
-
-                for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
-                {
-                    if (movementWASD[i] > 0)
+                    if (distanceBetweenGround <= 0.001f)
                     {
-                        isTotalWalkingWASD++;
+                        transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+                    }
+                    else
+                    {
+                        transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
                     }
 
-                    isTotalWalkingWASD = 0; //resets the number
+                    //characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
 
+                    for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
+                    {
+                        if (movementWASD[i] > 0)
+                        {
+                            isTotalWalkingWASD++;
+                        }
+
+                        isTotalWalkingWASD = 0; //resets the number
+
+                    }
                 }
-            }
-            #endregion
+                #endregion
 
-            if (playerUI.enemyWorldSpaceUI)
-            {
-                playerUI.enemyWorldSpaceUI.transform.LookAt(playerManager.playerMovableCamera.transform);
-            }
-
-            if (playerManager.stamina < 100)
-            {
-                playerManager.stamina += Time.deltaTime * playerManager.staminaRegenRate;
-                if(playerManager.stamina > 100)
+                if (playerUI.enemyWorldSpaceUI)
                 {
-                    playerManager.stamina = 100;
+                    playerUI.enemyWorldSpaceUI.transform.LookAt(playerManager.playerMovableCamera.transform);
                 }
+
+                if (playerManager.stamina < 100)
+                {
+                    playerManager.stamina += Time.deltaTime * playerManager.staminaRegenRate;
+                    if (playerManager.stamina > 100)
+                    {
+                        playerManager.stamina = 100;
+                    }
+                }
+            }
+            if (playerManager.hp < playerManager.syncedHP)// Als jij damage doet in de lobby zal je HP altijd lager zijn dan de syncedHP dus moet de syncedHP Updaten.
+            {
+                playerManager.syncedHP = playerManager.hp;
+            }
+            else if (playerManager.syncedHP < playerManager.hp)// Als jouw HP hoger is dan wat er gesynced is betekent dat je damage hebt gekregen en dat moet je updaten met je eigen HP.
+            {
+                playerManager.hp = playerManager.syncedHP;
             }
         }
         //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt

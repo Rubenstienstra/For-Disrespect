@@ -414,8 +414,8 @@ MonoBehaviour:
   m_PositionModel:
     SynchronizeEnabled: 1
     TeleportEnabled: 1
-    TeleportIfDistanceGreaterThan: 3
-    InterpolateOption: 4
+    TeleportIfDistanceGreaterThan: 10
+    InterpolateOption: 2
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 5
     ExtrapolateOption: 0
@@ -547,6 +547,7 @@ MonoBehaviour:
   hasStartedGame: 0
   damage: 15
   hp: 100
+  syncedHP: 100
   stamina: 100
   staminaRegenRate: 2
   staminaCostAttack: 20
