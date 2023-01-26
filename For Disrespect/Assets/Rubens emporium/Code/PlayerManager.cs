@@ -33,7 +33,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public float hp = 100;
     public float syncedHP;
     public float stamina = 100;
-    public float staminaRegenRate = 2;
+    public float staminaRegenRate = 4;
     public float staminaCostAttack = 20;
     public float staminaCostBlock = 10;
 
@@ -44,8 +44,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public Animator AllReadyUpAnimations;
     public Animator playerAnimations;
 
-    public string sceneNameToLoad = "BattlefieldCom";
+    public bool theGameEnded;
+    public int waitTimeBeforeKick = 10;
 
+    public string sceneNameToLoad = "BattlefieldCom";
     public GameLobbyManager crGameLobbyManager;
     public PhotonView photonID;
     public PlayerMovement playerMoving;
@@ -153,19 +155,18 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         
     }
     #region DoingAndBlockingDamage
-    public void DealtBlockedDamage(GameObject enemyPlayer)
+    public void DealtBlockedDamage()
     {
         print("you've blocked: " + damage + " damage.");
 
-        photonID.RPC("OnReceiveShieldedDamage", RpcTarget.All, playerMoving.playerID);
+        photonID.RPC("OnReceiveShieldedDamage", RpcTarget.All, PhotonNetwork.LocalPlayer);
     }
 
-    public void SuccesfullyDealtDamage(GameObject enemyPlayer)//player 0 did damage to player 1
+    public void SuccesfullyDealtDamage()//player 0 did damage to player 1
     {
         if (photonID.IsMine)
         {
             print("you've dealt: " + damage + " damage.");
-            //crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
 
             photonID.RPC("OnReceiveDamage", RpcTarget.All, PhotonNetwork.LocalPlayer); //Sends info on which player should not get attacked.
         }
@@ -177,27 +178,33 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             return;
         }
-        //hp -= damage;
-        //playerAnimations.SetTrigger("Get Hit");
 
         crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp -= damage;
         crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Get Hit");
 
-        //crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().hp -= damage;
-        //crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Get Hit");
         print(PhotonNetwork.LocalPlayer.UserId + "Got hit by enemy! Player who sended the attack: " + playerWhoSended.UserId);
 
+        if (crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp <= 0)
+        {
+            photonID.RPC("OnGameEnded", RpcTarget.All);
+
+        }
         //playerUI.OnPlayerHealthChange();
     }
 
     [PunRPC]
-    public void OnReceiveShieldedDamage(int playerIntWhoSended)
+    public void OnReceiveShieldedDamage(Player playerWhoSended)
     {
-        if(playerMoving.playerID != playerIntWhoSended)
+        if (playerWhoSended.UserId == PhotonNetwork.LocalPlayer.UserId)//If the info matches with the attacker don't get the damage.
         {
-            playerAnimations.SetTrigger("Block");
-            print("You blocked the enemy attack!");
+            return;
         }
+
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Block");
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().stamina -= staminaCostBlock;
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerMovement>().isBlocking = false;
+
+        print(PhotonNetwork.LocalPlayer.UserId + " Blocked the enemy attack! Player who sended the attack: " + playerWhoSended.UserId);
     }
     #endregion
 
@@ -281,6 +288,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public IEnumerator CountDownGame()
     {
+        playerUI.roundCountdownStartAnimation.gameObject.SetActive(true);
         playerUI.roundCountdownStartAnimation.SetTrigger("RoundCounter");
         yield return new WaitForSeconds(1);//2 seconds left
 
@@ -308,7 +316,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region OnTriggerEnter/Exit voids
+    #region OnTriggerStay voids
     public void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "Player" && isReadyToFight)
@@ -322,10 +330,50 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    #region OnWinning/Losing
+
+    [PunRPC]
+    public void OnGameEnded()
+    {
+        theGameEnded = true;
+        ResetAnimations();
+        if(hp <= 0)
+        {
+            OnLose();
+            return;
+        }
+        OnWin();
+    }
+    public void ResetAnimations()
+    {
+        playerAnimations.SetFloat("Vertical", 0); playerAnimations.SetFloat("Horizontal", 0); playerAnimations.SetBool("Running", false);
+    }
+
     public void OnWin()
     {
+        playerUI.winScreen.SetActive(true);
 
+        StartCoroutine(CountDownEndGame());
     }
+
+    public void OnLose()
+    {
+        playerUI.loseScreen.SetActive(true);
+        playerAnimations.SetTrigger("Dead");
+
+        StartCoroutine(CountDownEndGame());
+    }
+
+    public IEnumerator CountDownEndGame()
+    {
+        yield return new WaitForSeconds(waitTimeBeforeKick);
+
+        crGameLobbyManager.LeaveRoom();
+
+        yield return new WaitForSeconds(0);
+    }
+
+    #endregion
 
     #region UIButtonsVoids
     public void LeaveRoomButton()//Button Leave room

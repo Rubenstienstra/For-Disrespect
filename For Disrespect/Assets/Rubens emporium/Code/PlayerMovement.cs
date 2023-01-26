@@ -84,7 +84,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     #region InputActions
     public void OnEsc(InputValue value)
     {
-        if (photonID.IsMine && playerManager.hasStartedGame)
+        if (photonID.IsMine && playerManager.hasStartedGame && !playerManager.theGameEnded)
         {
             if(!hasOpenedESC)
             {
@@ -109,7 +109,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 movementWASD[0] = 0;
             }
 
-            if (allowMoving)
+            if (allowMoving && !playerManager.theGameEnded)
             {
                 playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
             }
@@ -127,7 +127,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[1] = 0;
             }
-            if (allowMoving)
+            if (allowMoving && !playerManager.theGameEnded)
             {
                 playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
             }
@@ -145,7 +145,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[2] = 0;
             }
-            if (allowMoving)
+            if (allowMoving && !playerManager.theGameEnded)
             {
                 playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
             }
@@ -163,7 +163,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             {
                 movementWASD[3] = 0;
             }
-            if (allowMoving)
+            if (allowMoving && !playerManager.theGameEnded)
             {
                 playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
             }
@@ -185,7 +185,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
                 crShiftBuff = 1;
             }
-            if (allowMoving)
+            if (allowMoving && !playerManager.theGameEnded)
             {
                 playerManager.playerAnimations.SetBool("Running", holdingShift);
             }
@@ -193,7 +193,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnMouseXY(InputValue value)
     {
-        if (photonID.IsMine && allowMoving && !hasOpenedESC)
+        if (photonID.IsMine && allowMoving && !hasOpenedESC && !playerManager.theGameEnded)
         {
             mouseXYInput = value.Get<Vector2>();
 
@@ -202,7 +202,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnAttack(InputValue value)
     {
-        if (photonID.IsMine && playerManager.stamina >= playerManager.staminaCostAttack && allowMoving)
+        if (photonID.IsMine && playerManager.stamina >= playerManager.staminaCostAttack && allowMoving && !playerManager.theGameEnded)
         {
             if (value.Get<float>() == 1)
             {
@@ -218,7 +218,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     }
     public void OnBlock(InputValue value)
     {
-        if (photonID.IsMine && !isAttacking && !hasOpenedESC && allowMoving)
+        if (photonID.IsMine && !isAttacking && !hasOpenedESC && allowMoving && !playerManager.theGameEnded)
         {
             if (value.Get<float>() == 1)
             {
@@ -234,18 +234,18 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     public IEnumerator Attack()
     {
-        if (photonID.IsMine)
+        if (photonID.IsMine && !playerManager.theGameEnded)
         {
             yield return new WaitForSeconds(0.5f);//Wait time for collider to trigger form gameobjects around him.
             if (playerManager.playerInAttackRange)
             {
                 if (playerManager.playerInAttackRange.GetComponent<PlayerMovement>().isBlocking)
                 {
-                    playerManager.DealtBlockedDamage(playerManager.playerInAttackRange);
+                    playerManager.DealtBlockedDamage();
                 }
                 else
                 {
-                    playerManager.SuccesfullyDealtDamage(playerManager.playerInAttackRange);
+                    playerManager.SuccesfullyDealtDamage();
                 }
             }
             else
@@ -273,11 +273,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     void FixedUpdate()
     {
-        if (playerManager.isReadyToFight)
+        if (playerManager.isReadyToFight && !playerManager.theGameEnded)
         {
             if (photonID.IsMine)
             {
-
                 #region MOVEMENT
                 if (!isAttacking && allowMoving)
                 {
@@ -331,7 +330,5 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                 playerManager.hp = playerManager.syncedHP;
             }
         }
-        //lookAtAngle = Mathf.Atan2(addMovement.x, addMovement.z)* Mathf.Rad2Deg + playerCam.transform.eulerAngles.y; // berekent de angle waar je naar kijkt
-        //endAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, lookAtAngle, ref velocity, timeToTurn); // hiermee berekent je de angle van de speler naar links of rechts toe via de camera
     }
 }
