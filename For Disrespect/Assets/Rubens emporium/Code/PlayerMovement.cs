@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
     public int isTotalWalkingWASD;
     public bool holdingShift;
     public bool allowMoving;
+    public Vector3 characterMovement;
 
     public bool isAttacking;
     public bool waitedBeforeAttacking;
@@ -287,16 +288,23 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                     Physics.Raycast(rayCastPos + transform.position, Vector3.down, out hitSlope, rayCastDistance); // maakt een rayccast aan die naar beneden toe gaat om te checken of gravity aan moet.
                     distanceBetweenGround = hitSlope.distance;
 
+                    characterMovement = Vector3.zero;
+                    characterMovement = new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]);
+                    characterMovement = transform.TransformDirection(characterMovement);
+
                     if (distanceBetweenGround <= 0.001f)
                     {
-                        transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+                        characterMovement.y = 0;
+                        //transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
                     }
                     else
                     {
-                        transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+                        characterMovement.y = -1;
+                        //transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
+                        
                     }
+                    characterControl.Move(characterMovement * movementSpeedBuff * crShiftBuff * Time.deltaTime);
 
-                    //characterControl.Move(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
 
                     for (int i = 0; i < movementWASD.Length; i++)//checking if player is moving
                     {

@@ -105,6 +105,10 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
 
             worldSpaceNameEnemy.text = "";
         }
+        else if (SceneManager.GetActiveScene().name == crInstantietedPlayerManager.sceneNameToLoad)
+        {
+            crInstantietedPlayerManager.OnGameEnded();
+        }
 
         if (allPlayers.Count >= 1)
         {
