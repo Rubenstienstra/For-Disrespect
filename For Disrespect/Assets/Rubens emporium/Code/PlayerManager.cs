@@ -190,10 +190,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
         crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp -= damage;
         crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Get Hit");
-        if (playerUI.playerBloodDamageEffect)
-        {
-            crGameLobbyManager.allPlayers[0].GetComponent<UIPlayer>().bloodDamageEffect.SetFloat("Blood", hp/100 );
-        }
+        crGameLobbyManager.allPlayers[0].GetComponent<UIPlayer>().bloodDamageEffect.SetFloat("Blood", (-hp +100) /100 );
 
         print(PhotonNetwork.LocalPlayer.UserId + "Got hit by enemy! Player who sended the attack: " + playerWhoSended.UserId);
 
@@ -223,13 +220,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     #region From Lobby To Game
     [PunRPC]
-    public void LoadIntoGame()
+    public void LoadIntoGame()//Je kan niet makkelijk veriables veranderen, je moet crGameLobbyManager.allPlayers gebruiken en dan jezelf pakken. Geen idee waarom het zo werkt.
     {
         AllReadyUpAnimations.SetBool("GameStart", true);
         Destroy(GameObject.Find("MainMenuLobbyMusic"));
 
-        soundLobbyEveryoneReady.Play();
-        crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().soundLobbyEveryoneReady.Play();
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().soundLobbyEveryoneReady.Play();
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -250,8 +246,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public IEnumerator WaitingReadyUpAnimation()
     {
         yield return new WaitForSeconds(waitTimeAnimation);
-
-        playerUI.playerRoundStartScreen.gameObject.SetActive(true);
 
         if (PhotonNetwork.IsMasterClient)// Iedereen volgt de masterclient wanneer hij van scene veranderd. //PhotonNetwork.AutomaticallySyncScene = true;
         {
@@ -277,7 +271,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         isReadyToFight = true;
         playerUI.playerCanvas.SetActive(true);
 
-        playerUI.playerRoundStartScreen.gameObject.SetActive(false);
         playerCamera.gameObject.SetActive(true);
         crGameLobbyManager.transform.GetChild(0).gameObject.SetActive(false);
 
@@ -304,13 +297,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public IEnumerator CountDownGame()
     {
         playerUI.roundCountdownStartAnimation.gameObject.SetActive(true);
-        playerUI.loadingScreen.SetActive(true);
         yield return new WaitForSeconds(1);//2 seconds left
 
         yield return new WaitForSeconds(1);//1 seconds left
 
         yield return new WaitForSeconds(1);//0 seconds left
         playerUI.loadingScreen.SetActive(false);
+        playerUI.playerRoundStartScreen.transform.parent.gameObject.SetActive(true);
         GameStarted();
     }
     public void GameStarted()
@@ -351,8 +344,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void OnGameEnded()
     {
-        theGameEnded = true;
         ResetAnimations();
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().theGameEnded = true;
         if(crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp <= 0)
         {
             OnLose();
@@ -371,12 +364,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         playerUI.winScreen.SetActive(true);
 
+        crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Dead");// Voor als de syncing niet goed werkt.
+
         StartCoroutine(CountDownEndGame());
     }
 
     public void OnLose()
     {
         playerUI.loseScreen.SetActive(true);
+
         crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Dead");
 
         StartCoroutine(CountDownEndGame());
