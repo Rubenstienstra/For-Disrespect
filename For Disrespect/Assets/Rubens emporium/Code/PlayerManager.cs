@@ -31,7 +31,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public int damage = 15;
     public float hp = 100;
-    public float syncedHP;
+    public float syncedHP = 100;
     public float stamina = 100;
     public float staminaRegenRate = 4;
     public float staminaCostAttack = 20;
@@ -97,13 +97,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
         crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
 
-        if (isHost)
+        if (PhotonNetwork.IsMasterClient)
         {
             playerModels[0].SetActive(true);
             playerAnimations = playerModels[0].GetComponent<Animator>();
             playerModels[1].SetActive(false)                                                                                                                                                                                                                                                    ;
         }
-        else if (isGuest)
+        else
         {
             playerModels[1].SetActive(true);
             playerAnimations = playerModels[1].GetComponent<Animator>();
@@ -160,7 +160,19 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             }
             print("Player has found: HPbarEnemy = " + playerUI.enemyWorldSpaceUI + ", EnemyStamina = " + playerUI.enemyStaminaBar + ", EnemyHPBehindFall = " + playerUI.enemyFallBehindHPBar + ", EnemyHP = " + playerUI.enemyHPBar);
         }
-        
+
+        if (PhotonNetwork.IsMasterClient)//Voor de zekerheid zodat ik gegarandeerd gaan duplicate modellen heb.
+        {
+            playerModels[0].SetActive(true);
+            playerAnimations = playerModels[0].GetComponent<Animator>();
+            playerModels[1].SetActive(false);
+        }
+        else
+        {
+            playerModels[1].SetActive(true);
+            playerAnimations = playerModels[1].GetComponent<Animator>();
+            playerModels[0].SetActive(false);
+        }
     }
     #region DoingAndBlockingDamage
     public void DealtBlockedDamage()
@@ -182,7 +194,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void OnReceiveDamage(Player playerWhoSended)// Only player 1 gets this
     {
-        soundOnHitEnemy.Play();
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().soundOnHitEnemy.Play();
         if (playerWhoSended.UserId == PhotonNetwork.LocalPlayer.UserId)//If the info matches with the attacker don't get the damage.
         {
             return;
@@ -359,7 +371,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     public void ResetAnimations()
     {
-        playerAnimations.SetFloat("Vertical", 0); playerAnimations.SetFloat("Horizontal", 0); playerAnimations.SetBool("Running", false);
+        if (playerAnimations)
+        {
+            playerAnimations.SetFloat("Vertical", 0); playerAnimations.SetFloat("Horizontal", 0); playerAnimations.SetBool("Running", false);
+        }
     }
 
     public void OnWin()

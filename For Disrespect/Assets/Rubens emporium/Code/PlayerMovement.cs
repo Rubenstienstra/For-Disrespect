@@ -235,19 +235,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
     public IEnumerator Attack()
     {
-        if (photonID.IsMine && waitedBeforeAttacking && !playerManager.theGameEnded)
+        if (photonID.IsMine && waitedBeforeAttacking  && !playerManager.theGameEnded)
         {
             waitedBeforeAttacking = false;
             yield return new WaitForSeconds(0.5f);//Wait time for collider to trigger form gameobjects around him.
             if (playerManager.playerInAttackRange)
             {
-                if (playerManager.playerInAttackRange.GetComponent<PlayerMovement>().isBlocking)
+                if (!playerManager.playerInAttackRange.GetComponent<PlayerMovement>().isAttacking)
                 {
-                    playerManager.DealtBlockedDamage();
-                }
-                else
-                {
-                    playerManager.SuccesfullyDealtDamage();
+                    if (playerManager.playerInAttackRange.GetComponent<PlayerMovement>().isBlocking && playerManager.playerInAttackRange.GetComponent<PlayerManager>().stamina >= playerManager.playerInAttackRange.GetComponent<PlayerManager>().staminaCostBlock)
+                    {
+                        playerManager.DealtBlockedDamage();
+                    }
+                    else
+                    {
+                        playerManager.SuccesfullyDealtDamage();
+                    }
                 }
             }
             else

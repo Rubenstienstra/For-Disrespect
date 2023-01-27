@@ -54,6 +54,10 @@ public class GameLauncher : MonoBehaviourPunCallbacks, ILobbyCallbacks
         {
             mainMenuWindow.SetActive(false);
         }
+        if (GameObject.Find("GameManager"))
+        {
+            Destroy(GameObject.Find("GameManager"));
+        }
         DontDestroyOnLoad(mainMenuLobbyMusic);
     }
 
