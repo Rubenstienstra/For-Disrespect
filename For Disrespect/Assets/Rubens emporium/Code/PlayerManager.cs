@@ -97,6 +97,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         crGameLobbyManager.uiAnimation.SetBool("BeforeCombat", true);
         crGameLobbyManager.camAnimation.SetBool("BeforeCombat", true);
 
+        if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        {
+            crGameLobbyManager.hostUIReadyAndUnreadyButton[1].interactable = false;
+            crGameLobbyManager.guestUIReadyAndUnreadyUIButton[1].interactable = false;
+        }
+        if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+        {
+            crGameLobbyManager.hostUIReadyAndUnreadyButton[1].interactable = true;
+            crGameLobbyManager.guestUIReadyAndUnreadyUIButton[1].interactable = true;
+        }
+
         if (isHost)
         {
             playerModels[0].SetActive(true);
@@ -120,17 +131,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                     multiplayerDeletableMe.transform.GetChild(i).gameObject.GetComponent<AudioListener>().enabled = !enabled;
                 }
                 multiplayerDeletableMe.transform.GetChild(i).gameObject.SetActive(false);
-            }
-
-            if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-            {
-               crGameLobbyManager.hostUIReadyAndUnreadyButton[1].interactable = false;
-                crGameLobbyManager.guestUIReadyAndUnreadyUIButton[1].interactable = false;
-            }
-            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
-            {
-               crGameLobbyManager.hostUIReadyAndUnreadyButton[1].interactable = true;
-               crGameLobbyManager.guestUIReadyAndUnreadyUIButton[1].interactable = true;
             }
         }
         else
