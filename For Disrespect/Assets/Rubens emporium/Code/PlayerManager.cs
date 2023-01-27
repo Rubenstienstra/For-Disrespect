@@ -171,6 +171,19 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             }
             print("Player has found: HPbarEnemy = " + playerUI.enemyWorldSpaceUI + ", EnemyStamina = " + playerUI.enemyStaminaBar + ", EnemyHPBehindFall = " + playerUI.enemyFallBehindHPBar + ", EnemyHP = " + playerUI.enemyHPBar);
         }
+
+        if (isHost)
+        {
+            playerModels[0].SetActive(true);
+            playerAnimations = playerModels[0].GetComponent<Animator>();
+            playerModels[1].SetActive(false);
+        }
+        else if (isGuest)
+        {
+            playerModels[1].SetActive(true);
+            playerAnimations = playerModels[1].GetComponent<Animator>();
+            playerModels[0].SetActive(false);
+        }
     }
     #region DoingAndBlockingDamage
     public void DealtBlockedDamage()

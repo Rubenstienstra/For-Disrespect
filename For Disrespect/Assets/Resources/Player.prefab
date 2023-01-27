@@ -554,7 +554,7 @@ MonoBehaviour:
   stamina: 100
   staminaRegenRate: 4
   staminaCostAttack: 20
-  staminaCostBlock: 30
+  staminaCostBlock: 10
   soundOnHitEnemy: {fileID: 4266106987422620963}
   soundOnBlockEnemy: {fileID: 7260927845782570463}
   soundOnMissEnemy: {fileID: 2649265489500514836}
