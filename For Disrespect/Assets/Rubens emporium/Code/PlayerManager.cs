@@ -103,7 +103,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             playerAnimations = playerModels[0].GetComponent<Animator>();
             playerModels[1].SetActive(false)                                                                                                                                                                                                                                                    ;
         }
-        else
+        else if(isGuest)
         {
             playerModels[1].SetActive(true);
             playerAnimations = playerModels[1].GetComponent<Animator>();
