@@ -295,12 +295,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                     if (distanceBetweenGround <= 0.001f)
                     {
                         characterMovement.y = 0;
-                        //transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
                     }
                     else
                     {
                         characterMovement.y = -1;
-                        //transform.Translate(new Vector3(-movementWASD[1] + movementWASD[3], -1, -movementWASD[2] + movementWASD[0]) * movementSpeedBuff * crShiftBuff * Time.deltaTime);
                         
                     }
                     characterControl.Move(characterMovement * movementSpeedBuff * crShiftBuff * Time.deltaTime);

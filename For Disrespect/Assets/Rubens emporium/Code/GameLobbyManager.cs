@@ -205,6 +205,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(0.5f);//Voor als het de eerste keer niet heeft gepakt.
         allPlayers[0].GetComponent<PlayerManager>().GiveEnemyNamesAndUI();
     }
+
     #region ReadyUpCode
     public void ReadyUpHostUI(bool readyOrUnready)
     {

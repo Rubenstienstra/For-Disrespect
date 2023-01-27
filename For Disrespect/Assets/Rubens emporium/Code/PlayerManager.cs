@@ -223,7 +223,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         AllReadyUpAnimations.SetBool("GameStart", true);
         Destroy(GameObject.Find("MainMenuLobbyMusic"));
+
         soundLobbyEveryoneReady.Play();
+        crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().soundLobbyEveryoneReady.Play();
+
         if (PhotonNetwork.IsMasterClient)
         {
             crGameLobbyManager.hostUI.GetComponent<Animator>().SetBool("GameStart", true);
@@ -297,12 +300,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public IEnumerator CountDownGame()
     {
         playerUI.roundCountdownStartAnimation.gameObject.SetActive(true);
-        playerUI.roundCountdownStartAnimation.SetTrigger("RoundCounter");
+        playerUI.loadingScreen.SetActive(true);
         yield return new WaitForSeconds(1);//2 seconds left
 
         yield return new WaitForSeconds(1);//1 seconds left
 
         yield return new WaitForSeconds(1);//0 seconds left
+        playerUI.loadingScreen.SetActive(false);
         GameStarted();
     }
     public void GameStarted()
