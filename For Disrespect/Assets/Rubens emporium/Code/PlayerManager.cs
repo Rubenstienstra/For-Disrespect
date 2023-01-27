@@ -121,6 +121,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                 }
                 multiplayerDeletableMe.transform.GetChild(i).gameObject.SetActive(false);
             }
+
+            if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+            {
+               crGameLobbyManager.hostUIReadyAndUnreadyButton[1].interactable = false;
+                crGameLobbyManager.guestUIReadyAndUnreadyUIButton[1].interactable = false;
+            }
+            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+            {
+               crGameLobbyManager.hostUIReadyAndUnreadyButton[1].interactable = true;
+               crGameLobbyManager.guestUIReadyAndUnreadyUIButton[1].interactable = true;
+            }
         }
         else
         {

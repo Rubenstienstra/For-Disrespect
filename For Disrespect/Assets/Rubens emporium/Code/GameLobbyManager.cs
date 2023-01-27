@@ -65,17 +65,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
         {
             SpawnPlayer();
         }
-
-        if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-        {
-            hostUIReadyAndUnreadyButton[1].interactable = false;
-            guestUIReadyAndUnreadyUIButton[1].interactable = false;
-        }
-        if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
-        {
-            hostUIReadyAndUnreadyButton[1].interactable = true;
-            guestUIReadyAndUnreadyUIButton[1].interactable = true;
-        }
     }
 
     #region Automatic voids
