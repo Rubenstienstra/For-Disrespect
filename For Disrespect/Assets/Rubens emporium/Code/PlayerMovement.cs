@@ -112,7 +112,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
 
             if (allowMoving && !playerManager.theGameEnded)
             {
-                playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
+                //playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
             }
         }
     }
@@ -130,7 +130,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             }
             if (allowMoving && !playerManager.theGameEnded)
             {
-                playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+                //playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
             }
         }
     }
@@ -148,7 +148,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             }
             if (allowMoving && !playerManager.theGameEnded)
             {
-                playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
+                //playerManager.playerAnimations.SetFloat("Vertical", -movementWASD[2] + movementWASD[0]);
             }
         }
     }
@@ -166,7 +166,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
             }
             if (allowMoving && !playerManager.theGameEnded)
             {
-                playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+                //playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
             }
         }
     }
@@ -274,10 +274,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
         playerUI.playerESCMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
     }
-    public void Start()
-    {
-        
-    }
 
     void FixedUpdate()
     {
@@ -317,6 +313,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                         isTotalWalkingWASD = 0; //resets the number
 
                     }
+                    playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+                    playerManager.playerAnimations.SetFloat("Vertical", Mathf.Lerp(playerManager.playerAnimations.GetFloat("Vertical"), -movementWASD[2] + movementWASD[0],1));
+                    playerManager.playerAnimations.SetBool("Running", holdingShift);
                 }
                 #endregion
 

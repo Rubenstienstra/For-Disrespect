@@ -215,6 +215,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Get Hit");
         crGameLobbyManager.allPlayers[0].GetComponent<UIPlayer>().bloodDamageEffect.SetFloat("Blood", (-crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp +100) /100 );
 
+        StartCoroutine(crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().WaitingOnAttackedMoment());
+
         print(PhotonNetwork.LocalPlayer.UserId + "Got hit by enemy! Player who sended the attack: " + playerWhoSended.UserId);
 
         if (crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp <= 0)
@@ -237,7 +239,18 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().stamina -= staminaCostBlock;
         crGameLobbyManager.allPlayers[0].GetComponent<PlayerMovement>().isBlocking = false;
 
+        StartCoroutine(crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().WaitingOnAttackedMoment());
+
         print(PhotonNetwork.LocalPlayer.UserId + " Blocked the enemy attack! Player who sended the attack: " + playerWhoSended.UserId);
+    }
+
+    public IEnumerator WaitingOnAttackedMoment()
+    {
+        playerMoving.allowMoving = false;
+        yield return new WaitForSeconds(0.5f);
+
+        playerMoving.allowMoving = true;
+        yield return new WaitForSeconds(0f);
     }
     #endregion
 
