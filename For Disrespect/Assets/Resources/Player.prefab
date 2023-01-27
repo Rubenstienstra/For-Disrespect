@@ -500,6 +500,7 @@ MonoBehaviour:
   isTotalWalkingWASD: 0
   holdingShift: 0
   allowMoving: 0
+  characterMovement: {x: 0, y: 0, z: 0}
   isAttacking: 0
   waitedBeforeAttacking: 1
   waitTimeBeforeAttacking: 1
