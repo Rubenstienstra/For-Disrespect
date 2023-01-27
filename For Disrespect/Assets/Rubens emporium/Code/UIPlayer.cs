@@ -11,6 +11,7 @@ public class UIPlayer : MonoBehaviour
     public PlayerManager playerManager;
 
     public Animator roundCountdownStartAnimation;
+    public Animator bloodDamageEffect;
 
     public GameObject loadingScreen;
     public GameObject winScreen;
