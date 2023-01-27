@@ -16,6 +16,7 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public GameObject crInstantiatedPlayerPrefab;
     public List<GameObject> allPlayers;
     public Vector3[] playerFightSpawnLocation;
+    public Vector3[] playerFightSpawnRotation;
 
     public GameObject team0ParentForPlayer;
     public GameObject team1ParentForPlayer;

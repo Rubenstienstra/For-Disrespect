@@ -292,7 +292,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                     characterMovement = new Vector3(-movementWASD[1] + movementWASD[3], 0, -movementWASD[2] + movementWASD[0]);
                     characterMovement = transform.TransformDirection(characterMovement);
 
-                    if (distanceBetweenGround <= 0.001f)
+                    if (distanceBetweenGround <= 0.000001f)
                     {
                         characterMovement.y = 0;
                     }

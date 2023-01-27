@@ -32,7 +32,7 @@ Transform:
   m_Children:
   - {fileID: 785936292471047344}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2410681214851170737
 MonoBehaviour:
@@ -53,6 +53,9 @@ MonoBehaviour:
   playerFightSpawnLocation:
   - {x: 5, y: 1, z: 0}
   - {x: -5, y: 1, z: 0}
+  playerFightSpawnRotation:
+  - {x: 0, y: 90, z: 0}
+  - {x: 0, y: -90, z: 0}
   team0ParentForPlayer: {fileID: 0}
   team1ParentForPlayer: {fileID: 0}
   playerDummyGameObjects:

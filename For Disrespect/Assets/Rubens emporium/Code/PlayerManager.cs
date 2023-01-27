@@ -204,7 +204,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void OnReceiveShieldedDamage(Player playerWhoSended)
     {
-        soundOnBlockEnemy.Play();
+        crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().soundOnBlockEnemy.Play();
         if (playerWhoSended.UserId == PhotonNetwork.LocalPlayer.UserId)//If the info matches with the attacker don't get the damage.
         {
             return;
@@ -277,13 +277,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)//Setting player position up
         {
-            crGameLobbyManager.allPlayers[0].transform.position = crGameLobbyManager.playerFightSpawnLocation[0];
-            crGameLobbyManager.allPlayers[1].transform.position = crGameLobbyManager.playerFightSpawnLocation[1];
+            crGameLobbyManager.allPlayers[0].transform.position = crGameLobbyManager.playerFightSpawnLocation[0]; crGameLobbyManager.allPlayers[0].transform.rotation = Quaternion.Euler(crGameLobbyManager.playerFightSpawnRotation[0]);
+            crGameLobbyManager.allPlayers[1].transform.position = crGameLobbyManager.playerFightSpawnLocation[1]; crGameLobbyManager.allPlayers[1].transform.rotation = Quaternion.Euler(crGameLobbyManager.playerFightSpawnRotation[1]);
         }
         else
         {
-            crGameLobbyManager.allPlayers[0].transform.position = crGameLobbyManager.playerFightSpawnLocation[1];
-            crGameLobbyManager.allPlayers[1].transform.position = crGameLobbyManager.playerFightSpawnLocation[0];
+            crGameLobbyManager.allPlayers[0].transform.position = crGameLobbyManager.playerFightSpawnLocation[1]; crGameLobbyManager.allPlayers[0].transform.rotation = Quaternion.Euler(crGameLobbyManager.playerFightSpawnRotation[1]);
+            crGameLobbyManager.allPlayers[1].transform.position = crGameLobbyManager.playerFightSpawnLocation[0]; crGameLobbyManager.allPlayers[1].transform.rotation = Quaternion.Euler(crGameLobbyManager.playerFightSpawnRotation[0]);
         }
 
         if (crGameLobbyManager.allPlayers[1].GetComponent<PlayerManager>().isReadyToFight && isReadyToFight)
@@ -304,6 +304,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(1);//0 seconds left
         playerUI.loadingScreen.SetActive(false);
         playerUI.playerRoundStartScreen.transform.parent.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        playerUI.playerRoundStartScreen.transform.parent.gameObject.SetActive(false);
         GameStarted();
     }
     public void GameStarted()
