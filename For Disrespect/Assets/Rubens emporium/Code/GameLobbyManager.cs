@@ -18,8 +18,6 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     public Vector3[] playerFightSpawnLocation;
     public Vector3[] playerFightSpawnRotation;
 
-    public GameObject team0ParentForPlayer;
-    public GameObject team1ParentForPlayer;
     public GameObject[] playerDummyGameObjects;
 
     #region totalRounds
@@ -32,12 +30,14 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     #endregion
 
     public GameObject hostUI;
+    public Button[] hostUIReadyAndUnreadyButton;
     public GameObject hostUISettings;
     public TMP_Text hostUIRoomName;
 
     public GameObject worldSpaceEnemyUIBar;
 
     public GameObject guestUI;
+    public Button[] guestUIReadyAndUnreadyUIButton;
     public GameObject guestUISettings;
     public TMP_Text guestUIRoomName;
 
@@ -103,6 +103,11 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
                 guestUISettings.SetActive(false);
                 hostUISettings.SetActive(true);
             }
+            hostUIReadyAndUnreadyButton[0].gameObject.SetActive(false);
+            hostUIReadyAndUnreadyButton[1].gameObject.SetActive(true);
+
+            guestUIReadyAndUnreadyUIButton[0].gameObject.SetActive(false);
+            guestUIReadyAndUnreadyUIButton[1].gameObject.SetActive(true);
 
             worldSpaceNameEnemy.text = "";
         }
@@ -149,9 +154,20 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
     
     public void CheckingPlayersInRoom(int totalPlayers, bool enableOrDisable)
     {
-        if(SceneManager.GetActiveScene().name == "Lobby")
+        if (SceneManager.GetActiveScene().name == "Lobby")
         {
             playerDummyGameObjects[1].SetActive(enableOrDisable);
+
+            if (totalPlayers == 1)
+            {
+                hostUIReadyAndUnreadyButton[1].interactable = false;
+                guestUIReadyAndUnreadyUIButton[1].interactable = false;
+            }
+            if (totalPlayers >= 2)
+            {
+                hostUIReadyAndUnreadyButton[1].interactable = true;
+                guestUIReadyAndUnreadyUIButton[1].interactable = true;
+            }
         }
     }
 
@@ -176,14 +192,14 @@ public class GameLobbyManager : MonoBehaviourPunCallbacks
             //als even is, wordt het 0 en als het getal oneven is is het 1.
             if (crInstantietedPlayerMovement.playerID % 2 == 0)//Team0
             {
-                crInstantiatedPlayerPrefab.transform.parent = team0ParentForPlayer.transform;
+                //crInstantiatedPlayerPrefab.transform.parent = team0ParentForPlayer.transform;
                 crInstantiatedPlayerPrefab.transform.rotation = Quaternion.Euler(0, 180, 0);
 
                 print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + "Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
             }
             else if (crInstantietedPlayerMovement.playerID % 2 == 1)//Team1
             {
-                crInstantiatedPlayerPrefab.transform.parent = team1ParentForPlayer.transform;
+                //crInstantiatedPlayerPrefab.transform.parent = team1ParentForPlayer.transform;
 
                 print("Player Number: " + crInstantietedPlayerMovement.playerID.ToString() + ".Has Joined team: " + crInstantietedPlayerMovement.playerID % 2);
             }
