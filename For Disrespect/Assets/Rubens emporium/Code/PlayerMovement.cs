@@ -313,16 +313,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks , IPunObservable
                         isTotalWalkingWASD = 0; //resets the number
 
                     }
-                    playerManager.playerAnimations.SetFloat("Horizontal", Mathf.Lerp(playerManager.playerAnimations.GetFloat("Horizontal"), -movementWASD[1] + movementWASD[3], 0.25f));
-                    if(playerManager.playerAnimations.GetFloat("Horizontal") <= 0.001f && playerManager.playerAnimations.GetFloat("Horizontal") <= -0.001f)
-                    {
-                        playerManager.playerAnimations.SetFloat("Horizontal", 0);
-                    }
-                    playerManager.playerAnimations.SetFloat("Vertical", Mathf.Lerp(playerManager.playerAnimations.GetFloat("Vertical"), -movementWASD[2] + movementWASD[0], 0.25f));
-                    if (playerManager.playerAnimations.GetFloat("Vertical") <= 0.001f && playerManager.playerAnimations.GetFloat("Vertical") <= -0.001f)
-                    {
-                        playerManager.playerAnimations.SetFloat("Vertical", 0);
-                    }
+                    playerManager.playerAnimations.SetFloat("Horizontal", -movementWASD[1] + movementWASD[3]);
+                    playerManager.playerAnimations.SetFloat("Vertical", Mathf.Lerp(playerManager.playerAnimations.GetFloat("Vertical"), -movementWASD[2] + movementWASD[0],1));
                     playerManager.playerAnimations.SetBool("Running", holdingShift);
                 }
                 #endregion
