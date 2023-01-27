@@ -190,7 +190,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
         crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp -= damage;
         crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().playerAnimations.SetTrigger("Get Hit");
-        crGameLobbyManager.allPlayers[0].GetComponent<UIPlayer>().bloodDamageEffect.SetFloat("Blood", (-hp +100) /100 );
+        crGameLobbyManager.allPlayers[0].GetComponent<UIPlayer>().bloodDamageEffect.SetFloat("Blood", (-crGameLobbyManager.allPlayers[0].GetComponent<PlayerManager>().hp +100) /100 );
 
         print(PhotonNetwork.LocalPlayer.UserId + "Got hit by enemy! Player who sended the attack: " + playerWhoSended.UserId);
 
