@@ -51,11 +51,11 @@ MonoBehaviour:
   crInstantiatedPlayerPrefab: {fileID: 0}
   allPlayers: []
   playerFightSpawnLocation:
-  - {x: 5, y: 1, z: 0}
-  - {x: -5, y: 1, z: 0}
+  - {x: 5, y: 0, z: 0}
+  - {x: -5, y: 0, z: 0}
   playerFightSpawnRotation:
-  - {x: 0, y: 90, z: 0}
   - {x: 0, y: -90, z: 0}
+  - {x: 0, y: 90, z: 0}
   team0ParentForPlayer: {fileID: 0}
   team1ParentForPlayer: {fileID: 0}
   playerDummyGameObjects:
